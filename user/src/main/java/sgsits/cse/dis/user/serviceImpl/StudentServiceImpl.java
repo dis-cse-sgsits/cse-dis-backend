@@ -2,12 +2,16 @@ package sgsits.cse.dis.user.serviceImpl;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.user.components.StudentProfileRepo;
 import sgsits.cse.dis.user.dtos.*;
 import sgsits.cse.dis.user.exception.InternalServerError;
+import sgsits.cse.dis.user.utility.ExcelHelper;
 import sgsits.cse.dis.user.mappers.StudentServiceMapper;
+import sgsits.cse.dis.user.model.StudentProfile;
 import sgsits.cse.dis.user.service.StudentService;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -38,6 +42,15 @@ public class StudentServiceImpl implements StudentService {
 
         studentProfileRepo.addOrUpdateStudentProfile(
                 studentServiceMapper.convertStudentBasicProfileDtoIntoModel(studentBasicProfileDto));
+    }
+
+    public void saveExcelData(MultipartFile file, String addedBy, int sheetNo) {
+        try {
+            List<StudentProfile> students = ExcelHelper.excelToStudents(file.getInputStream(), addedBy, sheetNo);
+            studentProfileRepo.saveAll(students);
+        } catch (IOException | InternalServerError e) {
+            throw new RuntimeException("fail to store excel data: " + e.getMessage());
+        }
     }
 
 

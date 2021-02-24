@@ -7,13 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.user.constants.ControllerConstants;
 import sgsits.cse.dis.user.constants.RestAPI;
 import sgsits.cse.dis.user.dtos.*;
 import sgsits.cse.dis.user.exception.InternalServerError;
 import sgsits.cse.dis.user.exception.UnauthorizedException;
+import sgsits.cse.dis.user.utility.ExcelHelper;
 import sgsits.cse.dis.user.jwt.JwtResolver;
 import sgsits.cse.dis.user.message.response.ResponseMessage;
+import sgsits.cse.dis.user.service.StudentService;
 import sgsits.cse.dis.user.serviceImpl.StaffServiceImpl;
 import sgsits.cse.dis.user.serviceImpl.StudentServiceImpl;
 import sgsits.cse.dis.user.serviceImpl.userProfileServiceImpl.*;
@@ -39,6 +42,7 @@ public class UserProfileController {
     private final StaffServiceImpl staffService;
     private final UserOtherAchievementService userOtherAchievementService;
     private final StudentServiceImpl studentService;
+    private final StudentService studentServiceImpl;
 
     private final JwtResolver jwtResolver = new JwtResolver();
 
@@ -50,7 +54,7 @@ public class UserProfileController {
                                  final UserInternshipService userInternshipService,
                                  final UserProjectService userProjectService,
                                  final UserQualificationService userQualificationService,
-                                 final UserTechnicalActivityService userTechnicalActivityService, final UserAddressService userAddressService, StaffServiceImpl staffService, final UserOtherAchievementService userOtherAchievementService, final StudentServiceImpl studentService) {
+                                 final UserTechnicalActivityService userTechnicalActivityService, final UserAddressService userAddressService, StaffServiceImpl staffService, final UserOtherAchievementService userOtherAchievementService, final StudentServiceImpl studentService, StudentService studentServiceImpl) {
         this.userWorkExperienceService = userWorkExperienceService;
         this.userResearchWorkService = userResearchWorkService;
         this.userCompetitiveExamService = userCompetitiveExamService;
@@ -63,6 +67,7 @@ public class UserProfileController {
         this.staffService = staffService;
         this.userOtherAchievementService = userOtherAchievementService;
         this.studentService = studentService;
+        this.studentServiceImpl = studentServiceImpl;
     }
 
 
@@ -452,6 +457,27 @@ public class UserProfileController {
         return ResponseEntity.status(HttpStatus.OK).body( new ResponseMessage("Successfully Edited"));
     }
 
+    @PostMapping("/uploadStudentBasicProfile/{sheetNo}")
+    public ResponseEntity<ResponseMessage> uploadStudentFile(@RequestParam("file") MultipartFile file, HttpServletRequest request, @PathVariable int sheetNo) {
+        String message = "";
+
+        if (ExcelHelper.hasExcelFormat(file)) {
+            try {
+                studentServiceImpl.saveExcelData(file,jwtResolver.getIdFromJwtToken(request.getHeader("Authorization")), sheetNo);
+
+                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+            } catch (Exception e) {
+                System.out.println(e);
+                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+            }
+        }
+
+        message = "Please upload an excel file!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+    }
+
     @ApiOperation(value = "Staff Basic Profile Data", response = Object.class, httpMethod = "POST", produces = "application/json")
     @PostMapping(value = "/addStaffBasicProfile")
     public ResponseEntity<ResponseMessage> addStaffBasicProfile(
@@ -460,6 +486,27 @@ public class UserProfileController {
 
         staffService.addOrUpdateStaffBasicProfile(StaffBasicProfileDto);
         return ResponseEntity.status(HttpStatus.OK).body( new ResponseMessage("Successfully Edited"));
+    }
+
+    @PostMapping("/uploadStaffBasicProfile/{sheetNo}")
+    public ResponseEntity<ResponseMessage> uploadStaffFile(@RequestParam("file") MultipartFile file, HttpServletRequest request, @PathVariable int sheetNo) {
+        String message = "";
+
+        if (ExcelHelper.hasExcelFormat(file)) {
+            try {
+                staffService.saveExcelData(file,jwtResolver.getIdFromJwtToken(request.getHeader("Authorization")), sheetNo);
+
+                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+            } catch (Exception e) {
+                System.out.println(e);
+                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+            }
+        }
+
+        message = "Please upload an excel file!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
     }
 
 
