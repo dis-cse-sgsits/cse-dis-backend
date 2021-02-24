@@ -19,11 +19,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
+import javassist.NotFoundException;
 import sgsits.cse.dis.moodle.repo.MoodleUserRepo;
 import sgsits.cse.dis.moodle.response.StudentAttendanceData;
 import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
 import sgsits.cse.dis.moodle.service.moodleService;
+import sgsits.cse.dis.moodle.feignClient.UserClient;
 import sgsits.cse.dis.moodle.model.MoodleAttendanceStudent;
 import sgsits.cse.dis.moodle.model.MoodleAttendanceStudentBulk;
 import sgsits.cse.dis.moodle.model.MoodleAttendanceTeacher;
@@ -56,9 +57,19 @@ public class moodleServicesImpl implements moodleService, Serializable {
 	@Autowired
 	public MoodleCourseRepo   MoodleCourseRepo ;
 	
-	//Individual Student Attendance with all subject
-	public List<TotalStudentAttendanceData> getIndividualStudentAttendance(String username){
+	@Autowired
+	public UserClient userClient;
+	
+	//Individual Student Attendance with all subject from student perspective
+	public List<TotalStudentAttendanceData> getIndividualStudentAttendance(String userid,String userType) throws NotFoundException{
 		 List<TotalStudentAttendanceData> totalStudentAttendanceData =new ArrayList<>();
+		 String username=null;
+		 if(userType.equals("student") && userid != null) {
+			 username= userClient.getByUserName(userid);
+		 }
+		 else {
+			 throw new  NotFoundException("UserID not found");
+		 }
 		 MoodleUser mu=MoodleUserRepo.findAllByUsername(username);
 		 List<MoodleCourse> moodleCourse = MoodleCourseRepo.findAll();
 		 List<Long> attendance1=new ArrayList<Long>();
@@ -238,8 +249,14 @@ public class moodleServicesImpl implements moodleService, Serializable {
 	}
 //-------------------------------------------------------------------------------------------------------------------------------------------	
 	//All Student with Individual Subject Detail date wise from teacher perspective 
-public List<StudentAttendanceData> getAllStudentDetails(String username,String coursecode){
-		
+public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String userid,String userType) throws NotFoundException{
+	 String username=null;
+	 if(userType.equals("faculty") && userid != null) {
+		 username= userClient.getByUserName(userid);
+	 }
+	 else {
+		 throw new  NotFoundException("UserID not found");
+	 }
 		List<MoodleUser> moodleUser = MoodleUserRepo.findAll();
 		MoodleCourse mc= MoodleCourseRepo.findAllByShortname(coursecode);
 		MoodleUser mu1=MoodleUserRepo.findAllByUsername(username);
@@ -326,7 +343,15 @@ public List<StudentAttendanceData> getAllStudentDetails(String username,String c
 //--------------------------------------------------------------------------------------------------------------------------------------------	
 	
 	//All Student individual subjectwise total attendance with percentage from teacher perspective
-	public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String username,String coursecode){
+	public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String coursecode,String userid,String userType) throws NotFoundException{
+		
+		String username=null;
+		 if(userType.equals("faculty") && userid != null) {
+			 username= userClient.getByUserName(userid);
+		 }
+		 else {
+			 throw new NotFoundException("UserID not found"); 
+		 }
 		
 		List<MoodleUser> moodleUser = MoodleUserRepo.findAll();
 		MoodleCourse mc = MoodleCourseRepo.findAllByShortname(coursecode);
