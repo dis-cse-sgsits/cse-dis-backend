@@ -48,8 +48,8 @@ public class UserFeignClientController {
     }
     
     @ApiOperation(value = "get Username for given ID", response = String.class, httpMethod = "GET", produces = "application/json")
-    @RequestMapping(value = "/getByUserName", method = RequestMethod.GET)
-    public String getByUserName(@RequestParam("userid") String userid) {
+    @RequestMapping(value = "/getByUserName/{userid}", method = RequestMethod.GET)
+    public String getByUserName(@PathVariable("userid") String userid) {
         return userServicesImpl.getByUserName(userid);
     }
 

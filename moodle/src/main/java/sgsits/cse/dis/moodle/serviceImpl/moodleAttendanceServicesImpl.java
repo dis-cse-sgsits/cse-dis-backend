@@ -1,6 +1,7 @@
 package sgsits.cse.dis.moodle.serviceImpl;
 
 import java.io.Serializable;
+import sgsits.cse.dis.moodle.repo.MoodleUserEnrollmentRepo;
 import java.text.DecimalFormat;
 
 import sgsits.cse.dis.moodle.repo.MoodleAttendanceTeacherBulkRepo;
@@ -23,24 +24,31 @@ import javassist.NotFoundException;
 import sgsits.cse.dis.moodle.repo.MoodleUserRepo;
 import sgsits.cse.dis.moodle.response.StudentAttendanceData;
 import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
-import sgsits.cse.dis.moodle.service.moodleService;
+import sgsits.cse.dis.moodle.service.moodleAttendanceService;
 import sgsits.cse.dis.moodle.feignClient.UserClient;
 import sgsits.cse.dis.moodle.model.MoodleAttendanceStudent;
 import sgsits.cse.dis.moodle.model.MoodleAttendanceStudentBulk;
 import sgsits.cse.dis.moodle.model.MoodleAttendanceTeacher;
 import sgsits.cse.dis.moodle.model.MoodleCourse;
-
+import sgsits.cse.dis.moodle.model.MoodleEnrollement;
+import sgsits.cse.dis.moodle.repo.MoodleEnrollmentRepo;
 import sgsits.cse.dis.moodle.repo.MoodleAttendanceStudentBulkRepo ;
 import sgsits.cse.dis.moodle.model.MoodleUser;
+import sgsits.cse.dis.moodle.model.MoodleUserEnrollment;
 import sgsits.cse.dis.moodle.repo.MoodleAttendanceStudentRepo;
 import sgsits.cse.dis.moodle.repo.MoodleAttendanceTeacherRepo;
 import sgsits.cse.dis.moodle.repo.MoodleCourseRepo;
 import sgsits.cse.dis.moodle.model.MoodleAttendanceTeacherBulk;
 @Component
-public class moodleServicesImpl implements moodleService, Serializable {
+public class moodleAttendanceServicesImpl implements moodleAttendanceService, Serializable {
 	private static final long serialVersionUID = 1L;
 	@Autowired
      public  MoodleUserRepo MoodleUserRepo;
+	@Autowired
+    public  MoodleUserEnrollmentRepo MoodleUserEnrollmentRepo;
+	
+	@Autowired
+    public  MoodleEnrollmentRepo MoodleEnrollmentRepo;
 	
 	@Autowired
 	public MoodleAttendanceStudentRepo   MoodleAttendanceStudentRepo ;
@@ -63,13 +71,10 @@ public class moodleServicesImpl implements moodleService, Serializable {
 	//Individual Student Attendance with all subject from student perspective
 	public List<TotalStudentAttendanceData> getIndividualStudentAttendance(String userid,String userType) throws NotFoundException{
 		 List<TotalStudentAttendanceData> totalStudentAttendanceData =new ArrayList<>();
-		 String username=null;
+		 
+		 String username;
 		 if(userType.equals("student") && userid != null) {
-			 username= userClient.getByUserName(userid);
-		 }
-		 else {
-			 throw new  NotFoundException("UserID not found");
-		 }
+			 username=userClient.getByUserName(userid);
 		 MoodleUser mu=MoodleUserRepo.findAllByUsername(username);
 		 List<MoodleCourse> moodleCourse = MoodleCourseRepo.findAll();
 		 List<Long> attendance1=new ArrayList<Long>();
@@ -206,7 +211,10 @@ public class moodleServicesImpl implements moodleService, Serializable {
 		 		}
 			 }
 		 	
-		 
+		 }
+		 else {
+			 throw new  NotFoundException("UserID not found");
+		 }	 
 		return totalStudentAttendanceData;
 		
 	}
@@ -250,13 +258,10 @@ public class moodleServicesImpl implements moodleService, Serializable {
 //-------------------------------------------------------------------------------------------------------------------------------------------	
 	//All Student with Individual Subject Detail date wise from teacher perspective 
 public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String userid,String userType) throws NotFoundException{
-	 String username=null;
+	 String username;
 	 if(userType.equals("faculty") && userid != null) {
 		 username= userClient.getByUserName(userid);
-	 }
-	 else {
-		 throw new  NotFoundException("UserID not found");
-	 }
+	
 		List<MoodleUser> moodleUser = MoodleUserRepo.findAll();
 		MoodleCourse mc= MoodleCourseRepo.findAllByShortname(coursecode);
 		MoodleUser mu1=MoodleUserRepo.findAllByUsername(username);
@@ -331,6 +336,10 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 		  }
 	}
 		return studentAttendanceData;
+	 }
+	 else {
+		 throw new  NotFoundException("UserID not found");
+	 }
 	}
 
 	
@@ -345,14 +354,9 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 	//All Student individual subjectwise total attendance with percentage from teacher perspective
 	public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String coursecode,String userid,String userType) throws NotFoundException{
 		
-		String username=null;
+		String username;
 		 if(userType.equals("faculty") && userid != null) {
 			 username= userClient.getByUserName(userid);
-		 }
-		 else {
-			 throw new NotFoundException("UserID not found"); 
-		 }
-		
 		List<MoodleUser> moodleUser = MoodleUserRepo.findAll();
 		MoodleCourse mc = MoodleCourseRepo.findAllByShortname(coursecode);
 		Long count=0L;
@@ -421,6 +425,7 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 				  }
 				  }
 					   }
+			  
 			  if(sat.getCoursename() != null && sat1.getCoursename()!= null ) {
 				  
 				  totalcount=count + count1;			  
@@ -492,9 +497,19 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 				 totalStudentAttendanceData.add(sat1);
 			 }
 				 
-	}	  
+	}	
+			
 		
 		return totalStudentAttendanceData;
+		 }
+		 else {
+			 throw new NotFoundException("UserID not found"); 
+		 }
 	}
+	
+
+	
+	
+	
 		
 }

@@ -14,7 +14,7 @@ public interface UserClient {
 	//public String getUserId(@RequestParam("username") String username);
 	
 
-	@RequestMapping(value = "/userFeignClientController/getByUserName")
-	public String getByUserName( @RequestParam("userid") String userid);
+	@RequestMapping(value = "/userFeignClientController/getByUserName/{userid}")
+	public String getByUserName( @PathVariable("userid") String userid);
 
 }

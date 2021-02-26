@@ -23,7 +23,7 @@ import sgsits.cse.dis.moodle.constants.AttendanceURLConstants;
 import sgsits.cse.dis.moodle.feignClient.UserClient;
 import sgsits.cse.dis.moodle.response.StudentAttendanceData;
 import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
-import sgsits.cse.dis.moodle.serviceImpl.moodleServicesImpl;
+import sgsits.cse.dis.moodle.serviceImpl.moodleAttendanceServicesImpl;
 import  sgsits.cse.dis.moodle.jwt.JwtResolver;
 @CrossOrigin(origins = "*")
 @RestController
@@ -31,12 +31,12 @@ import  sgsits.cse.dis.moodle.jwt.JwtResolver;
 public class MoodleAttendanceController {
 	private JwtResolver jwtResolver = new JwtResolver();
 	@Autowired
-	public  moodleServicesImpl moodleServicesImpl;
+	public  moodleAttendanceServicesImpl moodleAttendanceServicesImpl;
 	
 	@ApiOperation(value = "Get Student Attendance Detail List", httpMethod = "GET", produces = "application/json")
 	@GetMapping(path=AttendanceURLConstants.GET_ALL_TABLEID,produces="application/json")
 	public List<Long> getTableid(@PathVariable("username") String username,@PathVariable("coursecode") String coursecode){
-		return moodleServicesImpl.getTableid(username,coursecode);
+		return moodleAttendanceServicesImpl.getTableid(username,coursecode);
 	}
 	
 	@ApiOperation(value = "Get Student Attendance Detail List Date wise", response = StudentAttendanceData.class, httpMethod = "GET", produces = "application/json")
@@ -44,7 +44,7 @@ public class MoodleAttendanceController {
 	public List<StudentAttendanceData> getAllStudentDetails(@RequestParam(value="coursecode") String coursecode,HttpServletRequest request) throws NotFoundException{
 		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
 		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
-		return moodleServicesImpl.getAllStudentDetails(coursecode,userid,userType);
+		return moodleAttendanceServicesImpl.getAllStudentDetails(coursecode,userid,userType);
 	}
 	
 	@ApiOperation(value = "Get All Student Attendance Detail List", response = TotalStudentAttendanceData.class, httpMethod = "GET", produces = "application/json")
@@ -52,7 +52,7 @@ public class MoodleAttendanceController {
 	public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(@RequestParam(value="coursecode") String coursecode,HttpServletRequest request) throws NotFoundException{
 		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
 		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
-		return moodleServicesImpl.getAllStudentTotalAttendance(coursecode,userid,userType);
+		return moodleAttendanceServicesImpl.getAllStudentTotalAttendance(coursecode,userid,userType);
 	}
 	
 	@ApiOperation(value = "Get Individual Student Attendance Subjectwise", response = TotalStudentAttendanceData.class, httpMethod = "GET", produces = "application/json")
@@ -60,7 +60,7 @@ public class MoodleAttendanceController {
 	public List<TotalStudentAttendanceData> getIndividualStudentAttendance(HttpServletRequest request) throws NotFoundException{
 		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
 		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
-		    return  moodleServicesImpl.getIndividualStudentAttendance(userid,userType);
+		    return  moodleAttendanceServicesImpl.getIndividualStudentAttendance(userid,userType);
 		
 		
 	}

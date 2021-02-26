@@ -9,7 +9,7 @@ import sgsits.cse.dis.moodle.response.StudentAttendanceData;
 import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
 
 @Service
-public interface moodleService {
+public interface moodleAttendanceService {
 	//List<MoodleUser> getAllStudentAttendanceListByUsername(String username) throws EventDoesNotExistException;
     //List<MoodleUser> getAllStudentAttendance();
     //List<MoodleAttendanceUser> getAllStudentCourse();
@@ -18,6 +18,7 @@ public interface moodleService {
 	public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String userid,String userType) throws NotFoundException;
 	public List<TotalStudentAttendanceData> getIndividualStudentAttendance(String userid,String userType) throws NotFoundException;
 	public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String coursecode,String userid,String userType) throws NotFoundException;
+	
 	public List<Long> getTableid(String username,String coursename);
 	
 }

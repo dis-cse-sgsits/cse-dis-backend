@@ -130,7 +130,7 @@ public class UserServicesImpl implements UserServices{
 	}
 
 	public String getByUserName(String userid) {
-		Optional<User> dbUser = userRepository.findByCreatedBy(userid);
+		Optional<User> dbUser = userRepository.findById(userid);
 		if (dbUser.isPresent()) {
 			User user = dbUser.get();
 			return user.getUsername();

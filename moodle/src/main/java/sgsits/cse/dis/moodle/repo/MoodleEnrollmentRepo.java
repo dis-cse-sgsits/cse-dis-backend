@@ -9,5 +9,5 @@ import sgsits.cse.dis.moodle.model.MoodleEnrollement;
 
 @Repository
 public interface  MoodleEnrollmentRepo  extends JpaRepository<MoodleEnrollement, Long>{
-  public List<MoodleEnrollement> findByid(Long id);
+  public List<MoodleEnrollement> findAllById(Long id);
 }
