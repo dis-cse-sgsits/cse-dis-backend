@@ -1,77 +1,61 @@
 package sgsits.cse.dis.user.model;
 
-import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+// import org.springframework.data.annotation.CreatedDate;
 
 @Entity
-@Table(name = "staff_leave")
 public class StaffLeave {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false,unique = true)
+    private Long leaveId;
 
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @Column(name = "created_date")
-    private Date createdDate;
-
-    @Column(name = "modified_by")
+    private String createdDate;
+    
     private String modifiedBy;
-
-    @Column(name = "modified_date")
-    private Date modifiedDate;
-
-    @Column(name = "user_id")
-    private String userId;
-
-    @Column(name = "to_date")
-    private Date toDate;
-
-    @Column(name = "from_date")
-    private Date fromDate;
-
-    @Column(name = "subject")
-    private String subject;
-
-    @Column(name = "remarks")
-    private String remarks;
-
-    @Column(name = "details")
+    
+    private String modifiedDate;
+    
+    @Column(nullable = false)
+    private String appliedBy;
+    
     private String details;
+    
+    @Column(nullable = false)
+    private String fromDate;
+    
+    @Column(nullable = false)
+    private String toDate;
 
-    @Column(name = "status")
+    private String halfdayFullday;
+    
+    private String remarks;
+    
     private String status;
-
-    @Column(name = "type_of_leave")
+    
+    private String subject;
+    
     private String typeOfLeave;
 
-    @Column(name = "halfday_fullday")
-    private String halfdayFullday;
+    private String userId;
+    
+    public StaffLeave(){}
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(final long id) {
-        this.id = id;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(final String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final Date createdDate) {
+    public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -79,87 +63,115 @@ public class StaffLeave {
         return modifiedBy;
     }
 
-    public void setModifiedBy(final String modifiedBy) {
+    public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 
-    public Date getModifiedDate() {
+    public String getModifiedDate() {
         return modifiedDate;
     }
 
-    public void setModifiedDate(final Date modifiedDate) {
+    public void setModifiedDate(String modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getAppliedBy() {
+        return appliedBy;
     }
 
-    public void setUserId(final String userId) {
-        this.userId = userId;
-    }
-
-    public Date getToDate() {
-        return toDate;
-    }
-
-    public void setToDate(final Date toDate) {
-        this.toDate = toDate;
-    }
-
-    public Date getFromDate() {
-        return fromDate;
-    }
-
-    public void setFromDate(final Date fromDate) {
-        this.fromDate = fromDate;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(final String subject) {
-        this.subject = subject;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(final String remarks) {
-        this.remarks = remarks;
+    public void setAppliedBy(String appliedBy) {
+        this.appliedBy = appliedBy;
     }
 
     public String getDetails() {
         return details;
     }
 
-    public void setDetails(final String details) {
+    public void setDetails(String details) {
         this.details = details;
     }
 
-    public String getStatus() {
-        return status;
+
+
+    public String getHalfdayFullday() {
+        return halfdayFullday;
     }
 
-    public void setStatus(final String status) {
-        this.status = status;
+    public void setHalfdayFullday(String halfdayFullday) {
+        this.halfdayFullday = halfdayFullday;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getTypeOfLeave() {
         return typeOfLeave;
     }
 
-    public void setTypeOfLeave(final String typeOfLeave) {
+    public void setTypeOfLeave(String typeOfLeave) {
         this.typeOfLeave = typeOfLeave;
     }
 
-    public String getHalfdayFullday() {
-        return halfdayFullday;
+    public Long getLeaveId() {
+        return leaveId;
     }
 
-    public void setHalfdayFullday(final String halfdayFullday) {
-        this.halfdayFullday = halfdayFullday;
+    public void setLeaveId(Long leaveId) {
+        this.leaveId = leaveId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
+    }
+
+    @Override
+    public String toString() {
+        return "StaffLeave [appliedBy=" + appliedBy + ", createdDate=" + createdDate + ", details=" + details
+                + ", fromDate=" + fromDate + ", halfdayFullday=" + halfdayFullday + ", leaveId=" + leaveId
+                + ", modifiedBy=" + modifiedBy + ", modifiedDate=" + modifiedDate + ", remarks=" + remarks + ", status="
+                + status + ", subject=" + subject + ", toDate=" + toDate + ", typeOfLeave=" + typeOfLeave + "]";
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
