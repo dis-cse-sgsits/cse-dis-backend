@@ -259,7 +259,7 @@ public class moodleAttendanceServicesImpl implements moodleAttendanceService, Se
 	//All Student with Individual Subject Detail date wise from teacher perspective 
 public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String userid,String userType) throws NotFoundException{
 	 String username;
-	 if(userType.equals("faculty") && userid != null) {
+	 if(userType.equals("faculty") || userType.equals("head") && userid != null) {
 		 username= userClient.getByUserName(userid);
 	
 		List<MoodleUser> moodleUser = MoodleUserRepo.findAll();
@@ -286,7 +286,7 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 							   if(mc.getId()==mat.getSubjectid() &&  tableid.get(i) == mas.getTableid()) {
 							   count=MoodleAttendanceStudentRepo.getByAttendance(mu.getId(),tableid.get(i));
 							   sat.setCoursename(mc.getFullname());	 
-							   sat.setCoursecode(mc.getShortname());
+							   sat.setCoursecode(coursecode);
 							   sat.setAttendance(count);
 							   sat.setDate_attendance(mas.getDate_attendence());
 							   sat.setSlot(mat.getSlot());
@@ -318,7 +318,7 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 					   for(MoodleAttendanceTeacherBulk matb: moodleAttendanceTeacherBulk) {  			  
 							   if(mc.getId()==matb.getSubjectid()  && tableid1.get(i) == masb.getTableid() && masb.getTableid()==matb.getId() ) {
 							   sat1.setCoursename(mc.getFullname());
-							   sat1.setCoursecode(mc.getShortname());
+							   sat1.setCoursecode(coursecode);
 							   sat1.setAttendance(masb.getAttendance());
 							   sat1.setDate_attendance(masb.getDate_attendence());
 							   sat1.setSlot(matb.getSlot());
@@ -355,7 +355,7 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 	public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String coursecode,String userid,String userType) throws NotFoundException{
 		
 		String username;
-		 if(userType.equals("faculty") && userid != null) {
+		 if(userType.equals("faculty") || userType.equals("head") && userid != null) {
 			 username= userClient.getByUserName(userid);
 		List<MoodleUser> moodleUser = MoodleUserRepo.findAll();
 		MoodleCourse mc = MoodleCourseRepo.findAllByShortname(coursecode);
@@ -392,7 +392,7 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 						       slot=MoodleAttendanceTeacherRepo.getTotalSlot(mc.getId());					      
 						   	   sat.setAttendance(count);
 							   sat.setCoursename(mc.getFullname());	 
-							   sat.setCoursecode(mc.getShortname());
+							   sat.setCoursecode(coursecode);
 							   sat.setSlot(slot);
 						   
 					   }
@@ -418,7 +418,7 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 								   sat1.setAttendance(count1);
 								   sat1.setCoursename(mc.getFullname());
 								   sat1.setSlot(slot1);
-								   sat1.setCoursecode(mc.getShortname());
+								   sat1.setCoursecode(coursecode);
 							   }
 						   
 					   
@@ -497,19 +497,63 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 				 totalStudentAttendanceData.add(sat1);
 			 }
 				 
-	}	
-			
-		
+	}		
 		return totalStudentAttendanceData;
 		 }
 		 else {
 			 throw new NotFoundException("UserID not found"); 
 		 }
 	}
-	
+//--------------------------------------------------------------------------------------------------------------------------------------------
 
+	@Override
+	public List<String> getIndividualUserGradeCategory(String userid) throws NotFoundException {
+		// TODO Auto-generated method stub
+		String username;
+		List<String> courseCode =new ArrayList<String>();
+		 if( userid != null) {
+			 username= userClient.getByUserName(userid);
+			 MoodleUser mu =MoodleUserRepo.findAllByUsername(username);
+			 List<MoodleUserEnrollment> moodleUserEnrollment=MoodleUserEnrollmentRepo.findByUserid(mu.getId());
+			 for(MoodleUserEnrollment mue: moodleUserEnrollment) {
+				 List<MoodleEnrollement> moodleEnrollment=MoodleEnrollmentRepo.findAllById(mue.getEnrolid());
+				 for(MoodleEnrollement me:moodleEnrollment) {
+					 List<MoodleCourse> moodleCourse=MoodleCourseRepo.findAllById(me.getCourseid());
+					 for(MoodleCourse mc:moodleCourse) {
+						 courseCode.add(mc.getShortname());
+					 }
+				 }
+			 }
+			 return courseCode;
+		 }
+		 else {
+			 throw new NotFoundException("UserID not found"); 
+		 }
+	}
 	
-	
-	
+	@Override
+	public List<String> getIndividualUserGradeCategoryName(String userid) throws NotFoundException {
+		// TODO Auto-generated method stub
+		String username;
+		List<String> courseCode =new ArrayList<String>();
+		 if( userid != null) {
+			 username= userClient.getByUserName(userid);
+			 MoodleUser mu =MoodleUserRepo.findAllByUsername(username);
+			 List<MoodleUserEnrollment> moodleUserEnrollment=MoodleUserEnrollmentRepo.findByUserid(mu.getId());
+			 for(MoodleUserEnrollment mue: moodleUserEnrollment) {
+				 List<MoodleEnrollement> moodleEnrollment=MoodleEnrollmentRepo.findAllById(mue.getEnrolid());
+				 for(MoodleEnrollement me:moodleEnrollment) {
+					 List<MoodleCourse> moodleCourse=MoodleCourseRepo.findAllById(me.getCourseid());
+					 for(MoodleCourse mc:moodleCourse) {
+						 courseCode.add(mc.getFullname());
+					 }
+				 }
+			 }
+			 return courseCode;
+		 }
+		 else {
+			 throw new NotFoundException("UserID not found"); 
+		 }
+	}
 		
 }

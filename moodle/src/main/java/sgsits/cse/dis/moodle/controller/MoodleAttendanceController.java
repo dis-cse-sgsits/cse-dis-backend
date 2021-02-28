@@ -39,6 +39,20 @@ public class MoodleAttendanceController {
 		return moodleAttendanceServicesImpl.getTableid(username,coursecode);
 	}
 	
+	@ApiOperation(value = "Get User Enrolled Course Code", response = StudentAttendanceData.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(path=AttendanceURLConstants.GET_USER_COURSE_CODE,produces="application/json")
+	public List<String> getUserGradeCategory(HttpServletRequest request) throws NotFoundException{
+		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
+		return moodleAttendanceServicesImpl.getIndividualUserGradeCategory(userid);
+	}
+	
+	@ApiOperation(value = "Get User Enrolled Course Name", response = StudentAttendanceData.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(path=AttendanceURLConstants.GET_USER_COURSE_NAME,produces="application/json")
+	public List<String> getUserGradeCategoryName(HttpServletRequest request) throws NotFoundException{
+		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
+		return moodleAttendanceServicesImpl.getIndividualUserGradeCategoryName(userid);
+	}
+	
 	@ApiOperation(value = "Get Student Attendance Detail List Date wise", response = StudentAttendanceData.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(path=AttendanceURLConstants.GET_ALL_STUDENT_ATTENDANCE_DETAILS_SUBJECTWISE,produces="application/json")
 	public List<StudentAttendanceData> getAllStudentDetails(@RequestParam(value="coursecode") String coursecode,HttpServletRequest request) throws NotFoundException{
