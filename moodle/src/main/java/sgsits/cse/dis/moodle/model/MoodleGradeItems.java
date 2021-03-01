@@ -79,7 +79,7 @@ public class MoodleGradeItems {
 	private Long display;
 	
 	@Column(name = "decimals")
-	private short decimals;
+	private Short decimals;
 	
 	@Column(name = "hidden", nullable = false)
 	private Long hidden;
@@ -291,11 +291,11 @@ public class MoodleGradeItems {
 		this.display = display;
 	}
 
-	public short getDecimals() {
+	public Short getDecimals() {
 		return decimals;
 	}
 
-	public void setDecimals(short decimals) {
+	public void setDecimals(Short decimals) {
 		this.decimals = decimals;
 	}
 

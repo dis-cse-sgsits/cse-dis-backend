@@ -1,5 +1,8 @@
 package sgsits.cse.dis.moodle.constants;
 
 public class GradesURLConstants {
-
+	public static final String GET_GRADE_ITEMS_OF_COURSE = "/getGradeItemsOfCourse/{courseid}";
+	public static final String GET_GRADER_REPORT = "/getGraderReport/{courseid}/{itemid}";
+	public static final String GET_USER_REPORT = "/getUserReport/{courseid}/{userid}";
+	
 }
