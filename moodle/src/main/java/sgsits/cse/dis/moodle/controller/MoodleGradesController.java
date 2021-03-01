@@ -12,11 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+
 import sgsits.cse.dis.moodle.jwt.JwtResolver;
 import sgsits.cse.dis.moodle.response.GradeItemsData;
 import sgsits.cse.dis.moodle.response.GraderReportData;
 import sgsits.cse.dis.moodle.service.moodleGradeService;
 import sgsits.cse.dis.moodle.constants.GradesURLConstants;
+
+import sgsits.cse.dis.moodle.response.Course;
+import sgsits.cse.dis.moodle.response.Students;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -42,5 +47,18 @@ public class MoodleGradesController {
 	@GetMapping(value = GradesURLConstants.GET_USER_REPORT, produces = "application/json")
 	public ResponseEntity<List<List<GraderReportData>>> getUserReport(@PathVariable("courseid") String courseId, @PathVariable("userid") String userId) {
 		return new ResponseEntity<List<List<GraderReportData>>>(moodleGradeServiceImpl.getUserReport(courseId, userId),HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Get all courses by a grader", response = Course.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = GradesURLConstants.GET_COURSES_BY_GRADER, produces = "application/json")
+	public ResponseEntity<List<Course>> getAllCoursesByGrader(@PathVariable("username") String username) {
+		return new ResponseEntity<List<Course>>(moodleGradeServiceImpl.getAllCoursesByGrader(username),HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Get all students of a course", response = Students.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = GradesURLConstants.GET_STUDENTS_OF_COURSE, produces = "application/json")
+	public ResponseEntity<List<Students>> getAllStudentsOfCourse(@PathVariable("courseId") Long courseId) {
+		return new ResponseEntity<List<Students>>(moodleGradeServiceImpl.getAllStudentsOfCourse(courseId),HttpStatus.OK);
+
 	}
 }
