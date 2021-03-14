@@ -96,6 +96,46 @@ public class MoodleAssign {
 	@Column(name="preventsubmissionnotingroup",nullable = false)
 	private Integer preventsubmissionnotingroup;
 
+	public MoodleAssign(Long id, Long course, String name, String intro, Integer introformat,
+			Integer alwaysshowdescription, Integer nosubmissions, Integer submissiondrafts, Integer sendnotifications,
+			Integer sendlatenotifications, Long duedate, Long allowsubmissionsfromdate, Long grade, Long timemodified,
+			Integer requiresubmissionstatement, Integer completionsubmit, Long cutoffdate, Long gradingduedate,
+			Integer teamsubmission, Integer requireallteammemberssubmit, Long teamsubmissiongroupingid,
+			Integer blindmarking, Integer revealidentities, String attemptreopenmethod, Integer maxattempts,
+			Integer markingworkflow, Integer markingallocation, Integer sendstudentnotifications,
+			Integer preventsubmissionnotingroup) {
+		super();
+		this.id = id;
+		this.course = course;
+		this.name = name;
+		this.intro = intro;
+		this.introformat = introformat;
+		this.alwaysshowdescription = alwaysshowdescription;
+		this.nosubmissions = nosubmissions;
+		this.submissiondrafts = submissiondrafts;
+		this.sendnotifications = sendnotifications;
+		this.sendlatenotifications = sendlatenotifications;
+		this.duedate = duedate;
+		this.allowsubmissionsfromdate = allowsubmissionsfromdate;
+		this.grade = grade;
+		this.timemodified = timemodified;
+		this.requiresubmissionstatement = requiresubmissionstatement;
+		this.completionsubmit = completionsubmit;
+		this.cutoffdate = cutoffdate;
+		this.gradingduedate = gradingduedate;
+		this.teamsubmission = teamsubmission;
+		this.requireallteammemberssubmit = requireallteammemberssubmit;
+		this.teamsubmissiongroupingid = teamsubmissiongroupingid;
+		this.blindmarking = blindmarking;
+		this.revealidentities = revealidentities;
+		this.attemptreopenmethod = attemptreopenmethod;
+		this.maxattempts = maxattempts;
+		this.markingworkflow = markingworkflow;
+		this.markingallocation = markingallocation;
+		this.sendstudentnotifications = sendstudentnotifications;
+		this.preventsubmissionnotingroup = preventsubmissionnotingroup;
+	}
+
 	public MoodleAssign() {
 		super();
 	}
