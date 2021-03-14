@@ -1,5 +1,8 @@
 package sgsits.cse.dis.moodle.controller;
 
+
+
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import sgsits.cse.dis.moodle.constants.AssignmentsURLConstants;
 import sgsits.cse.dis.moodle.jwt.JwtResolver;
+
 import sgsits.cse.dis.moodle.response.CoursesOfStudentData;
 import sgsits.cse.dis.moodle.response.StudentSubjectReportData;
+
+import sgsits.cse.dis.moodle.response.Assignment;
+import sgsits.cse.dis.moodle.response.TeacherReportData;
+
 import sgsits.cse.dis.moodle.service.moodleAssignmentService;
 
 @CrossOrigin(origins = "*")
@@ -27,6 +35,7 @@ public class MoodleAssignmentController {
 	@Autowired
 	private moodleAssignmentService moodleAssignmentServiceImpl;
 	
+
 	@ApiOperation(value = "Get All Courses Of Student", response = CoursesOfStudentData.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = AssignmentsURLConstants.GET_ALL_COURSES_OF_STUDENT, produces = "application/json")
 	public ResponseEntity<List<CoursesOfStudentData>> getAllCoursesOfStudent(@PathVariable("userid") Long userId) {
@@ -49,5 +58,19 @@ public class MoodleAssignmentController {
 	@GetMapping(value = AssignmentsURLConstants.GET_NUMBER_OF_PENDING_ASSIGNMENTS, produces = "application/json")
 	public ResponseEntity<Integer> getNumberOfPendingAssignments(@PathVariable("userid") Long userId) {
 		return new ResponseEntity<Integer>(moodleAssignmentServiceImpl.getNumberOfPendingAssignments(userId),HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Get Grade Items Of Course", response = Assignment.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = AssignmentsURLConstants.GET_ASSIGNMENTS_OF_COURSE, produces = "application/json")
+	public ResponseEntity<List<Assignment>> getAssignmentOfCourse(@PathVariable("courseid") Long courseId)
+	{
+		return new ResponseEntity<List<Assignment>>(moodleAssignmentServiceImpl.getAssignmentsOfCourse(courseId), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Get teacher's report", response = TeacherReportData.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = AssignmentsURLConstants.GET_TEACHERS_REPORT, produces = "application/json")
+	public ResponseEntity<List<List<TeacherReportData>>> getTeachersReport(@PathVariable("courseid") Long courseId,@PathVariable("studentid") Long studentId,@PathVariable("assnid") Long assnId)
+	{
+		return new ResponseEntity<List<List<TeacherReportData>>>(moodleAssignmentServiceImpl.getTeachersReport(courseId,studentId,assnId), HttpStatus.OK);
 	}
 }
