@@ -13,5 +13,11 @@ public class RestAPI {
 	public static final String ADD_SEMESTER_TIME_TABLE = "/addSemTimeTable";
 	public static final String GET_SUBJECT_CODES_BY_FACULTY_ID_AND_SESSION = "/getSubjectCodesByFacultyIdAndSession/{facultyId}/{session}";
 	public static final String GET_TIMETABLE_BY_FACULTY_ID_SESSION_AND_SUBJECT_CODE = "/getTimeTableByFacultyIdSessionAndSubjectCode/{facultyId}/{session}/{subjectCode}";
+	public static final String ADD_EXPERT = "/addExpert";
+	public static final String ADD_EXPERT_LECTURE = "/addExpertLecture";
+	public static final String GET_EXPERT_LECTURES_BY_STATUS = "/getExpertLecturesByStatus/{status}";
+	public static final String VIEW_EXPERT_LECTURE_DETAILS = "/viewExpertLectureDetails/{expertLectureId}";
+	public static final String GET_EXPERT_NAMES_AND_DESIGNATIONS = "/getExpertNamesAndDesignations";
+	public static final String EDIT_EXPERT = "/editExpert";
 
 }
