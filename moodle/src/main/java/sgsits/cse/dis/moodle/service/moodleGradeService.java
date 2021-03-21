@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 
 import sgsits.cse.dis.moodle.response.GraderReportData;
+import sgsits.cse.dis.moodle.response.StudentOverviewReport;
 import sgsits.cse.dis.moodle.response.GradeItemsData;
 
 import sgsits.cse.dis.moodle.response.Course;
@@ -23,5 +24,8 @@ public interface moodleGradeService {
 	List<Course> getAllCoursesByGrader(String username);
 
 	List<Students> getAllStudentsOfCourse(Long courseId);
+	
+	List<StudentOverviewReport> getStudentsOverviewReport(Long userId);
 
+	List<GraderReportData> getStudentsUserReport(String courseId, String userId);
 }

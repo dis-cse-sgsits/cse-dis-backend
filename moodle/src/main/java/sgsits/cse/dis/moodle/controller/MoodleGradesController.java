@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import sgsits.cse.dis.moodle.jwt.JwtResolver;
 import sgsits.cse.dis.moodle.response.GradeItemsData;
 import sgsits.cse.dis.moodle.response.GraderReportData;
+import sgsits.cse.dis.moodle.response.StudentOverviewReport;
 import sgsits.cse.dis.moodle.service.moodleGradeService;
 import sgsits.cse.dis.moodle.constants.GradesURLConstants;
 
@@ -43,7 +44,7 @@ public class MoodleGradesController {
 		return new ResponseEntity<List<List<GraderReportData>>>(moodleGradeServiceImpl.getGraderReport(courseId, itemId),HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "Get User Report", response = GraderReportData.class, httpMethod = "GET", produces = "application/json")
+	@ApiOperation(value = "Get Teacher's User Report", response = GraderReportData.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_USER_REPORT, produces = "application/json")
 	public ResponseEntity<List<List<GraderReportData>>> getUserReport(@PathVariable("courseid") String courseId, @PathVariable("userid") String userId) {
 		return new ResponseEntity<List<List<GraderReportData>>>(moodleGradeServiceImpl.getUserReport(courseId, userId),HttpStatus.OK);
@@ -60,5 +61,17 @@ public class MoodleGradesController {
 	public ResponseEntity<List<Students>> getAllStudentsOfCourse(@PathVariable("courseId") Long courseId) {
 		return new ResponseEntity<List<Students>>(moodleGradeServiceImpl.getAllStudentsOfCourse(courseId),HttpStatus.OK);
 
+	}
+	
+	@ApiOperation(value = "Get student's overview report", response = StudentOverviewReport.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = GradesURLConstants.GET_STUDENTS_OVREVIEW_REPORT, produces = "application/json")
+	public ResponseEntity<List<StudentOverviewReport>> getStudentsOverviewReport(@PathVariable("userid") Long userid) {
+		return new ResponseEntity<List<StudentOverviewReport>>(moodleGradeServiceImpl.getStudentsOverviewReport(userid),HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Get Student's User Report", response = GraderReportData.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = GradesURLConstants.GET_STUDENTS_USER_REPORT, produces = "application/json")
+	public ResponseEntity<List<GraderReportData>> getStudentsUserReport(@PathVariable("courseid") String courseId, @PathVariable("userid") String userId) {
+		return new ResponseEntity<List<GraderReportData>>(moodleGradeServiceImpl.getStudentsUserReport(courseId, userId),HttpStatus.OK);
 	}
 }

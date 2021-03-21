@@ -94,7 +94,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 		for (MoodleEnrollement enroll : enrollList) {
 			List<MoodleCourse> course = moodleCourseRepo.findAllById(enroll.getCourseid());
 			
-			allCoursesOfStudent.add(new CoursesOfStudentData(userId, course.get(0).getShortname(), course.get(0).getFullname()));
+			allCoursesOfStudent.add(new CoursesOfStudentData(userId, course.get(0).getShortname(), course.get(0).getFullname(),course.get(0).getId()));
 		}
 		
 		return allCoursesOfStudent;
@@ -298,7 +298,8 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 				{
 					toAdd = new TeacherReportData(
 							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),null,null,
-							getDateFromUnixDate(sub.getTimecreated()),getDateFromUnixDate(sub.getTimemodified()),
+							getDateFromUnixDate(sub.getTimecreated()),
+							(sub.getStatus().equals("new")?null:getDateFromUnixDate(sub.getTimemodified())),
 							assn.getDueDate(),(sub.getStatus().equals("new")?false:true));
 				}
 				else
@@ -306,9 +307,9 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 					MoodleUser grader = moodleUserRepo.findById(grade.get().getGrader()).get();
 					String graderName = grader.getFirstname() + " " + grader.getLastname();
 					toAdd = new TeacherReportData(
-							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),graderName,
-							grade.get().getGrade(),getDateFromUnixDate(sub.getTimecreated()),
-							getDateFromUnixDate(sub.getTimemodified()),
+							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),
+							graderName,grade.get().getGrade(),getDateFromUnixDate(sub.getTimecreated()),
+							(sub.getStatus().equals("new")?null:getDateFromUnixDate(sub.getTimemodified())),
 							assn.getDueDate(),(sub.getStatus().equals("new")?false:true));
 				}
 				currans.add(toAdd);

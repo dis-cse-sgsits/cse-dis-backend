@@ -21,7 +21,7 @@ import sgsits.cse.dis.moodle.repo.MoodleGradeItemsRepo;
 
 import sgsits.cse.dis.moodle.response.GradeItemsData;
 import sgsits.cse.dis.moodle.response.GraderReportData;
-
+import sgsits.cse.dis.moodle.response.StudentOverviewReport;
 import sgsits.cse.dis.moodle.model.MoodleContext;
 import sgsits.cse.dis.moodle.model.MoodleCourse;
 import sgsits.cse.dis.moodle.model.MoodleEnrollement;
@@ -37,8 +37,9 @@ import sgsits.cse.dis.moodle.repo.MoodleRoleRepo;
 import sgsits.cse.dis.moodle.repo.MoodleUserEnrollmentRepo;
 import sgsits.cse.dis.moodle.repo.MoodleUserRepo;
 import sgsits.cse.dis.moodle.response.Course;
+import sgsits.cse.dis.moodle.response.CoursesOfStudentData;
 import sgsits.cse.dis.moodle.response.Students;
-
+import sgsits.cse.dis.moodle.service.moodleAssignmentService;
 import sgsits.cse.dis.moodle.service.moodleGradeService;
 
 @Component
@@ -64,6 +65,8 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 	public MoodleRoleRepo moodleRoleRepo;
 	@Autowired
 	public MoodleContextRepo moodlecontextRepo;
+	@Autowired
+	public moodleAssignmentService moodleAssignmentServiceImpl;
 	
 	@Override
 	public List<GradeItemsData> getGradeItemsOfCourse(String courseId) {
@@ -155,8 +158,6 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 				}
 			}
 		}
-		
-		
 		return userReport;
 	}
 
@@ -220,5 +221,35 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 			return moodleRoleRepo.findById(role_id);
 		}
 		return null;
+	}
+
+	@Override
+	public List<StudentOverviewReport> getStudentsOverviewReport(Long userId) {
+		List<CoursesOfStudentData> courseList = moodleAssignmentServiceImpl.getAllCoursesOfStudent(userId);
+		List<StudentOverviewReport> ans = new ArrayList<StudentOverviewReport>();
+		for(CoursesOfStudentData course : courseList)
+		{
+			Optional<MoodleGradeItems> item = moodleGradeItemsRepo.findByCourseidAndItemname(course.getCourseId(), "course total");
+			if(item.isEmpty())
+				ans.add(new StudentOverviewReport(course.getCourseName(), 0.0, course.getCourseId(),0.0));
+			else
+			{
+				Optional<MoodleGradeGrades> grade = moodleGradeGradesRepo.findByItemidAndUserid(item.get().getId(), userId);
+				if(grade.isEmpty())
+					ans.add(new StudentOverviewReport(course.getCourseName(), 0.0, course.getCourseId(),0.0));
+				else
+					ans.add(new StudentOverviewReport(course.getCourseName(), grade.get().getFinalgrade(), course.getCourseId(),grade.get().getRawgrademax()));
+			}
+		}
+		return ans;
+	}
+
+	@Override
+	public List<GraderReportData> getStudentsUserReport(String courseId, String userId) {
+		List<List<GraderReportData>> curr = getUserReport(courseId, userId);
+		List<GraderReportData> ans = new ArrayList<GraderReportData>();
+		if(!curr.isEmpty())
+			ans = curr.get(0);
+		return ans;
 	}
 }
