@@ -20,8 +20,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.google.common.base.Optional;
+
 import javassist.NotFoundException;
 import sgsits.cse.dis.moodle.repo.MoodleUserRepo;
+import sgsits.cse.dis.moodle.response.Course;
 import sgsits.cse.dis.moodle.response.StudentAttendanceData;
 import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
 import sgsits.cse.dis.moodle.service.moodleAttendanceService;
@@ -87,8 +90,7 @@ public class moodleAttendanceServicesImpl implements moodleAttendanceService, Se
 		  Long totalcount=0L;
 		 List<Long> tableid1=MoodleAttendanceStudentBulkRepo.getByStudentid(mu.getId());
 		 List<Long> subjectid1=MoodleAttendanceTeacherBulkRepo.getBySubjectid();	
-		 List<Long> slot1=MoodleAttendanceTeacherBulkRepo.getAllSubjectWiseSlot(subjectid1,tableid1);
-		 
+		 List<Long> slot1=MoodleAttendanceTeacherBulkRepo.getAllSubjectWiseSlot(subjectid1,tableid1);	 
 		 List<Long> tableid=MoodleAttendanceStudentRepo.getByStudentid(mu.getId());
 		 List<Long> subjectid=MoodleAttendanceTeacherRepo.getBySubjectid();			
 		 List<Long> slot=MoodleAttendanceTeacherRepo.getAllSubjectWiseSlot(subjectid,tableid);
@@ -162,10 +164,7 @@ public class moodleAttendanceServicesImpl implements moodleAttendanceService, Se
 					  totalcount=count;			  
 					  totalslot=slot2 ;			  
 					  sat.setAttendance(totalcount);
-					  sat.setSlot(totalslot);
-					  
-					  
-				  
+					  sat.setSlot(totalslot);				  
 					  try {
 						 Double percentage=(((double)totalcount/(double)totalslot))*100;
 						  double roundedDouble = Math.round(percentage * 100.0) / 100.0;
@@ -505,39 +504,12 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 		 }
 	}
 //--------------------------------------------------------------------------------------------------------------------------------------------
-
-	@Override
-	public List<String> getIndividualUserGradeCategory(String userid) throws NotFoundException {
-		// TODO Auto-generated method stub
-		String username;
-		List<String> courseCode =new ArrayList<String>();
-		 if( userid != null) {
-			 username= userClient.getByUserName(userid);
-			 MoodleUser mu =MoodleUserRepo.findAllByUsername(username);
-			 List<MoodleUserEnrollment> moodleUserEnrollment=MoodleUserEnrollmentRepo.findByUserid(mu.getId());
-			 for(MoodleUserEnrollment mue: moodleUserEnrollment) {
-				 List<MoodleEnrollement> moodleEnrollment=MoodleEnrollmentRepo.findAllById(mue.getEnrolid());
-				 for(MoodleEnrollement me:moodleEnrollment) {
-					 List<MoodleCourse> moodleCourse=MoodleCourseRepo.findAllById(me.getCourseid());
-					 for(MoodleCourse mc:moodleCourse) {
-						 courseCode.add(mc.getShortname());
-					 }
-				 }
-			 }
-			 return courseCode;
-		 }
-		 else {
-			 throw new NotFoundException("UserID not found"); 
-		 }
-	}
 	
-	@Override
-	public List<String> getIndividualUserGradeCategoryName(String userid) throws NotFoundException {
+	public List<Course> getIndividualUserCourseDetails(String userid) throws NotFoundException{
 		// TODO Auto-generated method stub
-		String username;
-		List<String> courseCode =new ArrayList<String>();
-		 if( userid != null) {
-			 username= userClient.getByUserName(userid);
+		List<Course> courseCode =new ArrayList<>();
+		if(userid !=null){ 
+			String username= userClient.getByUserName(userid);
 			 MoodleUser mu =MoodleUserRepo.findAllByUsername(username);
 			 List<MoodleUserEnrollment> moodleUserEnrollment=MoodleUserEnrollmentRepo.findByUserid(mu.getId());
 			 for(MoodleUserEnrollment mue: moodleUserEnrollment) {
@@ -545,15 +517,14 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 				 for(MoodleEnrollement me:moodleEnrollment) {
 					 List<MoodleCourse> moodleCourse=MoodleCourseRepo.findAllById(me.getCourseid());
 					 for(MoodleCourse mc:moodleCourse) {
-						 courseCode.add(mc.getFullname());
+						 courseCode.add( new Course(mc.getId(),mc.getFullname(),mc.getShortname()));
 					 }
 				 }
 			 }
 			 return courseCode;
-		 }
-		 else {
-			 throw new NotFoundException("UserID not found"); 
-		 }
+		}
+		else {
+			throw new NotFoundException("UserID not found"); 
+		}
 	}
-		
 }
