@@ -17,7 +17,9 @@ public class ExpertLecturesResponse {
 	
 	public String time;
 	
-	public String expert;
+	public String expertName;
+	
+	public String expertDesignation;
 	
 	public String audience;
 	

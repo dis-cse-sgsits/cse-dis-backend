@@ -19,5 +19,8 @@ public class RestAPI {
 	public static final String VIEW_EXPERT_LECTURE_DETAILS = "/viewExpertLectureDetails/{expertLectureId}";
 	public static final String GET_EXPERT_NAMES_AND_DESIGNATIONS = "/getExpertNamesAndDesignations";
 	public static final String EDIT_EXPERT = "/editExpert";
+	public static final String FIND_EXPERT = "/findExpert";
+	public static final String SEARCH_EXPERT_LECTURES = "/searchExpertLectures/{keyword}";
+	public static final String UPDATE_EXPERT_LECTURE_STATUS = "/updateExpertLectureStatus/{expertLectureId}";
 
 }

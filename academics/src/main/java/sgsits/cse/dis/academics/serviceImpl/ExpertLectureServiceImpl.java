@@ -2,7 +2,10 @@ package sgsits.cse.dis.academics.serviceImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,6 +28,8 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 	
 	@Autowired
 	private ExpertLectureRepository expertLectureRepository;
+	
+	//EXPERT SERVICES
 	
 	@Override
 	public String addExpert(ExpertForm addExpertForm) {
@@ -58,6 +63,58 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 		else
 			return null;
 	}
+	
+	@Override
+	public ExpertDetails findExpert(String name, String designation) {
+		return expertRepository.findByNameAndDesignation(name, designation);
+	}
+	
+	@Override
+	public String editExpert(ExpertForm editExpertForm) 
+	{
+		ExpertDetails expert = expertRepository.findByNameAndDesignation(editExpertForm.getName(), editExpertForm.getDesignation());
+		expert.setDob(editExpertForm.getDob());
+		expert.setFathersName(editExpertForm.getFathersName());
+		expert.setOfficeAddress(editExpertForm.getOfficeAddress());
+		expert.setPinCode(editExpertForm.getPinCode());
+		expert.setCity(editExpertForm.getCity());
+		expert.setState(editExpertForm.getState());
+		expert.setCountry(editExpertForm.getCountry());
+		expert.setAadhaarNo(editExpertForm.getAadhaarNo());
+		expert.setPanNo(editExpertForm.getPanNo());
+		expert.setGstNo(editExpertForm.getGstNo());
+		expert.setBankName(editExpertForm.getBankName());
+		expert.setAccountNo(editExpertForm.getAccountNo());
+		expert.setIfsc(editExpertForm.getIfsc());
+		expert.setUniqueTeqipId(editExpertForm.getUniqueTeqipId());
+		expert.setType(editExpertForm.getType());
+		
+		ExpertDetails test = expertRepository.save(expert);
+		
+		if(test!=null)
+			return "Expert details updated successfully!";
+		else
+			return "Error updating expert details, please try again.";
+		
+	}
+	
+	@Override
+	public List<ExpertNamesAndDesignationsResponse> getExpertNamesAndDesignations()
+	{
+		List<ExpertNamesAndDesignations> fetch = expertLectureRepository.fetchExperts();
+//		System.out.println(fetch);
+		List<ExpertNamesAndDesignationsResponse> output = new ArrayList<ExpertNamesAndDesignationsResponse>();
+		for(ExpertNamesAndDesignations data : fetch)
+		{
+			ExpertNamesAndDesignationsResponse record = new ExpertNamesAndDesignationsResponse();
+			record.setExpertName(data.getName());
+			record.setExpertDesignation(data.getDesignation());
+			output.add(record);
+		}
+		return output;
+	}
+	
+	//EXPERT LECTURE SERVICES
 	
 	@Override
 	public String addExpertLecture(AddExpertLectureForm addExpertLectureForm)
@@ -96,7 +153,8 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 			ExpertLecturesResponse test = new ExpertLecturesResponse();
 			test.setExpertLectureId(data.getExpertLectureId());
 			test.setTopic(data.getTopic());
-			test.setExpert(data.getExpertName()+", "+data.getExpertDesignation());
+			test.setExpertName(data.getExpertName());
+			test.setExpertDesignation(data.getExpertDesignation());
 			test.setDate(data.getDate());
 			test.setTime(data.getTime());
 			test.setAudience(data.getCourse()+", "+data.getYear());
@@ -112,49 +170,43 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 	{
 		return expertLectureRepository.findByExpertLectureId(expertLectureId);
 	}
-	
+
 	@Override
-	public List<ExpertNamesAndDesignationsResponse> getExpertNamesAndDesignations()
-	{
-		List<ExpertNamesAndDesignations> fetch = expertLectureRepository.fetchExperts();
-//		System.out.println(fetch);
-		List<ExpertNamesAndDesignationsResponse> output = new ArrayList<ExpertNamesAndDesignationsResponse>();
-		for(ExpertNamesAndDesignations data : fetch)
+	public List<ExpertLecturesResponse> searchExpertLectures(String keyword) {
+		List<ExpertLectureDetails> expertLectures = expertLectureRepository.findByTopicContainingIgnoreCase(keyword);
+		List<ExpertLecturesResponse> output = new ArrayList<ExpertLecturesResponse>();
+		for(ExpertLectureDetails data : expertLectures)
 		{
-			ExpertNamesAndDesignationsResponse record = new ExpertNamesAndDesignationsResponse();
-			record.setExpertName(data.getName());
-			record.setExpertDesignation(data.getDesignation());
-			output.add(record);
+			ExpertLecturesResponse test = new ExpertLecturesResponse();
+			test.setExpertLectureId(data.getExpertLectureId());
+			test.setTopic(data.getTopic());
+			test.setExpertName(data.getExpertName());
+			test.setExpertDesignation(data.getExpertDesignation());
+			test.setDate(data.getDate());
+			test.setTime(data.getTime());
+			test.setAudience(data.getCourse()+", "+data.getYear());
+			test.setStatus(data.getStatus());
+			
+			output.add(test);
 		}
 		return output;
 	}
 
 	@Override
-	public String editExpert(ExpertForm editExpertForm) 
-	{
-		ExpertDetails expert = expertRepository.findByEmail(editExpertForm.getEmail());
-		expert.setDob(editExpertForm.getDob());
-		expert.setFathersName(editExpertForm.getFathersName());
-		expert.setOfficeAddress(editExpertForm.getOfficeAddress());
-		expert.setPinCode(editExpertForm.getPinCode());
-		expert.setCity(editExpertForm.getCity());
-		expert.setState(editExpertForm.getState());
-		expert.setCountry(editExpertForm.getCountry());
-		expert.setAadhaarNo(editExpertForm.getAadhaarNo());
-		expert.setPanNo(editExpertForm.getPanNo());
-		expert.setGstNo(editExpertForm.getGstNo());
-		expert.setBankName(editExpertForm.getBankName());
-		expert.setAccountNo(editExpertForm.getAccountNo());
-		expert.setIfsc(editExpertForm.getIfsc());
-		expert.setUniqueTeqipId(editExpertForm.getUniqueTeqipId());
-		expert.setType(editExpertForm.getType());
-		
-		ExpertDetails test = expertRepository.save(expert);
+	public String updateExpertLectureStatus(String expertLectureId) {
+		ExpertLectureDetails expertLecture = expertLectureRepository.findByExpertLectureId(expertLectureId);
+		String currentStatus = expertLecture.getStatus();
+		if(currentStatus.equals("Pending"))
+			expertLecture.setStatus("Upcoming");
+		else if(currentStatus.equals("Upcoming"))
+			expertLecture.setStatus("Completed");
+		ExpertLectureDetails test = expertLectureRepository.save(expertLecture);
 		
 		if(test!=null)
-			return "Expert details updated successfully!";
+			return "Status updated successfully!";
 		else
-			return "Error updating expert details, please try again.";
-		
+			return "Error updating status, please try again.";
 	}
+	
+	
 }

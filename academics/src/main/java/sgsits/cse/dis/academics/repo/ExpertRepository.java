@@ -6,6 +6,6 @@ import sgsits.cse.dis.academics.model.ExpertDetails;
 
 public interface ExpertRepository extends JpaRepository<ExpertDetails, Long> {
 
-	ExpertDetails findByEmail(String email);
+	ExpertDetails findByNameAndDesignation(String name, String designation);
 
 }

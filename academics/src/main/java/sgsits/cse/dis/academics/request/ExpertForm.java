@@ -40,7 +40,7 @@ public class ExpertForm {
 	
 	private String country;
 	
-	private String aadhaarNo;
+	private long aadhaarNo;
 	
 	private String panNo;
 	
@@ -52,7 +52,7 @@ public class ExpertForm {
 	
 	private String ifsc;
 	
-	private String uniqueTeqipId;
+	private long uniqueTeqipId;
 	
 	private String type;
 

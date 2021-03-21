@@ -75,7 +75,7 @@ public class ExpertDetails {
     private String country;
     
     @Column(name = "aadhaar_no")
-    private String aadhaarNo;
+    private long aadhaarNo;
     
     @Column(name = "pan_no")
     private String panNo;
@@ -93,7 +93,7 @@ public class ExpertDetails {
     private String ifsc;
     
     @Column(name = "unique_teqip_id")
-    private String uniqueTeqipId;
+    private long uniqueTeqipId;
     
     @Column(name = "type")
     private String type;
