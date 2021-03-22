@@ -52,11 +52,17 @@ public class MoodleQuizAttempts {
 	private Long timecheckstate;
 	
 	@Column(name="sumgrades")
-	private Long sumgrades;
+	private Double sumgrades;
+	
+	
+
+	public MoodleQuizAttempts() {
+		super();
+	}
 
 	public MoodleQuizAttempts(Long id, Long quiz, Long userid, Integer attempt, Long uniqueid, String layout,
 			Long currentpage, Integer preview, String state, Long timestart, Long timefinish, Long timemodified,
-			Long timemodifiedoffline, Long timecheckstate, Long sumgrades) {
+			Long timemodifiedoffline, Long timecheckstate, Double sumgrades) {
 		super();
 		this.id = id;
 		this.quiz = quiz;
@@ -187,11 +193,11 @@ public class MoodleQuizAttempts {
 		this.timecheckstate = timecheckstate;
 	}
 
-	public Long getSumgrades() {
+	public Double getSumgrades() {
 		return sumgrades;
 	}
 
-	public void setSumgrades(Long sumgrades) {
+	public void setSumgrades(Double sumgrades) {
 		this.sumgrades = sumgrades;
 	}
 }

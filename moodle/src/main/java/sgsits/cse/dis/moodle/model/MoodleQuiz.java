@@ -131,6 +131,12 @@ public class MoodleQuiz {
 	
 	@Column(name="allowofflineattempts")
 	private Integer allowofflineattempts;
+	
+	
+
+	public MoodleQuiz() {
+		super();
+	}
 
 	public MoodleQuiz(Long id, Long course, String name, String intro, Integer introformat, Long timeopen,
 			Long timeclose, Long timelimit, String overduehandling, Long graceperiod, String preferredbehaviour,

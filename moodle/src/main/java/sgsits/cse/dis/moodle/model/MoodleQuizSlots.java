@@ -30,6 +30,12 @@ public class MoodleQuizSlots {
 	@Column(name="maxmark",nullable = false)
 	private Double maxmark;
 
+	
+	
+	public MoodleQuizSlots() {
+		super();
+	}
+
 	public MoodleQuizSlots(Long id, Long slot, Long quizid, Long page, Integer requireprevious, Long questionid,
 			Double maxmark) {
 		super();
