@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import sgsits.cse.dis.moodle.model.MoodleEnrollement;
@@ -14,4 +15,5 @@ public interface  MoodleEnrollmentRepo  extends JpaRepository<MoodleEnrollement,
 	public List<MoodleEnrollement> findByid(Long id);
 	List<MoodleEnrollement> findByCourseid(Long courseid);
 	
+    public List<MoodleEnrollement> findAllById(Long id);
 }

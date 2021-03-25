@@ -46,4 +46,7 @@ public interface UserServices {
 	 */
 	boolean updateEmailAndUserId(@RequestParam("mobileNo") long mobileNo);
 	List<ActiveStaffListResponse> getActiveStaffList() throws NotFoundException;
+	
+	public String getByUserName(String userid);
+	
 }
