@@ -33,5 +33,4 @@ public class Course {
 	public void setShortname(String shortname) {
 		this.shortname = shortname;
 	}
-	
 }
