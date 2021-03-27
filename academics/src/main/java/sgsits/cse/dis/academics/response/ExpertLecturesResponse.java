@@ -25,4 +25,6 @@ public class ExpertLecturesResponse {
 	
 	public String status;
 
+	public String coordinator;
+
 }

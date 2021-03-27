@@ -97,7 +97,15 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 			return "Error updating expert details, please try again.";
 		
 	}
-	
+
+	@Override
+	public String deleteExpert(ExpertForm deleteExpertForm) {
+		ExpertDetails expert = expertRepository.findByEmail(deleteExpertForm.getEmail());
+		expertRepository.delete(expert);
+		return "Expert deleted successfully from the records.";
+	}
+
+
 	@Override
 	public List<ExpertNamesAndDesignationsResponse> getExpertNamesAndDesignations()
 	{
@@ -126,14 +134,14 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 		expertLectureDetails.setDate(addExpertLectureForm.getDate());
 		expertLectureDetails.setTime(addExpertLectureForm.getTime());
 		expertLectureDetails.setVenue(addExpertLectureForm.getVenue());
-		expertLectureDetails.setCourse(addExpertLectureForm.getCourse());
-		expertLectureDetails.setYear(addExpertLectureForm.getYear());
+		expertLectureDetails.setAudience(addExpertLectureForm.getAudience());
 		expertLectureDetails.setConveyance(addExpertLectureForm.getConveyance());
 		expertLectureDetails.setHonorarium(addExpertLectureForm.getHonorarium());
 		expertLectureDetails.setTotalAmount(addExpertLectureForm.getHonorarium()+addExpertLectureForm.getConveyance());
 		expertLectureDetails.setStatus("Pending");
 		expertLectureDetails.setPaymentStatus("Pending");
-		
+		expertLectureDetails.setCoordinator(addExpertLectureForm.getCoordinator());
+
 		ExpertLectureDetails test = expertLectureRepository.save(expertLectureDetails);
 		
 		if(test!=null)
@@ -157,8 +165,9 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 			test.setExpertDesignation(data.getExpertDesignation());
 			test.setDate(data.getDate());
 			test.setTime(data.getTime());
-			test.setAudience(data.getCourse()+", "+data.getYear());
+			test.setAudience(data.getAudience());
 			test.setStatus(data.getStatus());
+			test.setCoordinator(data.getCoordinator());
 			
 			output.add(test);
 		}
@@ -172,8 +181,8 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 	}
 
 	@Override
-	public List<ExpertLecturesResponse> searchExpertLectures(String keyword) {
-		List<ExpertLectureDetails> expertLectures = expertLectureRepository.findByTopicContainingIgnoreCase(keyword);
+	public List<ExpertLecturesResponse> searchExpertLectures(String keyword, String status) {
+		List<ExpertLectureDetails> expertLectures = expertLectureRepository.findByTopicContainingIgnoreCaseAndStatus(keyword, status);
 		List<ExpertLecturesResponse> output = new ArrayList<ExpertLecturesResponse>();
 		for(ExpertLectureDetails data : expertLectures)
 		{
@@ -184,8 +193,9 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 			test.setExpertDesignation(data.getExpertDesignation());
 			test.setDate(data.getDate());
 			test.setTime(data.getTime());
-			test.setAudience(data.getCourse()+", "+data.getYear());
+			test.setAudience(data.getAudience());
 			test.setStatus(data.getStatus());
+			test.setCoordinator(data.getCoordinator());
 			
 			output.add(test);
 		}
@@ -207,6 +217,26 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 		else
 			return "Error updating status, please try again.";
 	}
-	
-	
+
+	@Override
+	public String editExpertLecture(ExpertLectureDetails expertLectureDetails) {
+		if(expertLectureDetails.getStatus().equals("Completed"))
+			return "Cannot edit details for a completed expert lecture.";
+		ExpertLectureDetails test = expertLectureRepository.save(expertLectureDetails);
+		if(test!=null)
+			return "Expert lecture details updated successfully!";
+		else
+			return "Could not update details, please try again.";
+	}
+
+	@Override
+	public String deleteExpertLecture(ExpertLectureDetails expertLectureDetails) {
+		if(expertLectureDetails.getStatus().equals("Completed"))
+			return "Cannot delete a completed expert lecture.";
+		expertLectureRepository.delete(expertLectureDetails);
+		return "Expert lecture deleted successfully from the records!";
+
+	}
+
+
 }

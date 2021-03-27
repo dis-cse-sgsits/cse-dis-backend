@@ -27,9 +27,14 @@ public interface ExpertLectureService {
 
 	ExpertDetails findExpert(String name, String designation);
 
-	List<ExpertLecturesResponse> searchExpertLectures(String keyword);
+	List<ExpertLecturesResponse> searchExpertLectures(String keyword, String status);
 
 	String updateExpertLectureStatus(String expertLectureId);
 
-	
+
+    String deleteExpert(ExpertForm deleteExpertForm);
+
+    String editExpertLecture(ExpertLectureDetails expertLectureDetails);
+
+	String deleteExpertLecture(ExpertLectureDetails expertLectureDetails);
 }

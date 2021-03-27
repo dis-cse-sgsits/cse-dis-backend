@@ -6,15 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -87,9 +79,9 @@ public class ExpertLectureController {
 	
 	@ApiOperation(value = "Search expert lectures", response = ExpertLecturesResponse.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(path=RestAPI.SEARCH_EXPERT_LECTURES, produces = "application/json")
-	public ResponseEntity<List<ExpertLecturesResponse>> searchExpertLectures(@PathVariable("keyword") String keyword)
+	public ResponseEntity<List<ExpertLecturesResponse>> searchExpertLectures(@RequestParam(value = "keyword", required = true) String keyword, @RequestParam(value = "status", required = true) String status)
 	{
-		return new ResponseEntity<List<ExpertLecturesResponse>>(expertLectureService.searchExpertLectures(keyword), HttpStatus.OK); 
+		return new ResponseEntity<List<ExpertLecturesResponse>>(expertLectureService.searchExpertLectures(keyword, status), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Update expert lecture status", response = String.class, httpMethod = "POST", produces = "application/json")
@@ -97,5 +89,26 @@ public class ExpertLectureController {
 	public ResponseEntity<String> updateExpertLectureStatus(@PathVariable("expertLectureId") String expertLectureId)
 	{
 		return new ResponseEntity<String>(expertLectureService.updateExpertLectureStatus(expertLectureId), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Delete Expert", response = String.class, httpMethod = "DELETE", produces = "application/json")
+	@DeleteMapping(path = RestAPI.DELETE_EXPERT, produces = "application/json")
+	public ResponseEntity<String> deleteExpert(@RequestBody ExpertForm deleteExpertForm)
+	{
+		return new ResponseEntity<String>(expertLectureService.deleteExpert(deleteExpertForm), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Edit expert lecture", response = String.class, httpMethod = "PUT", produces = "application/json")
+	@PutMapping(path = RestAPI.EDIT_EXPERT_LECTURE, produces = "application/json")
+	public ResponseEntity<String> editExpertLecture(@RequestBody ExpertLectureDetails expertLectureDetails)
+	{
+		return new ResponseEntity<String>(expertLectureService.editExpertLecture(expertLectureDetails), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Delete expert lecture", response = String.class, httpMethod = "DELETE", produces = "application/json")
+	@DeleteMapping(path = RestAPI.DELETE_EXPERT_LECTURE, produces = "application/json")
+	public ResponseEntity<String> deleteExpertLecture(@RequestBody ExpertLectureDetails expertLectureDetails)
+	{
+		return new ResponseEntity<String>(expertLectureService.deleteExpertLecture(expertLectureDetails), HttpStatus.OK);
 	}
 }

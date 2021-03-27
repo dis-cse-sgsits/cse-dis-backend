@@ -1,7 +1,6 @@
 package sgsits.cse.dis.academics.repo;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +17,6 @@ public interface ExpertLectureRepository extends JpaRepository <ExpertLectureDet
 	@Query(value = "SELECT name, designation FROM expert_details", nativeQuery = true)
 	List<ExpertNamesAndDesignations> fetchExperts();
 
-	List<ExpertLectureDetails> findByTopicContainingIgnoreCase(String keyword);
+	List<ExpertLectureDetails> findByTopicContainingIgnoreCaseAndStatus(String keyword, String status);
 
 }

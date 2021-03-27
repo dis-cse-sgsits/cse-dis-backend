@@ -21,13 +21,13 @@ public class AddExpertLectureForm {
 	
 	public String venue;
 	
-	public String course;
-	
-	public String year;
+	public String audience;
 	
 	public long conveyance;
 	
-	public long honorarium;	
+	public long honorarium;
+
+	public String coordinator;
 	
 	
 }

@@ -58,12 +58,9 @@ public class ExpertLectureDetails {
 	
 	@Column(name = "venue", nullable = false)
 	private String venue;
-	
-	@Column(name = "course")
-	private String course;
-	
-	@Column(name = "year")
-	private String year;
+
+	@Column(name = "audience", nullable = false)
+	private String audience;
 
 	@Column(name = "honorarium")
 	private long honorarium;
@@ -85,5 +82,9 @@ public class ExpertLectureDetails {
 	
 	@Column(name = "notesheet")
 	private String notesheet;
+
+	@Column(name = "coordinator", nullable = false)
+	private String coordinator;
+
 }
 	
