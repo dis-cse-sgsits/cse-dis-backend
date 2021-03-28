@@ -12,11 +12,19 @@ public class ApplyStaffLeaveForm {
     @NotBlank(message = "To date cannot be blank")
     private String toDate;
     
-    private String halfdayFullday;
+    private Long leaveId;
+    
+    private String fromDuration;
+
+    private String toDuration;
+
+    private boolean considerHolidays;
+
+    private double noOfDays;
     
     private String remarks;
     
-    private String stauts;
+    private String status;
     
     private String subject;
     
@@ -26,21 +34,16 @@ public class ApplyStaffLeaveForm {
 
     private String userId;
 
+    private String prefix;
+
+    private String suffix;
+
     public String getDetails() {
         return details;
     }
 
     public void setDetails(String details) {
         this.details = details;
-    }
-
-
-    public String getHalfdayFullday() {
-        return halfdayFullday;
-    }
-
-    public void setHalfdayFullday(String halfdayFullday) {
-        this.halfdayFullday = halfdayFullday;
     }
 
     public String getRemarks() {
@@ -52,11 +55,11 @@ public class ApplyStaffLeaveForm {
     }
 
     public String getStauts() {
-        return stauts;
+        return status;
     }
 
     public void setStauts(String stauts) {
-        this.stauts = stauts;
+        this.status = stauts;
     }
 
     public String getSubject() {
@@ -105,5 +108,69 @@ public class ApplyStaffLeaveForm {
 
     public void setToDate(String toDate) {
         this.toDate = toDate;
+    }
+
+    public double getNoOfDays() {
+        return noOfDays;
+    }
+
+    public void setNoOfDays(double noOfDays) {
+        this.noOfDays = noOfDays;
+    }
+
+    public String getFromDuration() {
+        return fromDuration;
+    }
+
+    public void setFromDuration(String fromDuration) {
+        this.fromDuration = fromDuration;
+    }
+
+    public String getToDuration() {
+        return toDuration;
+    }
+
+    public void setToDuration(String toDuration) {
+        this.toDuration = toDuration;
+    }
+
+    public boolean isConsiderHolidays() {
+        return considerHolidays;
+    }
+
+    public void setConsiderHolidays(boolean considerHolidays) {
+        this.considerHolidays = considerHolidays;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
+    public Long getLeaveId() {
+        return leaveId;
+    }
+
+    public void setLeaveId(Long leaveId) {
+        this.leaveId = leaveId;
     }
 }

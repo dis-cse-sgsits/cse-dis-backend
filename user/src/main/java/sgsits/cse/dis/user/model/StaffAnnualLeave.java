@@ -17,9 +17,9 @@ public class StaffAnnualLeave {
     @Id
     private String leaveName;
 
-    private int leavesApplied;
+    private double leavesApplied;
 
-    private int leavesLeft;
+    private double leavesLeft;
 
     public String getUserId() {
         return userId;
@@ -37,11 +37,11 @@ public class StaffAnnualLeave {
         this.leaveName = leaveName;
     }
 
-    public int getLeavesApplied() {
+    public double getLeavesApplied() {
         return leavesApplied;
     }
 
-    public void setLeavesApplied(int leavesApplied) {
+    public void setLeavesApplied(double leavesApplied) {
         this.leavesApplied = leavesApplied;
     }
 
@@ -56,15 +56,15 @@ public class StaffAnnualLeave {
         this.toDate = toDate;
     }
 
-    public int getLeavesLeft() {
+    public double getLeavesLeft() {
         return leavesLeft;
     }
 
-    public void setLeavesLeft(int leavesLeft) {
+    public void setLeavesLeft(double leavesLeft) {
         this.leavesLeft = leavesLeft;
     }
 
-    public StaffAnnualLeave(String userId, String toDate, String leaveName, int leavesApplied, int leavesLeft) {
+    public StaffAnnualLeave(String userId, String toDate, String leaveName, double leavesApplied, double leavesLeft) {
         this.userId = userId;
         this.toDate = toDate;
         this.leaveName = leaveName;

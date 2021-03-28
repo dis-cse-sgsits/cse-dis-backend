@@ -1,5 +1,6 @@
 package sgsits.cse.dis.user.controller;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import sgsits.cse.dis.user.constants.RestAPI;
+import sgsits.cse.dis.user.exception.ConflictException;
 import sgsits.cse.dis.user.jwt.JwtResolver;
 import sgsits.cse.dis.user.message.request.ApplyStaffLeaveForm;
 import sgsits.cse.dis.user.message.request.CreateStaffLeaveForm;
+import sgsits.cse.dis.user.message.request.StaffLeaveCreditForm;
 import sgsits.cse.dis.user.message.request.StaffRejoinForm;
 import sgsits.cse.dis.user.message.request.UpdateStatusForm;
 import sgsits.cse.dis.user.message.response.StaffLeaveAccountResponse;
@@ -43,47 +46,26 @@ public class StaffLeaveController {
     @ApiOperation(value = "apply for leave", response = StaffLeaveResponse.class, httpMethod = "POST", produces = "application/json")
     @PostMapping(path = RestAPI.APPLY_LEAVE, produces = "application/json")
     public ResponseEntity<StaffLeaveResponse> applyLeave(@RequestBody ApplyStaffLeaveForm applyStaffLeaveForm,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws ConflictException, ParseException {
 
         Long leaveId;
         String token = request.getHeader("Authorization");
         applyStaffLeaveForm.setAppliedBy(jwtResolver.getUserNameFromJwtToken(token));
         applyStaffLeaveForm.setUserId(jwtResolver.getIdFromJwtToken(token));
         leaveId = staffLeaveServiceImpl.applyLeave(applyStaffLeaveForm);
-        if (leaveId != -1l)
-            return new ResponseEntity<StaffLeaveResponse>(
-                    new StaffLeaveResponse(" Leave applied successfully.", leaveId), HttpStatus.OK);
-        else
-            return new ResponseEntity<StaffLeaveResponse>(
-                    new StaffLeaveResponse(" Leave cannot be applied due to date issue.", leaveId), HttpStatus.OK);
+        return new ResponseEntity<StaffLeaveResponse>(new StaffLeaveResponse(" Leave applied successfully.", leaveId),
+                HttpStatus.OK);
 
     }
 
-    @ApiOperation(value = "creates new staff leave", httpMethod = "POST", produces = "text/plain")
+    @ApiOperation(value = "creates new staff leave",response = String.class, httpMethod = "POST", produces = "text/plain")
     @PostMapping(path = RestAPI.CREATE_NEW_LEAVE, produces = "text/plain")
     public ResponseEntity<String> createNewLeave(@Valid @RequestBody CreateStaffLeaveForm createStaffLeaveForm,
-            HttpServletRequest request) {
-        if(staffLeaveServiceImpl.createNewLeave(createStaffLeaveForm)==1)
-            return new ResponseEntity<String>("new leave created", HttpStatus.OK);
-        else
-            return new ResponseEntity<String>("new leave cannot be created", HttpStatus.OK);
-        
+            HttpServletRequest request) throws ConflictException {
+        staffLeaveServiceImpl.createNewLeave(createStaffLeaveForm);
+        return new ResponseEntity<String>("new leave created", HttpStatus.OK);
 
     }
-
-    // @ApiOperation(value = "get staff leave settings", response = StaffLeaveSettings.class, httpMethod = "GET", produces = "application/json")
-    // @GetMapping(path = RestAPI.GET_LEAVE_SETTINGS)
-    // public ResponseEntity<StaffLeaveSettings> getSettings() {
-    //     return new ResponseEntity<StaffLeaveSettings>(staffLeaveServiceImpl.getSettings(), HttpStatus.OK);
-    // }
-
-    // @ApiOperation(value = "update staff leave settings", httpMethod = "PUT", produces = "text/plain")
-    // @PutMapping(path = RestAPI.UPDATE_LEAVE_SETTINGS, produces = "text/plain")
-    // public ResponseEntity<String> updateSettings(@RequestBody StaffLeaveSettingsForm staffLeaveSettingsForm) {
-    //     long leaves;
-    //     leaves = staffLeaveServiceImpl.updateSettings(staffLeaveSettingsForm);
-    //     return new ResponseEntity<String>("Settings Updated.", HttpStatus.OK);
-    // }
 
     @ApiOperation(value = "apply for leave", response = StaffLeave.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(path = RestAPI.GET_LEAVE_BY_STATUS, produces = "application/json")
@@ -91,44 +73,62 @@ public class StaffLeaveController {
         return staffLeaveServiceImpl.getLeavesByStatus(status);
     }
 
-    @ApiOperation(value = "update staff leave status", httpMethod = "PUT", produces = "text/plain")
+    @ApiOperation(value = "update staff leave status",response = String.class, httpMethod = "PUT", produces = "text/plain")
     @PutMapping(path = RestAPI.UPDATE_STATUS_BY_LEAVE_ID, produces = "text/plain")
-    public ResponseEntity<String> updateStatus(@RequestBody UpdateStatusForm updateStatus, HttpServletRequest request) {
-        if(staffLeaveServiceImpl.updateStatusByLeaveId(updateStatus)==1)
+    public ResponseEntity<String> updateStatus(@RequestBody UpdateStatusForm updateStatus, HttpServletRequest request)
+            throws ConflictException {
+            staffLeaveServiceImpl.updateStatusByLeaveId(updateStatus);
             return new ResponseEntity<String>("Status Updated.", HttpStatus.OK);
-        else
-            return new ResponseEntity<String>("Status cannot be updated.", HttpStatus.OK);
+        
     }
 
-    @ApiOperation(value = "get leaves left by user name", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "get leaves left by user name",response = StaffLeaveAccountResponse.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(path = RestAPI.GET_LEAVES_LEFT_BY_NAME, produces = "application/json")
     public ResponseEntity<List<StaffLeaveAccountResponse>> getLeavesLeft(@RequestParam("name") String userName) {
         return new ResponseEntity<List<StaffLeaveAccountResponse>>(staffLeaveServiceImpl.getLeaveLeft(userName),
                 HttpStatus.OK);
     }
 
-    @ApiOperation(value = "get all leaves applied by name", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "get all leaves applied by name",response = StaffLeave.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(path = RestAPI.GET_ALL_LEAVES_FOR_FACULTY, produces = "application/json")
     public ResponseEntity<List<StaffLeave>> getAllLeaves(@RequestParam("name") String name) {
         return new ResponseEntity<List<StaffLeave>>(staffLeaveServiceImpl.getAllLeavesByName(name), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "get all leave types", httpMethod = "GET", produces =  "application/json")
-    @GetMapping(path = "/getAllLeaveTypes")
-    public ResponseEntity<List<StaffLeaveTypes>> getAllLeaveTypes()
-    {
-        return new ResponseEntity<List<StaffLeaveTypes>>(staffLeaveServiceImpl.getAllLeaveTypes(), HttpStatus.OK); 
+    @ApiOperation(value = "get all leave types",response = StaffLeaveTypes.class, httpMethod = "GET", produces = "application/json")
+    @GetMapping(path = RestAPI.GET_LEAVE_TYPES)
+    public ResponseEntity<List<StaffLeaveTypes>> getAllLeaveTypes() {
+        return new ResponseEntity<List<StaffLeaveTypes>>(staffLeaveServiceImpl.getAllLeaveTypes(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "rejoining after leave", httpMethod = "PUT", produces = "text/plain")
+    @ApiOperation(value = "rejoining after leave",response = String.class, httpMethod = "PUT", produces = "text/plain")
     @PutMapping(path = RestAPI.REJOIN_AFTER_LEAVE, produces = "text/plain")
     public ResponseEntity<String> rejoin(@RequestBody StaffRejoinForm staffRejoinForm, HttpServletRequest request) {
         staffLeaveServiceImpl.rejoin(staffRejoinForm);
-        return new ResponseEntity<>("LEave Updated", HttpStatus.OK);
+        return new ResponseEntity<String>("Leave Updated", HttpStatus.OK);
     }
 
+    @ApiOperation(value = "credit leave",response = String.class, httpMethod = "PUT", produces = "text/plain")
+    @PutMapping(path = RestAPI.CREDIT_LEAVE, produces = "text/plain")
+    public ResponseEntity<String> creditLeave(@RequestBody StaffLeaveCreditForm staffLeaveCreditForm, HttpServletRequest request)
+            throws ConflictException
+    {
+        return new ResponseEntity<String>(staffLeaveServiceImpl.creditLeave(staffLeaveCreditForm), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "update leave",response = String.class, httpMethod = "PUT", produces = "text/plain")
+    @PutMapping(path = RestAPI.UPDATE_LEAVE, produces = "text/plain")
+    public ResponseEntity<String> updateLeave(@RequestBody ApplyStaffLeaveForm applyStaffLeaveForm, HttpServletRequest request) throws ConflictException, ParseException
+    {
+        String token = request.getHeader("Authorization");
+        applyStaffLeaveForm.setAppliedBy(jwtResolver.getUserNameFromJwtToken(token));
+        applyStaffLeaveForm.setUserId(jwtResolver.getIdFromJwtToken(token));
+        return new ResponseEntity<String>("Leave updated for leave id " + staffLeaveServiceImpl.updateLeave(applyStaffLeaveForm), HttpStatus.OK);
+    }
+    
+    
     @GetMapping(path = "/play")
-    public int updateStatus() {
+    public double updateStatus() {
 
         // StaffLeaveSettings top =
         // staffLeaveSettingsRepository.findTopByOrderByIdDesc();
@@ -140,19 +140,46 @@ public class StaffLeaveController {
         // 2020);
         // return staffLeaveRepository.findByAppliedBy("uthakar");
         // return s.findLeaveTypeByLeaveName("cl");
-        staffLeaveServiceImpl.addToTable("el", "a3cf94e4-20b1-11ea-bbd9-acd1b8c931f7");
-        return 0;
+        // staffLeaveServiceImpl.addToTable("el", "a3cf94e4-20b1-11ea-bbd9-acd1b8c931f7");
+        try {
+            return staffLeaveServiceImpl.getDays("2021-03-26", "2021-03-27", true, "half day", "half day" );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
+
+    
 }
 
-// { 
-// 	"details": "Optional leave",
-// 	"fromDate": "14-06-1999", 
-// 	"halfdayFullday": "full", 
-// 	"remarks": "remark", 
-//     "status": "pending", 
-//     "subject": "sub", 
-//     "toDate": "30-06-1999", 
-//     "typeOfLeave": "EL"
-	
+
+    // @ApiOperation(value = "get staff leave settings", response =
+    // StaffLeaveSettings.class, httpMethod = "GET", produces = "application/json")
+    // @GetMapping(path = RestAPI.GET_LEAVE_SETTINGS)
+    // public ResponseEntity<StaffLeaveSettings> getSettings() {
+    // return new
+    // ResponseEntity<StaffLeaveSettings>(staffLeaveServiceImpl.getSettings(),
+    // HttpStatus.OK);
+    // }
+
+    // @ApiOperation(value = "update staff leave settings", httpMethod = "PUT",
+    // produces = "text/plain")
+    // @PutMapping(path = RestAPI.UPDATE_LEAVE_SETTINGS, produces = "text/plain")
+    // public ResponseEntity<String> updateSettings(@RequestBody
+    // StaffLeaveSettingsForm staffLeaveSettingsForm) {
+    // long leaves;
+    // leaves = staffLeaveServiceImpl.updateSettings(staffLeaveSettingsForm);
+    // return new ResponseEntity<String>("Settings Updated.", HttpStatus.OK);
+    // }
+
+// {
+// "details": "Optional leave",
+// "fromDate": "14-06-1999",
+// "halfdayFullday": "full",
+// "remarks": "remark",
+// "status": "pending",
+// "subject": "sub",
+// "toDate": "30-06-1999",
+// "typeOfLeave": "EL"
+
 // }

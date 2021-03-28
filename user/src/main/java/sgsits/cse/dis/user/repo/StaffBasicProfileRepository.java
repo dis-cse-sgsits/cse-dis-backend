@@ -26,7 +26,6 @@ public interface StaffBasicProfileRepository extends JpaRepository<StaffBasicPro
 	StaffBasicProfile findNameByUserId(String userId);
 	List<StaffBasicProfile> findByNameContainingIgnoreCase(String name);
 	Optional<StaffBasicProfile> findByName(String name);
-	
 	@Query(value = "UPDATE staff_basic_profile SET user_id =?1 WHERE email = ?2", nativeQuery = true)
 	@Modifying
 	void updateUserIdByEmailId(String userId, String email);

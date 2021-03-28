@@ -5,8 +5,8 @@ public class StaffLeaveLeftResponse {
     // String userName;
     String leaveName;
     String toDate;
-    long leavesApplied;
-    long leavesLeft;
+    double leavesApplied;
+    double leavesLeft;
 
     // public String getUserName() {
     //     return userName;
@@ -24,19 +24,19 @@ public class StaffLeaveLeftResponse {
         this.leaveName = leaveName;
     }
 
-    public long getLeavesApplied() {
+    public double getLeavesApplied() {
         return leavesApplied;
     }
 
-    public void setLeavesApplied(long leavesApplied) {
+    public void setLeavesApplied(double leavesApplied) {
         this.leavesApplied = leavesApplied;
     }
 
-    public long getLeavesLeft() {
+    public double getLeavesLeft() {
         return leavesLeft;
     }
 
-    public void setLeavesLeft(long leavesLeft) {
+    public void setLeavesLeft(double leavesLeft) {
         this.leavesLeft = leavesLeft;
     }
 

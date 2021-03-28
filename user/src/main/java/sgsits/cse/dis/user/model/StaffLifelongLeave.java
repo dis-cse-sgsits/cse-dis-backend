@@ -14,9 +14,9 @@ public class StaffLifelongLeave {
     @Id
     private String leaveName;
 
-    private int leavesApplied;
+    private double leavesApplied;
 
-    private int leavesLeft;
+    private double leavesLeft;
 
     public String getUserId() {
         return userId;
@@ -34,29 +34,31 @@ public class StaffLifelongLeave {
         this.leaveName = leaveName;
     }
 
-    public int getLeavesApplied() {
+    public double getLeavesApplied() {
         return leavesApplied;
     }
 
-    public void setLeavesApplied(int leavesApplied) {
+    public void setLeavesApplied(double leavesApplied) {
         this.leavesApplied = leavesApplied;
     }
 
     public StaffLifelongLeave() {
     }
 
-    public int getLeavesLeft() {
+    public double getLeavesLeft() {
         return leavesLeft;
     }
 
-    public void setLeavesLeft(int leavesLeft) {
+    public void setLeavesLeft(double leavesLeft) {
         this.leavesLeft = leavesLeft;
     }
 
-    public StaffLifelongLeave(String userId, String leaveName, int leavesApplied, int leavesLeft) {
+    public StaffLifelongLeave(String userId, String leaveName, double leavesApplied, double leavesLeft) {
         this.userId = userId;
         this.leaveName = leaveName;
         this.leavesApplied = leavesApplied;
         this.leavesLeft = leavesLeft;
     }
+
+    
 }

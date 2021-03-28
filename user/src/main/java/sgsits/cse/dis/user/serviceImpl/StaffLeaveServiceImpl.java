@@ -14,17 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import sgsits.cse.dis.user.exception.ConflictException;
 import sgsits.cse.dis.user.message.request.ApplyStaffLeaveForm;
 import sgsits.cse.dis.user.message.request.CreateStaffLeaveForm;
+import sgsits.cse.dis.user.message.request.StaffLeaveCreditForm;
 import sgsits.cse.dis.user.message.request.StaffRejoinForm;
 import sgsits.cse.dis.user.message.request.UpdateStatusForm;
 import sgsits.cse.dis.user.message.response.StaffLeaveAccountResponse;
 import sgsits.cse.dis.user.message.response.StaffLeaveLeftResponse;
+import sgsits.cse.dis.user.model.Holiday;
 import sgsits.cse.dis.user.model.StaffAnnualLeave;
 import sgsits.cse.dis.user.model.StaffBasicProfile;
 import sgsits.cse.dis.user.model.StaffLeave;
 import sgsits.cse.dis.user.model.StaffLeaveTypes;
 import sgsits.cse.dis.user.model.StaffLifelongLeave;
+import sgsits.cse.dis.user.repo.HolidayRepository;
 import sgsits.cse.dis.user.repo.StaffAnnualLeaveRepository;
 import sgsits.cse.dis.user.repo.StaffBasicProfileRepository;
 import sgsits.cse.dis.user.repo.StaffLeaveRepository;
@@ -52,7 +56,12 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     @Autowired
     private StaffAnnualLeaveRepository staffAnnualLeaveRepository;
 
-    public int getDays(String fromDate, String toDate) throws ParseException {
+    @Autowired
+    private HolidayRepository holidayRepository;
+
+    public double getDays(String fromDate, String toDate, boolean considerHolidays, String fromDuration,
+            String toDuration) throws ParseException {
+
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date1 = df.parse(fromDate);
         Date date2 = df.parse(toDate);
@@ -62,22 +71,48 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
         cal1.setTime(date1);
         cal2.setTime(date2);
         // cal2.add(Calendar.DATE, 1);
-        int numberOfDays = 0;
+        double numberOfDays = 0;
 
+        if (!fromDuration.equals("full")) {
+            numberOfDays = numberOfDays + 0.5;
+            cal1.add(Calendar.DATE, 1);
+        }
+
+        if (!fromDate.equals(toDate)) {
+            if (!toDuration.equals("full")) {
+                numberOfDays = numberOfDays + 0.5;
+                cal2.add(Calendar.DATE, -1);
+            }
+        }
+        if (considerHolidays) {
+            while (cal1.compareTo(cal2) <= 0) {
+                numberOfDays++;
+                cal1.add(Calendar.DATE, 1);
+            }
+            return numberOfDays;
+        }
+        List<Holiday> holidays = holidayRepository.findAll();
+        List<String> dates = new ArrayList<String>();
+        for (Holiday h : holidays) {
+            dates.add(h.getDate());
+        }
         while (cal1.compareTo(cal2) <= 0) {
+            Date d = cal1.getTime();
+            String strDate = df.format(d);
+
             if ((Calendar.SATURDAY != cal1.get(Calendar.DAY_OF_WEEK))
-                    && (Calendar.SUNDAY != cal1.get(Calendar.DAY_OF_WEEK))) {
+                    && (Calendar.SUNDAY != cal1.get(Calendar.DAY_OF_WEEK)) && !dates.contains(strDate)) {
                 numberOfDays++;
             }
             cal1.add(Calendar.DATE, 1);
         }
-        System.out.println(numberOfDays);
+        // System.out.println(numberOfDays);
         return numberOfDays;
     }
 
     @Override
     @Transactional
-    public Long applyLeave(ApplyStaffLeaveForm applyStaffLeaveForm) {
+    public Long applyLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException {
 
         String userId = applyStaffLeaveForm.getUserId();
         StaffLeaveTypes leaveType = staffLeaveTypeRepository.findByLeaveName(applyStaffLeaveForm.getTypeOfLeave());
@@ -89,7 +124,7 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
             try {
                 if (simpleDateFormat.parse(fdate).compareTo(simpleDateFormat.parse(leaveType.getFromDate())) < 0
                         || simpleDateFormat.parse(leaveType.getToDate()).compareTo(simpleDateFormat.parse(tdate)) < 0) {
-                    return -1l;
+                    throw new ConflictException("Leave cannot be applied due to date issue.");
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -103,11 +138,16 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
         staffLeave.setAppliedBy(applyStaffLeaveForm.getAppliedBy());
         staffLeave.setDetails(applyStaffLeaveForm.getDetails());
         staffLeave.setRemarks(applyStaffLeaveForm.getRemarks());
-        staffLeave.setStatus("applied");
-        staffLeave.setHalfdayFullday(applyStaffLeaveForm.getHalfdayFullday());
+        staffLeave.setStatus(applyStaffLeaveForm.getStatus());
+        staffLeave.setFromDuration(applyStaffLeaveForm.getFromDuration());
+        staffLeave.setToDuration(applyStaffLeaveForm.getToDuration());
+        staffLeave.setConsiderHolidays(applyStaffLeaveForm.isConsiderHolidays());
         staffLeave.setSubject(applyStaffLeaveForm.getSubject());
         staffLeave.setTypeOfLeave(applyStaffLeaveForm.getTypeOfLeave());
         staffLeave.setUserId(userId);
+        staffLeave.setNoOfDays(getDays(applyStaffLeaveForm.getFromDate(), applyStaffLeaveForm.getToDate(),
+                applyStaffLeaveForm.isConsiderHolidays(), applyStaffLeaveForm.getFromDuration(),
+                applyStaffLeaveForm.getToDuration()));
 
         StaffLeave test = staffLeaveRepository.save(staffLeave);
         return test.getLeaveId();
@@ -120,7 +160,7 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
 
     @Override
     @Transactional
-    public int updateStatusByLeaveId(UpdateStatusForm updateStatus) {
+    public int updateStatusByLeaveId(UpdateStatusForm updateStatus) throws ConflictException {
 
         Long leaveId = updateStatus.getLeaveId();
         String status = updateStatus.getStatus();
@@ -139,7 +179,7 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
             try {
                 if (simpleDateFormat.parse(fdate).compareTo(simpleDateFormat.parse(leaveType.getFromDate())) < 0
                         || simpleDateFormat.parse(leaveType.getToDate()).compareTo(simpleDateFormat.parse(tdate)) < 0) {
-                    return 0;
+                    throw new ConflictException("Leave cannot be applied due to date issue.");
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -152,22 +192,16 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
             }
 
         } else {
-            // System.out.println("hi outside");
             if (!staffAnnualLeaveRepository.existsByUserIdAndLeaveNameAndToDate(leave.getUserId(), leaveName,
                     slt.getToDate())) {
                 addToTable(leaveName, leave.getUserId());
-                // System.out.println("hi inside");
             }
 
         }
         if (status.equals("approved") && !leave.getStatus().equals("approved")) {
-            int days;
-            days = 0;
-            try {
-                days = getDays(leave.getFromDate(), leave.getToDate());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            double days;
+            days = leave.getNoOfDays();
+
             System.out.println("days" + days);
             if (type.equals("lifelong")) {
                 StaffLifelongLeave leave2 = staffLifelongLeaveRepository.findByUserIdAndLeaveName(leave.getUserId(),
@@ -265,8 +299,7 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     }
 
     @Override
-    public int createNewLeave(CreateStaffLeaveForm createStaffLeaveForm) {
-
+    public int createNewLeave(CreateStaffLeaveForm createStaffLeaveForm) throws ConflictException {
         if (createStaffLeaveForm.getLeaveType().equals("annual") && createStaffLeaveForm.getToDate() != null) {
             StaffLeaveTypes staffLeaveTypes = new StaffLeaveTypes();
             staffLeaveTypes.setDescription(createStaffLeaveForm.getDescription());
@@ -277,9 +310,18 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
             staffLeaveTypes.setToDate(createStaffLeaveForm.getToDate());
             staffLeaveTypeRepository.save(staffLeaveTypes);
             return 1;
+        } else if (createStaffLeaveForm.getLeaveType().equals("lifelong")) {
+            StaffLeaveTypes staffLeaveTypes = new StaffLeaveTypes();
+            staffLeaveTypes.setDescription(createStaffLeaveForm.getDescription());
+            staffLeaveTypes.setLeaveName(createStaffLeaveForm.getLeaveName());
+            staffLeaveTypes.setNoOfLeaves(createStaffLeaveForm.getNoOfLeaves());
+            staffLeaveTypes.setLeaveType(createStaffLeaveForm.getLeaveType());
+            staffLeaveTypeRepository.save(staffLeaveTypes);
+            return 1;
         } else {
-            return 0;
+            throw new ConflictException("new leave cannot be created");
         }
+
     }
 
     @Override
@@ -294,11 +336,11 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     public void rejoin(StaffRejoinForm staffRejoinForm) {
         StaffLeave leave = staffLeaveRepository.findByLeaveId(staffRejoinForm.getLeaveId());
         leave.setStatus("rejoined");
-        int daysBefore = 0;
-        int daysAfter = 0;
+        double daysBefore = leave.getNoOfDays();
+        double daysAfter = 0;
         try {
-            daysBefore = getDays(leave.getFromDate(), leave.getToDate());
-            daysAfter = getDays(leave.getFromDate(), staffRejoinForm.getRejoinDate());
+            daysAfter = getDays(leave.getFromDate(), staffRejoinForm.getRejoinDate(), leave.isConsiderHolidays(),
+                    leave.getFromDuration(), leave.getToDuration());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -316,8 +358,87 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
             l.setLeavesLeft(l.getLeavesLeft() + daysBefore - daysAfter);
             staffLifelongLeaveRepository.save(l);
         }
+        leave.setNoOfDays(daysAfter);
         staffLeaveRepository.save(leave);
     }
+
+    @Override
+    @Transactional
+    public String creditLeave(StaffLeaveCreditForm staffLeaveCreditForm) throws ConflictException {
+        String leaveName = staffLeaveCreditForm.getLeaveName();
+        StaffLeaveTypes leave = staffLeaveTypeRepository.findByLeaveName(leaveName);
+        for (String s : staffLeaveCreditForm.getFacultyNames()) {
+
+            String userId;
+            Optional<StaffBasicProfile> sp = staffRepository.findByName(s);
+            System.out.println("Faculty " + s);
+            if (sp.isPresent()) {
+                StaffBasicProfile st = sp.get();
+                userId = st.getUserId();
+            } else {
+                throw new ConflictException("User " + s + " does not exist. Rollback!");
+            }
+            if (leave.getLeaveType().equals("annual")) {
+                if (!staffAnnualLeaveRepository.existsByUserIdAndLeaveNameAndToDate(userId, leaveName,
+                        leave.getToDate())) {
+                    addToTable(leaveName, userId);
+                }
+                staffAnnualLeaveRepository.creditLeave(staffLeaveCreditForm.getLeaveToCredit(), userId,
+                        leave.getToDate(), leaveName);
+            } else if (leave.getLeaveType().equals("lifelong")) {
+                if (!staffLifelongLeaveRepository.existsByUserIdAndLeaveName(userId, leaveName)) {
+                    addToTable(leaveName, userId);
+                }
+                staffLifelongLeaveRepository.creditLeave(staffLeaveCreditForm.getLeaveToCredit(), userId, leaveName);
+            } else {
+                throw new ConflictException("can't get leave type.");
+            }
+        }
+        return "Leave Credited";
+    }
+
+    public long updateLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException
+    {
+        String userId = applyStaffLeaveForm.getUserId();
+        StaffLeaveTypes leaveType = staffLeaveTypeRepository.findByLeaveName(applyStaffLeaveForm.getTypeOfLeave());
+        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fdate = applyStaffLeaveForm.getFromDate();
+        String tdate = applyStaffLeaveForm.getToDate();
+
+        if (leaveType.getLeaveType().equals("annual")) {
+            try {
+                if (simpleDateFormat.parse(fdate).compareTo(simpleDateFormat.parse(leaveType.getFromDate())) < 0
+                        || simpleDateFormat.parse(leaveType.getToDate()).compareTo(simpleDateFormat.parse(tdate)) < 0) {
+                    throw new ConflictException("Leave cannot be updated due to date issue.");
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        StaffLeave staffLeave = new StaffLeave();
+        staffLeave.setLeaveId(applyStaffLeaveForm.getLeaveId());
+        staffLeave.setFromDate(applyStaffLeaveForm.getFromDate());
+        staffLeave.setToDate(applyStaffLeaveForm.getToDate());
+        staffLeave.setRemarks(applyStaffLeaveForm.getRemarks());
+        staffLeave.setCreatedDate(simpleDateFormat.format(new Date()));
+        staffLeave.setAppliedBy(applyStaffLeaveForm.getAppliedBy());
+        staffLeave.setDetails(applyStaffLeaveForm.getDetails());
+        staffLeave.setRemarks(applyStaffLeaveForm.getRemarks());
+        staffLeave.setStatus(applyStaffLeaveForm.getStatus());
+        staffLeave.setFromDuration(applyStaffLeaveForm.getFromDuration());
+        staffLeave.setToDuration(applyStaffLeaveForm.getToDuration());
+        staffLeave.setConsiderHolidays(applyStaffLeaveForm.isConsiderHolidays());
+        staffLeave.setSubject(applyStaffLeaveForm.getSubject());
+        staffLeave.setTypeOfLeave(applyStaffLeaveForm.getTypeOfLeave());
+        staffLeave.setUserId(userId);
+        staffLeave.setNoOfDays(getDays(applyStaffLeaveForm.getFromDate(), applyStaffLeaveForm.getToDate(),
+                applyStaffLeaveForm.isConsiderHolidays(), applyStaffLeaveForm.getFromDuration(),
+                applyStaffLeaveForm.getToDuration()));
+
+        StaffLeave test = staffLeaveRepository.save(staffLeave);
+        return test.getLeaveId();
+    }
+
 }
 
 // public long getDays(String fromDate, String toDate) throws ParseException {
@@ -423,13 +544,13 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
 // @Override
 // @Transactional
 // public long updateSettings(StaffLeaveSettingsForm staffLeaveSettingsForm) {
-//     StaffLeaveSettings staffLeaveSettings = new StaffLeaveSettings();
-//     staffLeaveSettings.setMaxLeaves(staffLeaveSettingsForm.getMaxLeaves());
-//     staffLeaveSettingsRepository.save(staffLeaveSettings);
-//     return staffLeaveSettings.getMaxLeaves();
+// StaffLeaveSettings staffLeaveSettings = new StaffLeaveSettings();
+// staffLeaveSettings.setMaxLeaves(staffLeaveSettingsForm.getMaxLeaves());
+// staffLeaveSettingsRepository.save(staffLeaveSettings);
+// return staffLeaveSettings.getMaxLeaves();
 // }
 
 // @Override
 // public StaffLeaveSettings getSettings() {
-//     return staffLeaveSettingsRepository.findTopByOrderByIdDesc();
+// return staffLeaveSettingsRepository.findTopByOrderByIdDesc();
 // }

@@ -1,31 +1,34 @@
 package sgsits.cse.dis.user.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import sgsits.cse.dis.user.exception.ConflictException;
 import sgsits.cse.dis.user.message.request.ApplyStaffLeaveForm;
 import sgsits.cse.dis.user.message.request.CreateStaffLeaveForm;
-import sgsits.cse.dis.user.message.request.StaffLeaveSettingsForm;
+import sgsits.cse.dis.user.message.request.StaffLeaveCreditForm;
 import sgsits.cse.dis.user.message.request.StaffRejoinForm;
 import sgsits.cse.dis.user.message.request.UpdateStatusForm;
 import sgsits.cse.dis.user.message.response.StaffLeaveAccountResponse;
 import sgsits.cse.dis.user.model.StaffLeave;
-import sgsits.cse.dis.user.model.StaffLeaveSettings;
 import sgsits.cse.dis.user.model.StaffLeaveTypes;
 
 
 @Component
 public interface StaffLeaveService {
     
-    Long applyLeave(ApplyStaffLeaveForm applyStaffLeaveForm);
+    Long applyLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException;
     // long updateSettings(StaffLeaveSettingsForm staffLeaveSettingsForm);
     // StaffLeaveSettings getSettings();
     List<StaffLeave> getLeavesByStatus(String status);
-    int updateStatusByLeaveId(UpdateStatusForm updateStatus);
+    int updateStatusByLeaveId(UpdateStatusForm updateStatus) throws ConflictException;
     List<StaffLeaveAccountResponse> getLeaveLeft(String userName);
     List<StaffLeave> getAllLeavesByName(String name);
-    int createNewLeave(CreateStaffLeaveForm createStaffLeaveForm);
+    int createNewLeave(CreateStaffLeaveForm createStaffLeaveForm) throws ConflictException;
     List<StaffLeaveTypes> getAllLeaveTypes();
     void rejoin(StaffRejoinForm staffRejoinForm);
+    String creditLeave(StaffLeaveCreditForm staffLeaveCreditForm) throws ConflictException;
+    long updateLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException;
 }

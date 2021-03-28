@@ -1,16 +1,11 @@
 package sgsits.cse.dis.user.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-// import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 public class StaffLeave {
@@ -37,7 +32,9 @@ public class StaffLeave {
     @Column(nullable = false)
     private String toDate;
 
-    private String halfdayFullday;
+    private String fromDuration;
+    
+    private String toDuration;
     
     private String remarks;
     
@@ -48,6 +45,14 @@ public class StaffLeave {
     private String typeOfLeave;
 
     private String userId;
+
+    private boolean considerHolidays;
+
+    private double noOfDays;
+
+    private String prefix;
+
+    private String suffix;
     
     public StaffLeave(){}
 
@@ -91,16 +96,6 @@ public class StaffLeave {
         this.details = details;
     }
 
-
-
-    public String getHalfdayFullday() {
-        return halfdayFullday;
-    }
-
-    public void setHalfdayFullday(String halfdayFullday) {
-        this.halfdayFullday = halfdayFullday;
-    }
-
     public String getRemarks() {
         return remarks;
     }
@@ -108,8 +103,6 @@ public class StaffLeave {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
-
-    
 
     public String getSubject() {
         return subject;
@@ -159,19 +152,59 @@ public class StaffLeave {
         this.toDate = toDate;
     }
 
-    @Override
-    public String toString() {
-        return "StaffLeave [appliedBy=" + appliedBy + ", createdDate=" + createdDate + ", details=" + details
-                + ", fromDate=" + fromDate + ", halfdayFullday=" + halfdayFullday + ", leaveId=" + leaveId
-                + ", modifiedBy=" + modifiedBy + ", modifiedDate=" + modifiedDate + ", remarks=" + remarks + ", status="
-                + status + ", subject=" + subject + ", toDate=" + toDate + ", typeOfLeave=" + typeOfLeave + "]";
-    }
-
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public double getNoOfDays() {
+        return noOfDays;
+    }
+
+    public void setNoOfDays(double noOfDays) {
+        this.noOfDays = noOfDays;
+    }
+
+    public String getFromDuration() {
+        return fromDuration;
+    }
+
+    public void setFromDuration(String fromDuration) {
+        this.fromDuration = fromDuration;
+    }
+
+    public String getToDuration() {
+        return toDuration;
+    }
+
+    public void setToDuration(String toDuration) {
+        this.toDuration = toDuration;
+    }
+
+    public boolean isConsiderHolidays() {
+        return considerHolidays;
+    }
+
+    public void setConsiderHolidays(boolean considerHolidays) {
+        this.considerHolidays = considerHolidays;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 }
