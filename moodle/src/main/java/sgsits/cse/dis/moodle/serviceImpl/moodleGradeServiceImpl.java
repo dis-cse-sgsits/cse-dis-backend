@@ -22,6 +22,7 @@ import sgsits.cse.dis.moodle.repo.MoodleGradeItemsRepo;
 import sgsits.cse.dis.moodle.response.GradeItemsData;
 import sgsits.cse.dis.moodle.response.GraderReportData;
 import sgsits.cse.dis.moodle.response.StudentOverviewReport;
+import sgsits.cse.dis.moodle.exception.NotFoundException;
 import sgsits.cse.dis.moodle.model.MoodleContext;
 import sgsits.cse.dis.moodle.model.MoodleCourse;
 import sgsits.cse.dis.moodle.model.MoodleEnrollement;
@@ -251,5 +252,13 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		if(!curr.isEmpty())
 			ans = curr.get(0);
 		return ans;
+	}
+
+	@Override
+	public Long getStudentsUserId(String username) throws NotFoundException {
+		List<MoodleUser> user = moodleUserRepo.findByUsername(username);
+		if(user.isEmpty())
+			throw new NotFoundException("username does not exist");
+		return user.get(0).getId();
 	}
 }
