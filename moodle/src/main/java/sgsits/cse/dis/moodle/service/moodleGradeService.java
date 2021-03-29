@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import sgsits.cse.dis.moodle.response.GraderReportData;
 import sgsits.cse.dis.moodle.response.StudentOverviewReport;
 import sgsits.cse.dis.moodle.response.GradeItemsData;
-
+import sgsits.cse.dis.moodle.exception.NotFoundException;
 import sgsits.cse.dis.moodle.response.Course;
 import sgsits.cse.dis.moodle.response.Students;
 
@@ -28,4 +28,6 @@ public interface moodleGradeService {
 	List<StudentOverviewReport> getStudentsOverviewReport(Long userId);
 
 	List<GraderReportData> getStudentsUserReport(String courseId, String userId);
+	
+	Long getStudentsUserId(String username) throws NotFoundException;
 }

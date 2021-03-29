@@ -19,7 +19,7 @@ import sgsits.cse.dis.moodle.response.GraderReportData;
 import sgsits.cse.dis.moodle.response.StudentOverviewReport;
 import sgsits.cse.dis.moodle.service.moodleGradeService;
 import sgsits.cse.dis.moodle.constants.GradesURLConstants;
-
+import sgsits.cse.dis.moodle.exception.NotFoundException;
 import sgsits.cse.dis.moodle.response.Course;
 import sgsits.cse.dis.moodle.response.Students;
 
@@ -31,6 +31,13 @@ public class MoodleGradesController {
 	private JwtResolver jwtResolver = new JwtResolver();
 	@Autowired
 	private moodleGradeService moodleGradeServiceImpl;
+	
+	// This API return's the moodle's database userid of a username. This is a general purpose API not related to only grades.
+	@ApiOperation(value = "Get Student's user id", response = Long.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = GradesURLConstants.GET_STUDENTS_USER_ID, produces = "application/json")
+	public ResponseEntity<Long> getStudentsUserId(@PathVariable("username") String courseId) throws NotFoundException {
+		return new ResponseEntity<Long>(moodleGradeServiceImpl.getStudentsUserId(courseId),HttpStatus.OK);
+	}
 	
 	@ApiOperation(value = "Get Grade Items Of Course", response = GradeItemsData.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_GRADE_ITEMS_OF_COURSE, produces = "application/json")
