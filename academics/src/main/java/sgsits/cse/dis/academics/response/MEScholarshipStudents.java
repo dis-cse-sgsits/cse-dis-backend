@@ -19,4 +19,6 @@ public class MEScholarshipStudents {
 
     public int admissionYear;
 
+    public String status;
+
 }

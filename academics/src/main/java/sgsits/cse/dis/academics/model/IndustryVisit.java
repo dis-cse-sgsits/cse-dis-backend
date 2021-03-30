@@ -44,8 +44,8 @@ public class IndustryVisit {
     @Column(name = "pin")
     private long pin;
 
-    @Column(name = "audience", nullable = false)
-    private String audience;
+    @Column(name = "participants", nullable = false)
+    private String participants;
 
     @Column(name = "coordinator_1", nullable = false)
     private String coordinator1;

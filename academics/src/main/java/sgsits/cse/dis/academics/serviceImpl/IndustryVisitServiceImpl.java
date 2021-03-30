@@ -22,7 +22,7 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
     public String addIndustryVisit(IndustryVisitForm industryVisitForm) {
         IndustryVisit industryVisit = new IndustryVisit();
         industryVisit.setAddress(industryVisitForm.getAddress());
-        industryVisit.setAudience(industryVisitForm.getAudience());
+        industryVisit.setParticipants(industryVisitForm.getParticipants());
         industryVisit.setCity(industryVisitForm.getCity());
         industryVisit.setCompanyName(industryVisitForm.getCompanyName());
         industryVisit.setCoordinator1(industryVisitForm.getCoordinator1());
@@ -36,7 +36,7 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
         IndustryVisit test = industryVisitRepository.save(industryVisit);
 
         if(test!=null)
-            return "Visit to "+test.getCompanyName()+" on "+test.getDate()+" at "+test.getTime()+" for "+test.getAudience()+" created.";
+            return "Visit to "+test.getCompanyName()+" on "+test.getDate()+" at "+test.getTime()+" for "+test.getParticipants()+" created.";
         else
             return "Could not create industry visit, please try again.";
 
@@ -53,7 +53,7 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
             visitObj.setDate(visit.getDate());
             visitObj.setTime(visit.getTime());
             visitObj.setCompanyName(visit.getCompanyName());
-            visitObj.setAudience(visit.getAudience());
+            visitObj.setParticipants(visit.getParticipants());
             visitObj.setCoordinator1(visit.getCoordinator1());
             visitObj.setCoordinator2(visit.getCoordinator2());
             output.add(visitObj);
@@ -62,8 +62,8 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
     }
 
     @Override
-    public IndustryVisit viewIndustryVisitDetails(IndustryVisitResponse industryVisitResponse) {
-        return industryVisitRepository.findByIndustryVisitId(industryVisitResponse.getIndustryVisitId());
+    public IndustryVisit viewIndustryVisitDetails(String industryVisitId) {
+        return industryVisitRepository.findByIndustryVisitId(industryVisitId);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
         {
             IndustryVisitResponse industryVisitResponse = new IndustryVisitResponse();
             industryVisitResponse.setIndustryVisitId(industryVisit.getIndustryVisitId());
-            industryVisitResponse.setAudience(industryVisit.getAudience());
+            industryVisitResponse.setParticipants(industryVisit.getParticipants());
             industryVisitResponse.setDate(industryVisit.getDate());
             industryVisitResponse.setTime(industryVisit.getTime());
             industryVisitResponse.setCompanyName(industryVisit.getCompanyName());
@@ -86,8 +86,8 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
     }
 
     @Override
-    public String updateIndustryVisitStatus(IndustryVisitResponse industryVisitResponse) {
-        IndustryVisit industryVisit = industryVisitRepository.findByIndustryVisitId(industryVisitResponse.getIndustryVisitId());
+    public String updateIndustryVisitStatus(String industryVisitId) {
+        IndustryVisit industryVisit = industryVisitRepository.findByIndustryVisitId(industryVisitId);
         String status = industryVisit.getStatus();
         if(status.equals("Pending"))
             industryVisit.setStatus("Upcoming");
@@ -115,7 +115,8 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
     }
 
     @Override
-    public String deleteIndustryVisit(IndustryVisit industryVisit) {
+    public String deleteIndustryVisit(String industryVisitId) {
+        IndustryVisit industryVisit = industryVisitRepository.findByIndustryVisitId(industryVisitId);
         if(industryVisit.getStatus().equals("Completed"))
             return "Cannot delete a completed industry visit.";
         industryVisitRepository.delete(industryVisit);

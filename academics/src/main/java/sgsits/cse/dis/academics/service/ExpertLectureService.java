@@ -32,9 +32,9 @@ public interface ExpertLectureService {
 	String updateExpertLectureStatus(String expertLectureId);
 
 
-    String deleteExpert(ExpertForm deleteExpertForm);
+    String deleteExpert(String expertId);
 
     String editExpertLecture(ExpertLectureDetails expertLectureDetails);
 
-	String deleteExpertLecture(ExpertLectureDetails expertLectureDetails);
+	String deleteExpertLecture(String expertLectureId);
 }

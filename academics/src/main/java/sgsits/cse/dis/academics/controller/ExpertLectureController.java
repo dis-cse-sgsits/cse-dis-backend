@@ -93,9 +93,9 @@ public class ExpertLectureController {
 
 	@ApiOperation(value = "Delete Expert", response = String.class, httpMethod = "DELETE", produces = "application/json")
 	@DeleteMapping(path = RestAPI.DELETE_EXPERT, produces = "application/json")
-	public ResponseEntity<String> deleteExpert(@RequestBody ExpertForm deleteExpertForm)
+	public ResponseEntity<String> deleteExpert(@PathVariable("expertId") String expertId)
 	{
-		return new ResponseEntity<String>(expertLectureService.deleteExpert(deleteExpertForm), HttpStatus.OK);
+		return new ResponseEntity<String>(expertLectureService.deleteExpert(expertId), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Edit expert lecture", response = String.class, httpMethod = "PUT", produces = "application/json")
@@ -107,8 +107,8 @@ public class ExpertLectureController {
 
 	@ApiOperation(value = "Delete expert lecture", response = String.class, httpMethod = "DELETE", produces = "application/json")
 	@DeleteMapping(path = RestAPI.DELETE_EXPERT_LECTURE, produces = "application/json")
-	public ResponseEntity<String> deleteExpertLecture(@RequestBody ExpertLectureDetails expertLectureDetails)
+	public ResponseEntity<String> deleteExpertLecture(@PathVariable("expertLectureId") String expertLectureId)
 	{
-		return new ResponseEntity<String>(expertLectureService.deleteExpertLecture(expertLectureDetails), HttpStatus.OK);
+		return new ResponseEntity<String>(expertLectureService.deleteExpertLecture(expertLectureId), HttpStatus.OK);
 	}
 }

@@ -10,5 +10,5 @@ public interface ExpertRepository extends JpaRepository<ExpertDetails, Long> {
 
 	ExpertDetails findByNameAndDesignation(String name, String designation);
 
-    ExpertDetails findByEmail(String email);
+    ExpertDetails findByExpertId(String expertId);
 }

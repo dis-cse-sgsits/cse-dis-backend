@@ -19,7 +19,7 @@ public class IndustryVisitForm {
 
     public long pin;
 
-    public String audience;
+    public String participants;
 
     public String coordinator1;
 

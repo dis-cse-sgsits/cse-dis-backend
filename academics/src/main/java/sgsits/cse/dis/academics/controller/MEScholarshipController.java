@@ -22,11 +22,11 @@ public class MEScholarshipController {
     @Autowired
     private MEScholarshipService meScholarshipService;
 
-    @ApiOperation(value = "Fetch all ME students by year", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")
-    @GetMapping(path = RestAPI.FETCH_ME_STUDENTS_BY_YEAR, produces = "application/json")
-    public ResponseEntity<List<MEScholarshipStudents>> fetchMEStudentsByYear(@PathVariable("year") int year)
+    @ApiOperation(value = "Fetch all ME students without scholarship", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")
+    @GetMapping(path = RestAPI.FETCH_ME_STUDENTS_WITHOUT_SCHOLARSHIP, produces = "application/json")
+    public ResponseEntity<List<MEScholarshipStudents>> fetchMEStudentsWithoutScholarship(@PathVariable("year") int year)
     {
-        return new ResponseEntity<List<MEScholarshipStudents>>(meScholarshipService.fetchMEStudentsByYear(year), HttpStatus.OK);
+        return new ResponseEntity<List<MEScholarshipStudents>>(meScholarshipService.fetchMEStudentsWithoutScholarship(year), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Approve students for scholarship", response = String.class, httpMethod = "POST", produces = "application/json")
@@ -36,11 +36,11 @@ public class MEScholarshipController {
         return new ResponseEntity<String>(meScholarshipService.approveStudents(students), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "View scholarship students", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")
-    @GetMapping(path = RestAPI.VIEW_SCHOLARSHIP_STUDENTS, produces = "application/json")
-    public ResponseEntity<List<MEScholarship>> viewScholarshipStudents(@PathVariable("year") int year)
+    @ApiOperation(value = "Fetch all ME students without scholarship", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")
+    @GetMapping(path = RestAPI.FETCH_ME_STUDENTS_WITH_SCHOLARSHIP, produces = "application/json")
+    public ResponseEntity<List<MEScholarship>> fetchMEStudentsWithScholarship(@PathVariable("year") int year)
     {
-        return new ResponseEntity<List<MEScholarship>>(meScholarshipService.viewScholarshipStudents(year), HttpStatus.OK);
+        return new ResponseEntity<List<MEScholarship>>(meScholarshipService.fetchMEStudentsWithScholarship(year), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Cancel scholarship", response = String.class, httpMethod = "DELETE", produces = "application/json")

@@ -41,9 +41,9 @@ public class IndustryVisitController {
 
     @ApiOperation(value = "View industry visit details", response = IndustryVisit.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(path =  RestAPI.VIEW_INDUSTRY_VISIT_DETAILS, produces = "application/json")
-    public ResponseEntity<IndustryVisit> viewIndustryVisitDetails(@RequestBody IndustryVisitResponse industryVisitResponse)
+    public ResponseEntity<IndustryVisit> viewIndustryVisitDetails(@PathVariable("industryVisitId") String industryVisitId)
     {
-        return new ResponseEntity<IndustryVisit>(industryVisitService.viewIndustryVisitDetails(industryVisitResponse), HttpStatus.OK);
+        return new ResponseEntity<IndustryVisit>(industryVisitService.viewIndustryVisitDetails(industryVisitId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Search industry visits", response = IndustryVisitResponse.class, httpMethod = "GET", produces = "application/json")
@@ -55,9 +55,9 @@ public class IndustryVisitController {
 
     @ApiOperation(value = "Update industry visit status", response = String.class, httpMethod = "PUT", produces = "application/json")
     @PutMapping(path = RestAPI.UPDATE_INDUSTRY_VISIT_STATUS, produces = "application/json")
-    public ResponseEntity<String> updateIndustryVisitStatus(@RequestBody IndustryVisitResponse industryVisitResponse)
+    public ResponseEntity<String> updateIndustryVisitStatus(@PathVariable("industryVisitId") String industryVisitId)
     {
-        return new ResponseEntity<String>(industryVisitService.updateIndustryVisitStatus(industryVisitResponse), HttpStatus.OK);
+        return new ResponseEntity<String>(industryVisitService.updateIndustryVisitStatus(industryVisitId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Edit industry visit", response = String.class, httpMethod = "PUT", produces = "application/json")
@@ -69,8 +69,8 @@ public class IndustryVisitController {
 
     @ApiOperation(value = "Delete industry visit", response = String.class, httpMethod = "DELETE", produces = "application/json")
     @DeleteMapping(path = RestAPI.DELETE_INDUSTRY_VISIT, produces = "application/json")
-    public ResponseEntity<String> deleteIndustryVisit(@RequestBody IndustryVisit industryVisit)
+    public ResponseEntity<String> deleteIndustryVisit(@PathVariable("industryVisitId") String industryVisitId)
     {
-        return new ResponseEntity<String>(industryVisitService.deleteIndustryVisit(industryVisit), HttpStatus.OK);
+        return new ResponseEntity<String>(industryVisitService.deleteIndustryVisit(industryVisitId), HttpStatus.OK);
     }
 }

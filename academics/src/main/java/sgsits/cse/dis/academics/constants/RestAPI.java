@@ -22,18 +22,18 @@ public class RestAPI {
 	public static final String FIND_EXPERT = "/findExpert";
 	public static final String SEARCH_EXPERT_LECTURES = "/searchExpertLectures";
 	public static final String UPDATE_EXPERT_LECTURE_STATUS = "/updateExpertLectureStatus/{expertLectureId}";
-    public static final String FETCH_ME_STUDENTS_BY_YEAR = "/fetchMEStudentsByYear/{year}";
-	public static final String APPROVE_STUDENTS_FOR_SCHOLARSHIP = "/grantScholarship";
-	public static final String VIEW_SCHOLARSHIP_STUDENTS = "/viewScholarshipStudents/{year}";
+    public static final String FETCH_ME_STUDENTS_WITHOUT_SCHOLARSHIP = "/fetchMEStudentsWithoutScholarship/{year}";
+	public static final String APPROVE_STUDENTS_FOR_SCHOLARSHIP = "/approveScholarship";
+	public static final String FETCH_ME_STUDENTS_WITH_SCHOLARSHIP = "/fetchMEStudentsWithScholarship/{year}";
 	public static final String CANCEL_SCHOLARSHIP = "/cancelScholarship";
-    public static final String DELETE_EXPERT = "/deleteExpert";
+    public static final String DELETE_EXPERT = "/deleteExpert/{expertId}";
     public static final String ADD_INDUSTRY_VISIT = "/addIndustryVisit";
     public static final String GET_INDUSTRY_VISITS = "/getIndustryVisits/{status}";
-    public static final String VIEW_INDUSTRY_VISIT_DETAILS = "/viewIndustryVisitDetails";
+    public static final String VIEW_INDUSTRY_VISIT_DETAILS = "/viewIndustryVisitDetails/{industryVisitId}";
 	public static final String SEARCH_INDUSTRY_VISITS = "/searchIndustryVisits";
-	public static final String UPDATE_INDUSTRY_VISIT_STATUS = "/updateIndustryVisitStatus";
+	public static final String UPDATE_INDUSTRY_VISIT_STATUS = "/updateIndustryVisitStatus/{industryVisitId}";
 	public static final String EDIT_INDUSTRY_VISIT = "/editIndustryVisit";
-	public static final String DELETE_INDUSTRY_VISIT = "/deleteIndustryVisit";
+	public static final String DELETE_INDUSTRY_VISIT = "/deleteIndustryVisit/{industryVisitId}";
     public static final String EDIT_EXPERT_LECTURE = "/editExpertLecture";
-	public static final String DELETE_EXPERT_LECTURE = "/deleteExpertLecture";
+	public static final String DELETE_EXPERT_LECTURE = "/deleteExpertLecture/{expertLectureId}";
 }

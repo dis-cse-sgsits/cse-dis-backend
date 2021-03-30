@@ -59,7 +59,7 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 		ExpertDetails test = expertRepository.save(expertDetails);
 		
 		if(test!=null)
-			return test.getName()+" sucsessfully added to experts.";
+			return test.getName()+" successfully added to experts.";
 		else
 			return null;
 	}
@@ -76,6 +76,7 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 		expert.setDob(editExpertForm.getDob());
 		expert.setFathersName(editExpertForm.getFathersName());
 		expert.setOfficeAddress(editExpertForm.getOfficeAddress());
+		expert.setMobileNo(editExpertForm.getMobileNo());
 		expert.setPinCode(editExpertForm.getPinCode());
 		expert.setCity(editExpertForm.getCity());
 		expert.setState(editExpertForm.getState());
@@ -92,15 +93,15 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 		ExpertDetails test = expertRepository.save(expert);
 		
 		if(test!=null)
-			return "Expert details updated successfully!";
+			return "Expert details updated successfully.";
 		else
 			return "Error updating expert details, please try again.";
 		
 	}
 
 	@Override
-	public String deleteExpert(ExpertForm deleteExpertForm) {
-		ExpertDetails expert = expertRepository.findByEmail(deleteExpertForm.getEmail());
+	public String deleteExpert(String expertId) {
+		ExpertDetails expert = expertRepository.findByExpertId(expertId);
 		expertRepository.delete(expert);
 		return "Expert deleted successfully from the records.";
 	}
@@ -213,7 +214,7 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 		ExpertLectureDetails test = expertLectureRepository.save(expertLecture);
 		
 		if(test!=null)
-			return "Status updated successfully!";
+			return "Status updated successfully.";
 		else
 			return "Error updating status, please try again.";
 	}
@@ -224,17 +225,18 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 			return "Cannot edit details for a completed expert lecture.";
 		ExpertLectureDetails test = expertLectureRepository.save(expertLectureDetails);
 		if(test!=null)
-			return "Expert lecture details updated successfully!";
+			return "Expert lecture details updated successfully.";
 		else
 			return "Could not update details, please try again.";
 	}
 
 	@Override
-	public String deleteExpertLecture(ExpertLectureDetails expertLectureDetails) {
+	public String deleteExpertLecture(String expertLectureId) {
+		ExpertLectureDetails expertLectureDetails = expertLectureRepository.findByExpertLectureId(expertLectureId);
 		if(expertLectureDetails.getStatus().equals("Completed"))
 			return "Cannot delete a completed expert lecture.";
 		expertLectureRepository.delete(expertLectureDetails);
-		return "Expert lecture deleted successfully from the records!";
+		return "Expert lecture deleted successfully from the records.";
 
 	}
 

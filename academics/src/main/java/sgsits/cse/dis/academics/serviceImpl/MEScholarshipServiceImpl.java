@@ -23,23 +23,27 @@ public class MEScholarshipServiceImpl implements MEScholarshipService{
     private MEScholarshipRepository meScholarshipRepository;
 
     @Override
-    public List<MEScholarshipStudents> fetchMEStudentsByYear(int year) {
+    public List<MEScholarshipStudents> fetchMEStudentsWithoutScholarship(int year) {
         List<MEScholarshipStudents> output = new ArrayList<MEScholarshipStudents>();
         List<StudentProfile> records = userClient.fetchMEStudentsByYear(year);
         for(StudentProfile record : records)
         {
-            MEScholarshipStudents meStudent = new MEScholarshipStudents();
-            meStudent.setName(record.getFullName());
-            meStudent.setEmail(record.getEmail());
-            meStudent.setEnrollment(record.getEnrollmentId());
-            meStudent.setAttendance("100%");
-            if (record.getCategory().equals("I")) {
-                meStudent.setYear("I");
-            } else {
-                meStudent.setYear("II");
-            }
-            meStudent.setAdmissionYear(record.getAdmissionYear());
-            output.add(meStudent);
+            if(meScholarshipRepository.existsByEnrollment(record.getEnrollmentId()))
+                continue;
+                System.out.println("Inside exists");
+                MEScholarshipStudents meStudent = new MEScholarshipStudents();
+                meStudent.setName(record.getFullName());
+                meStudent.setEmail(record.getEmail());
+                meStudent.setEnrollment(record.getEnrollmentId());
+                meStudent.setAttendance("100%");
+                if (record.getCategory().equals("I")) {
+                    meStudent.setYear("I");
+                } else {
+                    meStudent.setYear("II");
+                }
+                meStudent.setAdmissionYear(record.getAdmissionYear());
+                meStudent.setStatus("Not approved");
+                output.add(meStudent);
         }
         return output;
     }
@@ -63,7 +67,7 @@ public class MEScholarshipServiceImpl implements MEScholarshipService{
     }
 
     @Override
-    public List<MEScholarship> viewScholarshipStudents(int year) {
+    public List<MEScholarship> fetchMEStudentsWithScholarship(int year) {
         List<MEScholarship> output = meScholarshipRepository.findByYear(year);
         return output;
     }

@@ -12,13 +12,13 @@ public interface IndustryVisitService {
 
     List<IndustryVisitResponse> getIndustryVisits(String status);
 
-    IndustryVisit viewIndustryVisitDetails(IndustryVisitResponse industryVisitResponse);
+    IndustryVisit viewIndustryVisitDetails(String industryVisitId);
 
     List<IndustryVisitResponse> searchIndustryVisits(String status, String keyword);
 
-    String updateIndustryVisitStatus(IndustryVisitResponse industryVisitResponse);
+    String updateIndustryVisitStatus(String industryVisitId);
 
     String editIndustryVisit(IndustryVisit industryVisit);
 
-    String deleteIndustryVisit(IndustryVisit industryVisit);
+    String deleteIndustryVisit(String industryVisitId);
 }

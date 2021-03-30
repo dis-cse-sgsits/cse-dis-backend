@@ -15,7 +15,7 @@ public class IndustryVisitResponse {
 
     public String companyName;
 
-    public String audience;
+    public String participants;
 
     public String coordinator1;
 
