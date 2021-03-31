@@ -434,6 +434,12 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
         return test.getLeaveId();
     }
 
+    @Override
+    public List<StaffLeave> getMyLeaves(String username) {
+        List<StaffLeave> leaves = staffLeaveRepository.findByAppliedBy(username);
+        return leaves;
+    }
+
 }
 
 // public long getDays(String fromDate, String toDate) throws ParseException {

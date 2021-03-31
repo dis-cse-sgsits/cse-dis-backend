@@ -38,6 +38,7 @@ public class RestAPI {
 	public static final String REJOIN_AFTER_LEAVE="/rejoin";
 	public static final String CREDIT_LEAVE = "/creditLeave";
 	public static final String UPDATE_LEAVE = "/updateLeave";
+	public static final String GET_MY_LEAVES =  "/getMyLeaves/{username}";
 
 	//Leave Settings
 	public static final String CREATE_NEW_LEAVE = "/createLeave";

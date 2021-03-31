@@ -5,11 +5,6 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
-// import com.google.common.base.Optional;
-
-// import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import sgsits.cse.dis.user.model.StaffLeave;
@@ -18,7 +13,7 @@ import sgsits.cse.dis.user.model.StaffLeave;
 public interface StaffLeaveRepository extends JpaRepository<StaffLeave, Long> {
     
     StaffLeave findByLeaveId(Long leaveId);
-    StaffLeave findByAppliedBy(String appliedBy);
+    List<StaffLeave> findByAppliedBy(String appliedBy);
     List<StaffLeave> findByStatusIgnoreCase(String status);
     List<StaffLeave> findByUserId(String userId);
 

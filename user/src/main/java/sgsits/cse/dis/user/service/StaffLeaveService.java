@@ -20,15 +20,24 @@ import sgsits.cse.dis.user.model.StaffLeaveTypes;
 public interface StaffLeaveService {
     
     Long applyLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException;
-    // long updateSettings(StaffLeaveSettingsForm staffLeaveSettingsForm);
-    // StaffLeaveSettings getSettings();
+    
     List<StaffLeave> getLeavesByStatus(String status);
+    
     int updateStatusByLeaveId(UpdateStatusForm updateStatus) throws ConflictException;
+    
     List<StaffLeaveAccountResponse> getLeaveLeft(String userName);
+    
     List<StaffLeave> getAllLeaves();
+
+    List<StaffLeave> getMyLeaves(String username);
+    
     int createNewLeave(CreateStaffLeaveForm createStaffLeaveForm) throws ConflictException;
+    
     List<StaffLeaveTypes> getAllLeaveTypes();
+    
     void rejoin(StaffRejoinForm staffRejoinForm);
+    
     String creditLeave(StaffLeaveCreditForm staffLeaveCreditForm) throws ConflictException;
+    
     long updateLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException;
 }
