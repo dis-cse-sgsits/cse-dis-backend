@@ -25,7 +25,7 @@ public interface StaffLeaveService {
     List<StaffLeave> getLeavesByStatus(String status);
     int updateStatusByLeaveId(UpdateStatusForm updateStatus) throws ConflictException;
     List<StaffLeaveAccountResponse> getLeaveLeft(String userName);
-    List<StaffLeave> getAllLeavesByName(String name);
+    List<StaffLeave> getAllLeaves();
     int createNewLeave(CreateStaffLeaveForm createStaffLeaveForm) throws ConflictException;
     List<StaffLeaveTypes> getAllLeaveTypes();
     void rejoin(StaffRejoinForm staffRejoinForm);

@@ -2,6 +2,7 @@ package sgsits.cse.dis.user.repo;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import sgsits.cse.dis.user.model.StaffLeave;
 
 @Repository
-public interface StaffLeaveRepository extends CrudRepository<StaffLeave, Long> {
+public interface StaffLeaveRepository extends JpaRepository<StaffLeave, Long> {
     
     StaffLeave findByLeaveId(Long leaveId);
     StaffLeave findByAppliedBy(String appliedBy);

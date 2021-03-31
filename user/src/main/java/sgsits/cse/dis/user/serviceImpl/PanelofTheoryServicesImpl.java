@@ -53,5 +53,12 @@ public class PanelofTheoryServicesImpl implements PanelOfTheoryService {
         return "Updated successfully";
         
     }
+
+    @Override
+    public void deletePanelOfTheory(String subjectCode) throws ConflictException {
+        if(panelOfTheoryRepository.deleteBySubjectCode(subjectCode)<=0)
+            throw new ConflictException("Cannot delete panel");
+        
+    }
     
 }

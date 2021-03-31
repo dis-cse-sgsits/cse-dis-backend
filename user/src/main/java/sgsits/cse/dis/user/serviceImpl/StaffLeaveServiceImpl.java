@@ -288,13 +288,8 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
         return res;
     }
 
-    public List<StaffLeave> getAllLeavesByName(String name) {
-        List<StaffLeave> leaves = new ArrayList<StaffLeave>();
-        Optional<StaffBasicProfile> s = staffRepository.findByName(name);
-        if (s.isPresent()) {
-            StaffBasicProfile st = s.get();
-            leaves = staffLeaveRepository.findByUserId(st.getUserId());
-        }
+    public List<StaffLeave> getAllLeaves() {
+        List<StaffLeave> leaves =  staffLeaveRepository.findAll();
         return leaves;
     }
 
@@ -553,4 +548,15 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
 // @Override
 // public StaffLeaveSettings getSettings() {
 // return staffLeaveSettingsRepository.findTopByOrderByIdDesc();
+// }
+
+
+// public List<StaffLeave> getAllLeavesByName(String name) {
+//     List<StaffLeave> leaves = new ArrayList<StaffLeave>();
+//     Optional<StaffBasicProfile> s = staffRepository.findByName(name);
+//     if (s.isPresent()) {
+//         StaffBasicProfile st = s.get();
+//         leaves = staffLeaveRepository.findByUserId(st.getUserId());
+//     }
+//     return leaves;
 // }

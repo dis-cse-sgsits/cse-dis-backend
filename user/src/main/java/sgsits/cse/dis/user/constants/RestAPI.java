@@ -33,7 +33,7 @@ public class RestAPI {
 	public static final String APPLY_LEAVE = "/applyForLeave";
 	public static final String GET_LEAVE_BY_STATUS="/getLeaves/{status}";
 	public static final String GET_LEAVES_LEFT_BY_NAME="/getLeavesLeft"; //Pass parameter name
-	public static final String GET_ALL_LEAVES_FOR_FACULTY="/getAllLeaves"; //Pass parameter name
+	public static final String GET_ALL_LEAVES_FOR_FACULTY="/getAllLeaves"; 
 	public static final String UPDATE_STATUS_BY_LEAVE_ID="/updateStatus";
 	public static final String REJOIN_AFTER_LEAVE="/rejoin";
 	public static final String CREDIT_LEAVE = "/creditLeave";
@@ -46,4 +46,6 @@ public class RestAPI {
 	//Panel Of Theory
 	public static final String CREATE_PANEL_OF_THEORY = "/createPanelOfTheory";
 	public static final String GET_ALL_PANEL_OF_THEORY = "/getPanelOfTheory";
+	public static final String DELETE_PANEL_OF_THEORY = "/deletePanelOfTheory/{subjectCode}";
+	public static final String UPDATE_PANEL_OF_THEORY = "/updatePanelOfTheory";
 }

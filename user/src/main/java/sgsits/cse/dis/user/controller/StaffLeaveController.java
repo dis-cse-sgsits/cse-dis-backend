@@ -89,10 +89,10 @@ public class StaffLeaveController {
                 HttpStatus.OK);
     }
 
-    @ApiOperation(value = "get all leaves applied by name",response = StaffLeave.class, httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "get all leaves",response = StaffLeave.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(path = RestAPI.GET_ALL_LEAVES_FOR_FACULTY, produces = "application/json")
-    public ResponseEntity<List<StaffLeave>> getAllLeaves(@RequestParam("name") String name) {
-        return new ResponseEntity<List<StaffLeave>>(staffLeaveServiceImpl.getAllLeavesByName(name), HttpStatus.OK);
+    public ResponseEntity<List<StaffLeave>> getAllLeaves() {
+        return new ResponseEntity<List<StaffLeave>>(staffLeaveServiceImpl.getAllLeaves(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "get all leave types",response = StaffLeaveTypes.class, httpMethod = "GET", produces = "application/json")
