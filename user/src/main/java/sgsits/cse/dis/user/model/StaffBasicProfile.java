@@ -2,12 +2,7 @@ package sgsits.cse.dis.user.model;
 
 import java.sql.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -25,10 +20,40 @@ public class StaffBasicProfile {
     @Column(name = "id", nullable = false, unique = true)
     private String id;
 
-	@Column(name = "created_by")
+	@Column(name = "created_by", nullable = false)
 	private String createdBy;
 
-	@Column(name = "created_date")
+	@Override
+	public String toString() {
+		return "StaffBasicProfile{" +
+				"id='" + id + '\'' +
+				", createdBy='" + createdBy + '\'' +
+				", createdDate='" + createdDate + '\'' +
+				", modifiedBy='" + modifiedBy + '\'' +
+				", modifiedDate='" + modifiedDate + '\'' +
+				", userId='" + userId + '\'' +
+				", employeeId='" + employeeId + '\'' +
+				", name='" + name + '\'' +
+				", nameAcronym='" + nameAcronym + '\'' +
+				", currentDesignation='" + currentDesignation + '\'' +
+				", classs='" + classs + '\'' +
+				", type='" + type + '\'' +
+				", email='" + email + '\'' +
+				", dob=" + dob +
+				", panNumber='" + panNumber + '\'' +
+				", aadharNumber='" + aadharNumber + '\'' +
+				", bloodGroup='" + bloodGroup + '\'' +
+				", gender='" + gender + '\'' +
+				", motherName='" + motherName + '\'' +
+				", fatherName='" + fatherName + '\'' +
+				", mobileNo=" + mobileNo +
+				", alternateMobileNo=" + alternateMobileNo +
+				", joiningDate='" + joiningDate + '\'' +
+				", areaOfSpecialization='" + areaOfSpecialization + '\'' +
+				'}';
+	}
+
+	@Column(name = "created_date", nullable = false)
 	private String createdDate;
 
 	@Column(name = "modified_by")
@@ -309,6 +334,16 @@ public class StaffBasicProfile {
 
 	public void setAreaOfSpecialization(String areaOfSpecialization) {
 		this.areaOfSpecialization = areaOfSpecialization;
+	}
+
+	@PreUpdate
+	public void logUserUpdateAttempt() {
+		System.out.println("Pre Update");
+	}
+
+	@PostUpdate
+	public void logUserUpdate() {
+		System.out.println("Post update");
 	}
 	
 }

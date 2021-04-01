@@ -4,6 +4,24 @@ import java.sql.Date;
 
 public class StudentBasicProfileDto {
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    private String createdBy;
+    private String createdDate;
     private String id;
     private String userId;
     private String enrollmentId;

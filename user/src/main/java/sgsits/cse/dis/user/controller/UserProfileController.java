@@ -13,6 +13,7 @@ import sgsits.cse.dis.user.constants.RestAPI;
 import sgsits.cse.dis.user.dtos.*;
 import sgsits.cse.dis.user.exception.InternalServerError;
 import sgsits.cse.dis.user.exception.UnauthorizedException;
+import sgsits.cse.dis.user.service.StaffService;
 import sgsits.cse.dis.user.utility.ExcelHelper;
 import sgsits.cse.dis.user.jwt.JwtResolver;
 import sgsits.cse.dis.user.message.response.ResponseMessage;
@@ -23,12 +24,16 @@ import sgsits.cse.dis.user.serviceImpl.userProfileServiceImpl.*;
 import sgsits.cse.dis.user.serviceImpl.userProfileServiceImpl.UserOtherAchievementService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
 @Api(value = "UserProfile controller")
 @RestController
 public class UserProfileController {
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     private final UserWorkExperienceService userWorkExperienceService;
     private final UserResearchWorkService userResearchWorkService;
@@ -40,6 +45,7 @@ public class UserProfileController {
     private final UserTechnicalActivityService userTechnicalActivityService;
     private final UserAddressService userAddressService;
     private final StaffServiceImpl staffService;
+    private final StaffService staffServiceImpl;
     private final UserOtherAchievementService userOtherAchievementService;
     private final StudentServiceImpl studentService;
     private final StudentService studentServiceImpl;
@@ -54,7 +60,7 @@ public class UserProfileController {
                                  final UserInternshipService userInternshipService,
                                  final UserProjectService userProjectService,
                                  final UserQualificationService userQualificationService,
-                                 final UserTechnicalActivityService userTechnicalActivityService, final UserAddressService userAddressService, StaffServiceImpl staffService, final UserOtherAchievementService userOtherAchievementService, final StudentServiceImpl studentService, StudentService studentServiceImpl) {
+                                 final UserTechnicalActivityService userTechnicalActivityService, final UserAddressService userAddressService, StaffServiceImpl staffService, StaffService staffServiceImpl, final UserOtherAchievementService userOtherAchievementService, final StudentServiceImpl studentService, StudentService studentServiceImpl) {
         this.userWorkExperienceService = userWorkExperienceService;
         this.userResearchWorkService = userResearchWorkService;
         this.userCompetitiveExamService = userCompetitiveExamService;
@@ -65,6 +71,7 @@ public class UserProfileController {
         this.userTechnicalActivityService = userTechnicalActivityService;
         this.userAddressService = userAddressService;
         this.staffService = staffService;
+        this.staffServiceImpl = staffServiceImpl;
         this.userOtherAchievementService = userOtherAchievementService;
         this.studentService = studentService;
         this.studentServiceImpl = studentServiceImpl;
@@ -447,44 +454,27 @@ public class UserProfileController {
         return new ResponseEntity<>(studentService.getStudentBasicProfile(id), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Student Basic Profile Data", response = Object.class, httpMethod = "POST", produces = "application/json")
-    @PostMapping(value = "/addStudentBasicProfile")
-    public ResponseEntity<ResponseMessage> addStudentBasicProfile(
-            HttpServletRequest request, StudentBasicProfileDto studentBasicProfileDto )
+    @ApiOperation(value = "add or update Staff Basic Profile Data", response = Object.class, httpMethod = "POST", produces = "application/json")
+    @PostMapping(value = "/addStaffBasicProfile")
+    public ResponseEntity<ResponseMessage> addStaffBasicProfile(
+            HttpServletRequest request, @RequestBody StaffBasicProfileDto staffBasicProfileDto )
             throws InternalServerError {
+        staffBasicProfileDto.setCreatedBy(jwtResolver.getIdFromJwtToken(request.getHeader("Authorization")));
+        staffBasicProfileDto.setCreatedDate(simpleDateFormat.format(new Date()));
 
-        studentService.addOrUpdateStudentBasicProfile(studentBasicProfileDto);
+        staffServiceImpl.addOrUpdateStaffBasicProfile(staffBasicProfileDto);
         return ResponseEntity.status(HttpStatus.OK).body( new ResponseMessage("Successfully Edited"));
     }
 
-    @PostMapping("/uploadStudentBasicProfile/{sheetNo}")
-    public ResponseEntity<ResponseMessage> uploadStudentFile(@RequestParam("file") MultipartFile file, HttpServletRequest request, @PathVariable int sheetNo) {
-        String message = "";
-
-        if (ExcelHelper.hasExcelFormat(file)) {
-            try {
-                studentServiceImpl.saveExcelData(file,jwtResolver.getIdFromJwtToken(request.getHeader("Authorization")), sheetNo);
-
-                message = "Uploaded the file successfully: " + file.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-            } catch (Exception e) {
-                System.out.println(e);
-                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
-            }
-        }
-
-        message = "Please upload an excel file!";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
-    }
-
-    @ApiOperation(value = "Staff Basic Profile Data", response = Object.class, httpMethod = "POST", produces = "application/json")
-    @PostMapping(value = "/addStaffBasicProfile")
-    public ResponseEntity<ResponseMessage> addStaffBasicProfile(
-            HttpServletRequest request, StaffBasicProfileDto StaffBasicProfileDto )
+    @ApiOperation(value = "Add or update Student Basic Profile", response = Object.class, httpMethod = "POST", produces = "application/json")
+    @PostMapping(value = "/addStudentBasicProfile")
+    public ResponseEntity<ResponseMessage> addStudentBasicProfile(
+            HttpServletRequest request, @RequestBody StudentBasicProfileDto studentBasicProfileDto )
             throws InternalServerError {
 
-        staffService.addOrUpdateStaffBasicProfile(StaffBasicProfileDto);
+        studentBasicProfileDto.setCreatedBy(jwtResolver.getIdFromJwtToken(request.getHeader("Authorization")));
+        studentBasicProfileDto.setCreatedDate(simpleDateFormat.format(new Date()));
+        studentServiceImpl.addStudentBasicProfile(studentBasicProfileDto);
         return ResponseEntity.status(HttpStatus.OK).body( new ResponseMessage("Successfully Edited"));
     }
 
@@ -508,6 +498,28 @@ public class UserProfileController {
         message = "Please upload an excel file!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
     }
+
+    @PostMapping("/uploadStudentBasicProfile/{sheetNo}")
+    public ResponseEntity<ResponseMessage> uploadStudentFile(@RequestParam("file") MultipartFile file, HttpServletRequest request, @PathVariable int sheetNo) {
+        String message = "";
+
+        if (ExcelHelper.hasExcelFormat(file)) {
+            try {
+                studentServiceImpl.saveExcelData(file,jwtResolver.getIdFromJwtToken(request.getHeader("Authorization")), sheetNo);
+
+                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+            } catch (Exception e) {
+                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+            }
+        }
+
+        message = "Please upload an excel file!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+    }
+
+
 
 
     public void getStudentPlacement(HttpServletRequest request) {

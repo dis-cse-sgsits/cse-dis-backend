@@ -74,11 +74,11 @@ public class ExcelHelper {
                             break;
 
                         case 4:
+
                             student.setMobileNo((long)currentCell.getNumericCellValue());
                             break;
 
                         case 5:
-                            System.out.println();
                             java.sql.Date dob = new java.sql.Date(currentCell.getDateCellValue().getDate());
                             student.setDob(dob);
                             break;
@@ -142,53 +142,43 @@ public class ExcelHelper {
 
                     switch (cellIdx) {
                         case 0:
-                            System.out.println(cellIdx);
                             member.setEmployeeId(String.valueOf((int)currentCell.getNumericCellValue()));
                             break;
 
                         case 1:
-                            System.out.println(cellIdx);
                             member.setName(currentCell.getStringCellValue());
                             break;
 
                         case 2:
-                            System.out.println(cellIdx);
                             member.setNameAcronym(currentCell.getStringCellValue());
                             break;
 
                         case 3:
-                            System.out.println(cellIdx);
                             member.setCurrentDesignation(currentCell.getStringCellValue());
                             break;
 
                         case 4:
-                            System.out.println(cellIdx);
                             member.setClasss(currentCell.getStringCellValue());
                             break;
 
                         case 5:
-                            System.out.println(cellIdx);
                             java.sql.Date dob = new java.sql.Date(currentCell.getDateCellValue().getDate());
                             member.setDob(dob);
                             break;
 
                         case 6:
-                            System.out.println(cellIdx);
                             member.setType(currentCell.getStringCellValue());
                             break;
 
                         case 7:
-                            System.out.println(cellIdx);
                             member.setGender(currentCell.getStringCellValue());
                             break;
 
                         case 8:
-                            System.out.println(cellIdx);
                             member.setBloodGroup(currentCell.getStringCellValue());
                             break;
 
                         case 9:
-                            System.out.println(cellIdx);
                             member.setEmail(currentCell.getStringCellValue());
                             break;
 

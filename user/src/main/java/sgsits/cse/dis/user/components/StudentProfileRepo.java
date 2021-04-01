@@ -1,6 +1,7 @@
 package sgsits.cse.dis.user.components;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Component;
 import sgsits.cse.dis.user.exception.InternalServerError;
 import sgsits.cse.dis.user.model.StudentProfile;
@@ -39,8 +40,14 @@ public class StudentProfileRepo {
     public void addOrUpdateStudentProfile(final StudentProfile studentProfile) throws InternalServerError {
 
         try {
+
+            if(studentProfileRepository.existsByEnrollmentId(studentProfile.getEnrollmentId())){
+                StudentProfile student = studentProfileRepository.findByEnrollmentId(studentProfile.getEnrollmentId()).get();
+                studentProfile.setId(student.getId());
+            }
             studentProfileRepository.save(studentProfile);
         } catch (Exception e) {
+            System.out.println(e);
             throw new InternalServerError("Cannot add or update student Profile");
         }
     }

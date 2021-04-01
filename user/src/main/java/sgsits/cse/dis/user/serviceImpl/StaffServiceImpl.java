@@ -136,13 +136,20 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public void addOrUpdateStaffBasicProfile(final StaffBasicProfileDto StaffBasicProfileDto)
+    public void addOrUpdateStaffBasicProfile(final StaffBasicProfileDto staffBasicProfileDto)
             throws InternalServerError {
 
         try {
-            staffBasicProfileRepository.save(staffServiceMapper
-                    .convertStaffBasicProfileDtoIntoStaffBasicProfile(StaffBasicProfileDto));
+            System.out.println(staffBasicProfileDto.getCreatedBy());
+            StaffBasicProfile staffBasicProfile = staffServiceMapper.convertStaffBasicProfileDtoIntoStaffBasicProfile(staffBasicProfileDto);
+            System.out.println(staffBasicProfile.toString());
+
+            // Added created by manually because mapper is unable to set
+            staffBasicProfile.setCreatedBy(staffBasicProfileDto.getCreatedBy());
+            staffBasicProfile.setCreatedDate(staffBasicProfileDto.getCreatedDate());
+            staffBasicProfileRepository.save(staffBasicProfile);
         } catch (Exception e) {
+            System.out.println(e);
             throw new InternalServerError("Cannot update staff basic profile");
         }
 

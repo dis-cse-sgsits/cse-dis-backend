@@ -37,11 +37,10 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void addOrUpdateStudentBasicProfile(final StudentBasicProfileDto studentBasicProfileDto)
+    public void addStudentBasicProfile(final StudentBasicProfileDto studentBasicProfileDto)
             throws InternalServerError {
-
-        studentProfileRepo.addOrUpdateStudentProfile(
-                studentServiceMapper.convertStudentBasicProfileDtoIntoModel(studentBasicProfileDto));
+        StudentProfile studentProfile = studentServiceMapper.convertStudentBasicProfileDtoIntoModel(studentBasicProfileDto);
+        studentProfileRepo.addOrUpdateStudentProfile(studentProfile);
     }
 
     public void saveExcelData(MultipartFile file, String addedBy, int sheetNo) {

@@ -13,7 +13,8 @@ public interface StudentService {
 
     StudentBasicProfileDto getStudentBasicProfile(final String userId) throws InternalServerError;
 
-    void addOrUpdateStudentBasicProfile(final StudentBasicProfileDto studentBasicProfileDto) throws InternalServerError;
+    void addStudentBasicProfile(StudentBasicProfileDto studentBasicProfileDto)
+            throws InternalServerError;
 
     void saveExcelData(MultipartFile file, String addedBy, int sheetNo) throws InternalServerError;
 

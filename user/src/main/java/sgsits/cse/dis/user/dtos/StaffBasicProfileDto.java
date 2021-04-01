@@ -4,6 +4,9 @@ import java.util.Date;
 
 public class StaffBasicProfileDto {
 
+
+    private String createdBy;
+    private String createdDate;
     private String id;
     private String userId;
     private String employeeId;
@@ -141,6 +144,23 @@ public class StaffBasicProfileDto {
     public void setAreaOfSpecialization(final String areaOfSpecialization) {
         this.areaOfSpecialization = areaOfSpecialization;
     }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(final String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(final String createdDate) {
+        this.createdDate = createdDate;
+    }
+
 
     public String getPermanentAddress() {
         return permanentAddress;
