@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class UpdateStatusForm {
     
-    @NotBlank(message="leaave id cannot be blank")
+    @NotBlank(message="leave id cannot be blank")
     Long leaveId;
 
     @NotBlank(message="status cannot be blank")

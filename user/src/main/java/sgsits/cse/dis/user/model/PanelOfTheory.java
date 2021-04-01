@@ -6,12 +6,17 @@ import java.util.List;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 @Entity
+@IdClass(PanelOfTheoryId.class)
 public class PanelOfTheory {
     
     @Id
     private String subjectCode;
+
+    @Id
+    private String year;
 
     @ElementCollection
     private List<String> faculties=new ArrayList<String>();
@@ -50,5 +55,13 @@ public class PanelOfTheory {
 
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 }

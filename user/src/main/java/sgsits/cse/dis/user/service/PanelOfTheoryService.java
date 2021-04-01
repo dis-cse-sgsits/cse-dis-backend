@@ -14,5 +14,5 @@ public interface PanelOfTheoryService {
     String createPanelOfTheory(CreatePanelOfTheoryForm createPanelOfTheoryForm) throws ConflictException;
     List<PanelOfTheory> getAllPanelOfTheory();
     String updatePanelOfTheory(CreatePanelOfTheoryForm createPanelOfTheoryForm) throws ConflictException;
-    void deletePanelOfTheory(String subjectCode) throws ConflictException;
+    void deletePanelOfTheory(String subjectCode, String year) throws ConflictException;
 }

@@ -11,10 +11,10 @@ import sgsits.cse.dis.user.model.PanelOfTheory;
 @Repository
 public interface PanelOfTheoryRepository extends JpaRepository<PanelOfTheory, String> {
 
-    boolean existsBySubjectCode(String subjectCode);
+    boolean existsBySubjectCodeAndYear(String subjectCode, String year);
     
     @Modifying
     @Transactional
-    Long deleteBySubjectCode(String subjectCode);
+    Long deleteBySubjectCodeAndYear(String subjectCode, String year);
     
 }

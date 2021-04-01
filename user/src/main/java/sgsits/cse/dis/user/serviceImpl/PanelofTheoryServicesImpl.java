@@ -1,5 +1,6 @@
 package sgsits.cse.dis.user.serviceImpl;
 
+import java.time.Year;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -26,6 +27,7 @@ public class PanelofTheoryServicesImpl implements PanelOfTheoryService {
         panelOfTheory.setSubjectCode(createPanelOfTheoryForm.getSubjectCode());
         panelOfTheory.setFaculties(createPanelOfTheoryForm.getFaculties());
         panelOfTheory.setSubjectName(createPanelOfTheoryForm.getSubjectName());
+        panelOfTheory.setYear(createPanelOfTheoryForm.getYear());
         PanelOfTheory test =panelOfTheoryRepository.save(panelOfTheory);
         if(test.equals(null))
 					throw new ConflictException("Unable to create panel.");
@@ -38,7 +40,7 @@ public class PanelofTheoryServicesImpl implements PanelOfTheoryService {
     }
 
     public String updatePanelOfTheory(CreatePanelOfTheoryForm createPanelOfTheoryForm) throws ConflictException {
-        if(! panelOfTheoryRepository.existsBySubjectCode(createPanelOfTheoryForm.getSubjectCode()) )
+        if(! panelOfTheoryRepository.existsBySubjectCodeAndYear(createPanelOfTheoryForm.getSubjectCode(), createPanelOfTheoryForm.getYear()))
             throw new ConflictException("The given Panel does not exist.");
 
         PanelOfTheory panelOfTheory = new PanelOfTheory();
@@ -46,6 +48,7 @@ public class PanelofTheoryServicesImpl implements PanelOfTheoryService {
         panelOfTheory.setSubjectCode(createPanelOfTheoryForm.getSubjectCode());
         panelOfTheory.setFaculties(createPanelOfTheoryForm.getFaculties());
         panelOfTheory.setSubjectName(createPanelOfTheoryForm.getSubjectName());
+        panelOfTheory.setYear(createPanelOfTheoryForm.getYear());
         PanelOfTheory test =panelOfTheoryRepository.save(panelOfTheory);
         if(test.equals(null))
 					throw new ConflictException("Unable to update panel.");
@@ -55,8 +58,8 @@ public class PanelofTheoryServicesImpl implements PanelOfTheoryService {
     }
 
     @Override
-    public void deletePanelOfTheory(String subjectCode) throws ConflictException {
-        if(panelOfTheoryRepository.deleteBySubjectCode(subjectCode)<=0)
+    public void deletePanelOfTheory(String subjectCode, String year) throws ConflictException {
+        if(panelOfTheoryRepository.deleteBySubjectCodeAndYear(subjectCode, year)<=0)
             throw new ConflictException("Cannot delete panel");
         
     }

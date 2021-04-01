@@ -9,6 +9,9 @@ public class CreatePanelOfTheoryForm {
     @NotBlank(message = "subject code cannot be blank")
     private String subjectCode;
 
+    @NotBlank(message = "year cannot be blank")
+    private String year;
+
     private String subjectName;
     
     private String course;
@@ -38,5 +41,11 @@ public class CreatePanelOfTheoryForm {
     }
     public void setFaculties(List<String> faculties) {
         this.faculties = faculties;
+    }
+    public String getYear() {
+        return year;
+    }
+    public void setYear(String year) {
+        this.year = year;
     }
 }

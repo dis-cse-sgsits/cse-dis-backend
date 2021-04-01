@@ -47,7 +47,7 @@ public class PanelOfTheoryController {
         return new ResponseEntity<String>(panelofTheoryServicesImpl.createPanelOfTheory(createPanelOfTheoryForm), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "create panel of theory",response = String.class, httpMethod = "POST", produces = "text/plain")
+    @ApiOperation(value = "create panel of theory",response = String.class, httpMethod = "PUT", produces = "text/plain")
     @PutMapping(path = RestAPI.UPDATE_PANEL_OF_THEORY, produces = "text/plain")
     public ResponseEntity<String> updatePanelOfTheory(@Valid @RequestBody CreatePanelOfTheoryForm createPanelOfTheoryForm) throws ConflictException
     {
@@ -56,8 +56,9 @@ public class PanelOfTheoryController {
 
     @ApiOperation(value="delete a panel of theory", response = String.class, httpMethod = "DELETE", produces = "application/json")
 	@DeleteMapping(path=RestAPI.DELETE_PANEL_OF_THEORY, produces = "application/json")
-	public ResponseEntity<ResponseMessage> deletePanelOfTheory(@PathVariable String subjectCode) throws ConflictException{
-		panelofTheoryServicesImpl.deletePanelOfTheory(subjectCode);
+	public ResponseEntity<ResponseMessage> deletePanelOfTheory(@PathVariable("subjectCode") String subjectCode, @PathVariable("year") String year) throws ConflictException{
+		// return new ResponseEntity<ResponseMessage>(new ResponseMessage(subjectCode),HttpStatus.OK);
+        panelofTheoryServicesImpl.deletePanelOfTheory(subjectCode, year);
 		return new ResponseEntity<ResponseMessage>(new ResponseMessage("Panel of theory deleted successfully. "),HttpStatus.OK);
 	}
 }

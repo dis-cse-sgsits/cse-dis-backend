@@ -110,6 +110,54 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
         return numberOfDays;
     }
 
+    public String getPrefix(String fromDate) throws ParseException {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = df.parse(fromDate);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        List<Holiday> holidays = holidayRepository.findAll();
+        List<String> dates = new ArrayList<String>();
+        for (Holiday h : holidays) {
+            dates.add(h.getDate());
+        }
+        Date d;
+        String strDate;
+        do {
+            cal.add(Calendar.DATE, -1);
+            d = cal.getTime();
+            strDate = df.format(d);
+        } while (dates.contains(strDate) || Calendar.SATURDAY == cal.get(Calendar.DAY_OF_WEEK)
+                || Calendar.SUNDAY == cal.get(Calendar.DAY_OF_WEEK));
+        cal.add(Calendar.DATE, 1);
+        d = cal.getTime();
+        strDate = df.format(d);
+        return strDate;
+    }
+
+    public String getSuffix(String toDate) throws ParseException {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = df.parse(toDate);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        List<Holiday> holidays = holidayRepository.findAll();
+        List<String> dates = new ArrayList<String>();
+        for (Holiday h : holidays) {
+            dates.add(h.getDate());
+        }
+        Date d;
+        String strDate;
+        do {
+            cal.add(Calendar.DATE, 1);
+            d = cal.getTime();
+            strDate = df.format(d);
+        } while (dates.contains(strDate) || Calendar.SATURDAY == cal.get(Calendar.DAY_OF_WEEK)
+                || Calendar.SUNDAY == cal.get(Calendar.DAY_OF_WEEK));
+        cal.add(Calendar.DATE, -1);
+        d = cal.getTime();
+        strDate = df.format(d);
+        return strDate;
+    }
+
     @Override
     @Transactional
     public Long applyLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException {
@@ -148,6 +196,16 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
         staffLeave.setNoOfDays(getDays(applyStaffLeaveForm.getFromDate(), applyStaffLeaveForm.getToDate(),
                 applyStaffLeaveForm.isConsiderHolidays(), applyStaffLeaveForm.getFromDuration(),
                 applyStaffLeaveForm.getToDuration()));
+
+        if (!applyStaffLeaveForm.getFromDuration().equals("Second Half"))
+            staffLeave.setPrefix(getPrefix(applyStaffLeaveForm.getFromDate()));
+        else
+            staffLeave.setPrefix(applyStaffLeaveForm.getFromDate());
+
+        if (!applyStaffLeaveForm.getToDuration().equals("First Half"))
+            staffLeave.setSuffix(getSuffix(applyStaffLeaveForm.getToDate()));
+        else
+            staffLeave.setSuffix(applyStaffLeaveForm.getToDate());
 
         StaffLeave test = staffLeaveRepository.save(staffLeave);
         return test.getLeaveId();
@@ -289,7 +347,11 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     }
 
     public List<StaffLeave> getAllLeaves() {
-        List<StaffLeave> leaves =  staffLeaveRepository.findAll();
+        List<StaffLeave> leaves = staffLeaveRepository.findAll();
+        for (StaffLeave l : leaves) {
+            String name = staffRepository.findNameByUsername(l.getAppliedBy());
+            l.setAppliedBy(name);
+        }
         return leaves;
     }
 
@@ -328,9 +390,10 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
 
     @Override
     @Transactional
-    public void rejoin(StaffRejoinForm staffRejoinForm) {
+    public void rejoin(StaffRejoinForm staffRejoinForm) throws ParseException {
         StaffLeave leave = staffLeaveRepository.findByLeaveId(staffRejoinForm.getLeaveId());
         leave.setStatus("rejoined");
+        leave.setToDate(staffRejoinForm.getRejoinDate());
         double daysBefore = leave.getNoOfDays();
         double daysAfter = 0;
         try {
@@ -354,6 +417,15 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
             staffLifelongLeaveRepository.save(l);
         }
         leave.setNoOfDays(daysAfter);
+        if(! leave.getFromDuration().equals("Second Half"))
+        leave.setPrefix(getPrefix(leave.getFromDate()));
+        else
+        leave.setPrefix(leave.getFromDate());
+
+        if(! leave.getToDuration().equals("First Half"))
+        leave.setSuffix(getSuffix(leave.getToDate()));
+        else
+        leave.setSuffix(leave.getToDate());
         staffLeaveRepository.save(leave);
     }
 
@@ -392,8 +464,8 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
         return "Leave Credited";
     }
 
-    public long updateLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException
-    {
+    @Override
+    public long updateLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException {
         String userId = applyStaffLeaveForm.getUserId();
         StaffLeaveTypes leaveType = staffLeaveTypeRepository.findByLeaveName(applyStaffLeaveForm.getTypeOfLeave());
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -415,7 +487,7 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
         staffLeave.setFromDate(applyStaffLeaveForm.getFromDate());
         staffLeave.setToDate(applyStaffLeaveForm.getToDate());
         staffLeave.setRemarks(applyStaffLeaveForm.getRemarks());
-        staffLeave.setCreatedDate(simpleDateFormat.format(new Date()));
+        staffLeave.setModifiedDate(simpleDateFormat.format(new Date()));
         staffLeave.setAppliedBy(applyStaffLeaveForm.getAppliedBy());
         staffLeave.setDetails(applyStaffLeaveForm.getDetails());
         staffLeave.setRemarks(applyStaffLeaveForm.getRemarks());
@@ -430,6 +502,16 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
                 applyStaffLeaveForm.isConsiderHolidays(), applyStaffLeaveForm.getFromDuration(),
                 applyStaffLeaveForm.getToDuration()));
 
+        if (!applyStaffLeaveForm.getFromDuration().equals("Second Half"))
+            staffLeave.setPrefix(getPrefix(applyStaffLeaveForm.getFromDate()));
+        else
+            staffLeave.setPrefix(applyStaffLeaveForm.getFromDate());
+
+        if (!applyStaffLeaveForm.getToDuration().equals("First Half"))
+            staffLeave.setSuffix(getSuffix(applyStaffLeaveForm.getToDate()));
+        else
+            staffLeave.setSuffix(applyStaffLeaveForm.getToDate());
+
         StaffLeave test = staffLeaveRepository.save(staffLeave);
         return test.getLeaveId();
     }
@@ -438,6 +520,12 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     public List<StaffLeave> getMyLeaves(String username) {
         List<StaffLeave> leaves = staffLeaveRepository.findByAppliedBy(username);
         return leaves;
+    }
+
+    @Override
+    public StaffLeaveAccountResponse getMyLeaveAccount(String username) {
+        String name = staffRepository.findNameByUsername(username);
+        return getLeaveLeft(name).get(0);
     }
 
 }
@@ -556,13 +644,12 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
 // return staffLeaveSettingsRepository.findTopByOrderByIdDesc();
 // }
 
-
 // public List<StaffLeave> getAllLeavesByName(String name) {
-//     List<StaffLeave> leaves = new ArrayList<StaffLeave>();
-//     Optional<StaffBasicProfile> s = staffRepository.findByName(name);
-//     if (s.isPresent()) {
-//         StaffBasicProfile st = s.get();
-//         leaves = staffLeaveRepository.findByUserId(st.getUserId());
-//     }
-//     return leaves;
+// List<StaffLeave> leaves = new ArrayList<StaffLeave>();
+// Optional<StaffBasicProfile> s = staffRepository.findByName(name);
+// if (s.isPresent()) {
+// StaffBasicProfile st = s.get();
+// leaves = staffLeaveRepository.findByUserId(st.getUserId());
+// }
+// return leaves;
 // }

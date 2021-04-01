@@ -35,9 +35,11 @@ public interface StaffLeaveService {
     
     List<StaffLeaveTypes> getAllLeaveTypes();
     
-    void rejoin(StaffRejoinForm staffRejoinForm);
+    void rejoin(StaffRejoinForm staffRejoinForm) throws ParseException;
     
     String creditLeave(StaffLeaveCreditForm staffLeaveCreditForm) throws ConflictException;
     
     long updateLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException;
+
+    StaffLeaveAccountResponse getMyLeaveAccount(String username);
 }
