@@ -474,6 +474,7 @@ public class UserProfileController {
 
         studentBasicProfileDto.setCreatedBy(jwtResolver.getIdFromJwtToken(request.getHeader("Authorization")));
         studentBasicProfileDto.setCreatedDate(simpleDateFormat.format(new Date()));
+
         studentServiceImpl.addStudentBasicProfile(studentBasicProfileDto);
         return ResponseEntity.status(HttpStatus.OK).body( new ResponseMessage("Successfully Edited"));
     }

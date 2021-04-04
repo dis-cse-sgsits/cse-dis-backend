@@ -45,6 +45,7 @@ public class StudentServiceImpl implements StudentService {
 
     public void saveExcelData(MultipartFile file, String addedBy, int sheetNo) {
         try {
+            System.out.println("hello");
             List<StudentProfile> students = ExcelHelper.excelToStudents(file.getInputStream(), addedBy, sheetNo);
             studentProfileRepo.saveAll(students);
         } catch (IOException | InternalServerError e) {

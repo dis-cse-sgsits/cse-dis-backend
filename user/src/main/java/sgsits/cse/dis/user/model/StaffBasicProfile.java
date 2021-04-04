@@ -23,35 +23,7 @@ public class StaffBasicProfile {
 	@Column(name = "created_by", nullable = false)
 	private String createdBy;
 
-	@Override
-	public String toString() {
-		return "StaffBasicProfile{" +
-				"id='" + id + '\'' +
-				", createdBy='" + createdBy + '\'' +
-				", createdDate='" + createdDate + '\'' +
-				", modifiedBy='" + modifiedBy + '\'' +
-				", modifiedDate='" + modifiedDate + '\'' +
-				", userId='" + userId + '\'' +
-				", employeeId='" + employeeId + '\'' +
-				", name='" + name + '\'' +
-				", nameAcronym='" + nameAcronym + '\'' +
-				", currentDesignation='" + currentDesignation + '\'' +
-				", classs='" + classs + '\'' +
-				", type='" + type + '\'' +
-				", email='" + email + '\'' +
-				", dob=" + dob +
-				", panNumber='" + panNumber + '\'' +
-				", aadharNumber='" + aadharNumber + '\'' +
-				", bloodGroup='" + bloodGroup + '\'' +
-				", gender='" + gender + '\'' +
-				", motherName='" + motherName + '\'' +
-				", fatherName='" + fatherName + '\'' +
-				", mobileNo=" + mobileNo +
-				", alternateMobileNo=" + alternateMobileNo +
-				", joiningDate='" + joiningDate + '\'' +
-				", areaOfSpecialization='" + areaOfSpecialization + '\'' +
-				'}';
-	}
+
 
 	@Column(name = "created_date", nullable = false)
 	private String createdDate;
@@ -114,7 +86,7 @@ public class StaffBasicProfile {
 	private Long alternateMobileNo;
 	
 	@Column(name = "joining_date")
-	private String joiningDate;
+	private Date joiningDate;
 	
 	@Column(name = "area_of_specialization")
 	private String areaOfSpecialization;
@@ -127,8 +99,9 @@ public class StaffBasicProfile {
 
 
 
-	public StaffBasicProfile(String createdBy, String createdDate, String employeeId, String name, String currentDesignation, String classs,
-							 String type, String email, Date dob, Long mobileNo, String joiningDate) {
+	public StaffBasicProfile(String createdBy, String createdDate, String employeeId,
+							 String name, String currentDesignation, String classs,
+							 String type, String email, Date dob, Long mobileNo, Date joiningDate) {
 		super();
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
@@ -320,11 +293,11 @@ public class StaffBasicProfile {
 		this.alternateMobileNo = alternateMobileNo;
 	}
 
-	public String getJoiningDate() {
+	public Date getJoiningDate() {
 		return joiningDate;
 	}
 
-	public void setJoiningDate(String joiningDate) {
+	public void setJoiningDate(Date joiningDate) {
 		this.joiningDate = joiningDate;
 	}
 
@@ -334,6 +307,36 @@ public class StaffBasicProfile {
 
 	public void setAreaOfSpecialization(String areaOfSpecialization) {
 		this.areaOfSpecialization = areaOfSpecialization;
+	}
+
+	@Override
+	public String toString() {
+		return "StaffBasicProfile{" +
+				"id='" + id + '\'' +
+				", createdBy='" + createdBy + '\'' +
+				", createdDate='" + createdDate + '\'' +
+				", modifiedBy='" + modifiedBy + '\'' +
+				", modifiedDate='" + modifiedDate + '\'' +
+				", userId='" + userId + '\'' +
+				", employeeId='" + employeeId + '\'' +
+				", name='" + name + '\'' +
+				", nameAcronym='" + nameAcronym + '\'' +
+				", currentDesignation='" + currentDesignation + '\'' +
+				", classs='" + classs + '\'' +
+				", type='" + type + '\'' +
+				", email='" + email + '\'' +
+				", dob=" + dob +
+				", panNumber='" + panNumber + '\'' +
+				", aadharNumber='" + aadharNumber + '\'' +
+				", bloodGroup='" + bloodGroup + '\'' +
+				", gender='" + gender + '\'' +
+				", motherName='" + motherName + '\'' +
+				", fatherName='" + fatherName + '\'' +
+				", mobileNo=" + mobileNo +
+				", alternateMobileNo=" + alternateMobileNo +
+				", joiningDate='" + joiningDate + '\'' +
+				", areaOfSpecialization='" + areaOfSpecialization + '\'' +
+				'}';
 	}
 
 	@PreUpdate

@@ -19,13 +19,14 @@ public class StudentBasicProfileDto {
     public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
-
+//    private String id;
     private String createdBy;
     private String createdDate;
-    private String id;
+//    private String modifiedBy;
+//    private String modifiedDate;
     private String userId;
     private String enrollmentId;
-    private String profilePicture;
+//    private String profilePicture;
     private String fullName;
     private int admissionYear;
     private String courseId;

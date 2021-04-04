@@ -70,10 +70,19 @@ public class StaffServiceImpl implements StaffService {
             ConflictException, DataIntegrityViolationException {
 
         try {
-            StaffBasicProfile test = staffBasicProfileRepository.save(new StaffBasicProfile(addedBy, simpleDateFormat.format(new Date()), addNewUser.getEmployeeId(),
-                    addNewUser.getName(), addNewUser.getCurrentDesignation(), addNewUser.getClasss(),
-                    addNewUser.getType(), addNewUser.getEmail(), addNewUser.getDob(), addNewUser.getMobileNo(),
-                    addNewUser.getJoiningDate()));
+            StaffBasicProfile test = staffBasicProfileRepository.save(
+                    new StaffBasicProfile(
+                            addedBy,
+                            simpleDateFormat.format(new Date()),
+                            addNewUser.getEmployeeId(),
+                            addNewUser.getName(),
+                            addNewUser.getCurrentDesignation(),
+                            addNewUser.getClasss(),
+                            addNewUser.getType(),
+                            addNewUser.getEmail(),
+                            addNewUser.getDob(),
+                            addNewUser.getMobileNo(),
+                            addNewUser.getJoiningDate()));
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Employee already Exists.");
         }
@@ -140,13 +149,16 @@ public class StaffServiceImpl implements StaffService {
             throws InternalServerError {
 
         try {
-            System.out.println(staffBasicProfileDto.getCreatedBy());
             StaffBasicProfile staffBasicProfile = staffServiceMapper.convertStaffBasicProfileDtoIntoStaffBasicProfile(staffBasicProfileDto);
-            System.out.println(staffBasicProfile.toString());
 
             // Added created by manually because mapper is unable to set
             staffBasicProfile.setCreatedBy(staffBasicProfileDto.getCreatedBy());
             staffBasicProfile.setCreatedDate(staffBasicProfileDto.getCreatedDate());
+
+            if(staffBasicProfileRepository.existsByEmployeeId(staffBasicProfile.getEmployeeId())){
+                StaffBasicProfile staff = staffBasicProfileRepository.findByEmployeeId(staffBasicProfile.getEmployeeId()).get();
+                staffBasicProfile.setId(staff.getId());
+            }
             staffBasicProfileRepository.save(staffBasicProfile);
         } catch (Exception e) {
             System.out.println(e);
@@ -154,6 +166,8 @@ public class StaffServiceImpl implements StaffService {
         }
 
     }
+
+
 
     public void saveExcelData(MultipartFile file, String addedBy, int sheetNo) {
         try {

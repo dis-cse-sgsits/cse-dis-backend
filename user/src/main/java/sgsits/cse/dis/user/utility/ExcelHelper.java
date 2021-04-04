@@ -57,52 +57,82 @@ public class ExcelHelper {
                     Cell currentCell = cellsInRow.next();
 
                     switch (cellIdx) {
-                        case 0:
+
+                        case 0: // enrollment id
                             student.setEnrollmentId(currentCell.getStringCellValue());
                             break;
 
-                        case 1:
+
+                        case 1: //full name
                             student.setFullName(currentCell.getStringCellValue());
                             break;
 
-                        case 2:
+                        case 2: // admission year
                             student.setAdmissionYear((int)currentCell.getNumericCellValue());
                             break;
 
-                        case 3:
+                        case 3: //course id
                             student.setCourseId(currentCell.getStringCellValue());
                             break;
 
-                        case 4:
-
+                        case 4: // Mobile Number
                             student.setMobileNo((long)currentCell.getNumericCellValue());
                             break;
 
-                        case 5:
+                        case 5://email
+                            student.setEmail(currentCell.getStringCellValue());
+                            break;
+
+                        case 6: // Dob
                             java.sql.Date dob = new java.sql.Date(currentCell.getDateCellValue().getDate());
                             student.setDob(dob);
                             break;
 
-                        case 6:
+                        case 7://father name
+                            student.setFatherName(currentCell.getStringCellValue());
+                            break;
+
+                        case 8://father Contact
+                            student.setFatherContact((long)currentCell.getNumericCellValue());
+                            break;
+
+                        case 9://father email
+                            student.setFatherEmail(currentCell.getStringCellValue());
+                            break;
+
+                        case 10:// mother name
+                            student.setMotherName(currentCell.getStringCellValue());
+                            break;
+
+                        case 11://mother contact
+                            student.setMotherContact((long)currentCell.getNumericCellValue());
+                            break;
+
+                        case 12:// mother email
+                            student.setMotherEmail(currentCell.getStringCellValue());
+                            break;
+
+                        case 13:// category
                             student.setCategory(currentCell.getStringCellValue());
                             break;
 
-                        case 7:
+                        case 14:// gender
                             student.setGender(currentCell.getStringCellValue());
                             break;
 
-                        case 8:
+                        case 15: //blood group
                             student.setBloodGroup(currentCell.getStringCellValue());
                             break;
 
                         default:
                             break;
                     }
-                    student.setCreatedBy(createdBy);
+
                     student.setCreatedDate(simpleDateFormat.format(new Date()));
+//                    System.out.println(cellIdx);
                     cellIdx++;
                 }
-
+                student.setCreatedBy(createdBy);
                 students.add(student);
             }
 
@@ -137,49 +167,89 @@ public class ExcelHelper {
                 StaffBasicProfile member = new StaffBasicProfile();
 
                 int cellIdx = 0;
+
                 while (cellsInRow.hasNext()) {
                     Cell currentCell = cellsInRow.next();
 
                     switch (cellIdx) {
-                        case 0:
+
+                        case 0:// employeeId;
                             member.setEmployeeId(String.valueOf((int)currentCell.getNumericCellValue()));
                             break;
 
-                        case 1:
+
+                        case 1: //name
                             member.setName(currentCell.getStringCellValue());
                             break;
 
-                        case 2:
+
+                        case 2: // nameAcronym
                             member.setNameAcronym(currentCell.getStringCellValue());
                             break;
 
-                        case 3:
+
+                        case 3: //currentDesignation
                             member.setCurrentDesignation(currentCell.getStringCellValue());
                             break;
 
-                        case 4:
+                        case 4: //classs
                             member.setClasss(currentCell.getStringCellValue());
                             break;
 
-                        case 5:
+
+                        case 5: //type
+                            member.setType(currentCell.getStringCellValue());
+                            break;
+
+
+                        case 6: //email
+                            member.setEmail(currentCell.getStringCellValue());
+                            break;
+
+                        case 7: //dob
                             java.sql.Date dob = new java.sql.Date(currentCell.getDateCellValue().getDate());
                             member.setDob(dob);
                             break;
 
-                        case 6:
-                            member.setType(currentCell.getStringCellValue());
+                        case 8: // pan number
+                            member.setPanNumber(currentCell.getStringCellValue());
                             break;
 
-                        case 7:
-                            member.setGender(currentCell.getStringCellValue());
+                        case 9: //aadhar number
+                            member.setAadharNumber(String.valueOf((int)currentCell.getNumericCellValue()));
                             break;
 
-                        case 8:
+                        case 10: //BloodGroup
                             member.setBloodGroup(currentCell.getStringCellValue());
                             break;
 
-                        case 9:
-                            member.setEmail(currentCell.getStringCellValue());
+                        case 11: //Gender
+                            member.setGender(currentCell.getStringCellValue());
+                            break;
+
+                        case 12: // motherName
+                            member.setMotherName(currentCell.getStringCellValue());
+                            break;
+
+                        case 13: //fathername
+                            member.setFatherName(currentCell.getStringCellValue());
+                            break;
+
+                        case 14: // MobileNo
+                            member.setMobileNo((long) currentCell.getNumericCellValue());
+                            break;
+
+                        case 15: //alternateMobileNo
+                            member.setAlternateMobileNo((long)currentCell.getNumericCellValue());
+                            break;
+
+                        case 16: //Joining date
+                            java.sql.Date joiningDate = new java.sql.Date(currentCell.getDateCellValue().getDate());
+                            member.setJoiningDate(joiningDate);
+                            break;
+
+                        case 17: //Area of spec
+                            member.setAreaOfSpecialization(currentCell.getStringCellValue());
                             break;
 
                         default:
@@ -187,7 +257,9 @@ public class ExcelHelper {
                     }
                     member.setCreatedBy(createdBy);
                     member.setCreatedDate(simpleDateFormat.format(new Date()));
+//                    System.out.println(cellIdx);
                     cellIdx++;
+
                 }
 
                 staff.add(member);
