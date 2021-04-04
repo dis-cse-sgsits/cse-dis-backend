@@ -26,7 +26,7 @@ public class StaffBasicProfileDto {
     private String fatherName;
     private long mobileNo;
     private Long alternateMobileNo;
-    private String joiningDate;
+    private Date joiningDate;
     private String areaOfSpecialization;
 
     public String getClasss() {
@@ -61,11 +61,11 @@ public class StaffBasicProfileDto {
         this.aadharNumber = aadharNumber;
     }
 
-    public String getJoiningDate() {
+    public Date getJoiningDate() {
         return joiningDate;
     }
 
-    public void setJoiningDate(String joiningDate) {
+    public void setJoiningDate(Date joiningDate) {
         this.joiningDate = joiningDate;
     }
 
