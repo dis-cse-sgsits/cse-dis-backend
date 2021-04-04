@@ -10,4 +10,5 @@ public class GradesURLConstants {
 
 	public static final String GET_STUDENTS_OVREVIEW_REPORT = "/getStudentsOverviewReport/{userid}";
 	public static final String GET_STUDENTS_USER_REPORT = "/getStudentsUserReport/{courseid}/{userid}";
+	public static final String GET_STUDENTS_USER_ID = "/getStudentsUserId/{username}";
 }
