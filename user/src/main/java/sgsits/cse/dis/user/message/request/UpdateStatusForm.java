@@ -9,6 +9,8 @@ public class UpdateStatusForm {
 
     @NotBlank(message="status cannot be blank")
     String status;
+
+    String remarks;
     
     public Long getLeaveId() {
         return leaveId;
@@ -24,5 +26,13 @@ public class UpdateStatusForm {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

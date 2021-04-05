@@ -42,4 +42,8 @@ public interface StaffLeaveService {
     long updateLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException;
 
     StaffLeaveAccountResponse getMyLeaveAccount(String username);
+
+    StaffLeave getLeaveById(Long id);
+
+    String cancelLeave(Long id);
 }

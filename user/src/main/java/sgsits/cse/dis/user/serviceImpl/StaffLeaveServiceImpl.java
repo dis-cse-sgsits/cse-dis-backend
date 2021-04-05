@@ -276,6 +276,7 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
             }
         }
         leave.setStatus(status);
+        leave.setRemarks(updateStatus.getRemarks());
         staffLeaveRepository.save(leave);
         return 1;
     }
@@ -391,17 +392,52 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     @Override
     @Transactional
     public void rejoin(StaffRejoinForm staffRejoinForm) throws ParseException {
+        Date d;
+        String strDate;
         StaffLeave leave = staffLeaveRepository.findByLeaveId(staffRejoinForm.getLeaveId());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = df.parse(staffRejoinForm.getRejoinDate());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        System.out.println("here 8");
+        if(staffRejoinForm.getToDuration().equals("First Half"))
+        {
+            cal.add(Calendar.DATE, -1);
+            d = cal.getTime();
+            strDate = df.format(d);
+            leave.setToDate(strDate);
+            if(leave.getFromDate().equals(leave.getToDate()))
+            {
+                if(leave.getFromDuration().equals("First Half") || leave.getFromDuration().equals("full") )
+                {
+                    leave.setToDuration("full");
+                    leave.setFromDuration("full");
+                }
+                else
+                {
+                    leave.setToDuration("Second Half");
+                }
+            }
+            else
+            {
+                leave.setToDuration("full");
+            }
+        }
+        else
+        {
+            leave.setToDuration("First Half");
+            leave.setToDate(staffRejoinForm.getRejoinDate());
+        }
         leave.setStatus("rejoined");
-        leave.setToDate(staffRejoinForm.getRejoinDate());
         double daysBefore = leave.getNoOfDays();
         double daysAfter = 0;
         try {
-            daysAfter = getDays(leave.getFromDate(), staffRejoinForm.getRejoinDate(), leave.isConsiderHolidays(),
+            daysAfter = getDays(leave.getFromDate(), leave.getToDate(), leave.isConsiderHolidays(),
                     leave.getFromDuration(), leave.getToDuration());
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        System.out.println("days after"+ daysAfter);
         StaffLeaveTypes leaveType = staffLeaveTypeRepository.findByLeaveName(leave.getTypeOfLeave());
         if (leaveType.getLeaveType().equals("annual")) {
             StaffAnnualLeave l = staffAnnualLeaveRepository.findByUserIdAndLeaveNameAndToDate(leave.getUserId(),
@@ -417,15 +453,20 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
             staffLifelongLeaveRepository.save(l);
         }
         leave.setNoOfDays(daysAfter);
+
         if(! leave.getFromDuration().equals("Second Half"))
         leave.setPrefix(getPrefix(leave.getFromDate()));
         else
         leave.setPrefix(leave.getFromDate());
 
         if(! leave.getToDuration().equals("First Half"))
-        leave.setSuffix(getSuffix(leave.getToDate()));
+            leave.setSuffix(getSuffix(leave.getToDate()));
         else
-        leave.setSuffix(leave.getToDate());
+            leave.setSuffix(leave.getToDate());
+
+        if(staffRejoinForm.getRemarks()!=null)
+            leave.setRemarks(staffRejoinForm.getRemarks());
+            
         staffLeaveRepository.save(leave);
     }
 
@@ -526,6 +567,40 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     public StaffLeaveAccountResponse getMyLeaveAccount(String username) {
         String name = staffRepository.findNameByUsername(username);
         return getLeaveLeft(name).get(0);
+    }
+
+    @Override
+    public StaffLeave getLeaveById(Long id) {
+        return staffLeaveRepository.findByLeaveId(id);
+    }
+
+    @Override
+    public String cancelLeave(Long id) {
+        StaffLeave leave = staffLeaveRepository.findByLeaveId(id);
+        double days = leave.getNoOfDays();
+        StaffLeaveTypes lt = staffLeaveTypeRepository.findByLeaveName(leave.getTypeOfLeave());
+        if(leave.getStatus().equals("approved"))
+        {
+            if(lt.getLeaveType().equals("annual"))
+            {
+                StaffAnnualLeave l = staffAnnualLeaveRepository.findByUserIdAndLeaveNameAndToDate(leave.getUserId(),
+                    leave.getTypeOfLeave(), lt.getToDate());
+                l.setLeavesApplied(l.getLeavesApplied()-days);
+                l.setLeavesLeft(l.getLeavesLeft()+days);
+                staffAnnualLeaveRepository.save(l);
+            }
+            else
+            {
+                StaffLifelongLeave l = staffLifelongLeaveRepository.findByUserIdAndLeaveName(leave.getUserId(),
+                    leave.getTypeOfLeave());
+                l.setLeavesApplied(l.getLeavesApplied()-days);
+                l.setLeavesLeft(l.getLeavesLeft()+days);
+                staffLifelongLeaveRepository.save(l);
+            }
+        }
+        leave.setStatus("cancelled");
+        staffLeaveRepository.save(leave);
+        return "Leave cancelled";
     }
 
 }

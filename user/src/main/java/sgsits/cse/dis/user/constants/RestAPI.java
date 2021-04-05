@@ -34,9 +34,11 @@ public class RestAPI {
 	public static final String GET_LEAVE_BY_STATUS="/getLeaves/{status}";
 	public static final String GET_LEAVES_LEFT_BY_NAME="/getLeavesLeft"; //Pass parameter name
 	public static final String GET_ALL_LEAVES_FOR_FACULTY="/getAllLeaves"; 
+	public static final String GET_LEAVE_BY_ID="/getLeaveById"; //Pass parameter id
 	public static final String UPDATE_STATUS_BY_LEAVE_ID="/updateStatus";
 	public static final String REJOIN_AFTER_LEAVE="/rejoin";
 	public static final String CREDIT_LEAVE = "/creditLeave";
+	public static final String CANCEL_LEAVE = "/cancelLeave";
 	public static final String UPDATE_LEAVE = "/updateLeave";
 	public static final String GET_MY_LEAVES =  "/getMyLeaves/{username}";
 	public static final String GET_MY_LEAVE_ACCOUNT =  "/getMyLeaveAccount";

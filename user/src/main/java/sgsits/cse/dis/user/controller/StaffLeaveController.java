@@ -95,6 +95,12 @@ public class StaffLeaveController {
         return new ResponseEntity<List<StaffLeave>>(staffLeaveServiceImpl.getAllLeaves(), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "get leave by id", response = StaffLeave.class, httpMethod = "GET", produces = "application/json")
+    @GetMapping(path = RestAPI.GET_LEAVE_BY_ID, produces = "application/json")
+    public ResponseEntity<StaffLeave> getLeaveById(@RequestParam("id") Long id) {
+        return new ResponseEntity<StaffLeave>(staffLeaveServiceImpl.getLeaveById(id), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "get all leaves by a faculty", response = StaffLeave.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(path = RestAPI.GET_MY_LEAVES, produces = "application/json")
     public ResponseEntity<List<StaffLeave>> getMyLeaves(@PathVariable String username) {
@@ -121,6 +127,12 @@ public class StaffLeaveController {
         return new ResponseEntity<String>(staffLeaveServiceImpl.creditLeave(staffLeaveCreditForm), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "cancel leave", response = String.class, httpMethod = "PUT", produces = "text/plain")
+    @PutMapping(path = RestAPI.CANCEL_LEAVE, produces = "text/plain")
+    public ResponseEntity<String> cancelLeave(@RequestParam("id") Long id) {
+        return new ResponseEntity<String>(staffLeaveServiceImpl.cancelLeave(id), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "update leave", response = String.class, httpMethod = "PUT", produces = "text/plain")
     @PutMapping(path = RestAPI.UPDATE_LEAVE, produces = "text/plain")
     public ResponseEntity<String> updateLeave(@RequestBody ApplyStaffLeaveForm applyStaffLeaveForm,
@@ -140,28 +152,28 @@ public class StaffLeaveController {
                 staffLeaveServiceImpl.getMyLeaveAccount(jwtResolver.getUserNameFromJwtToken(token)), HttpStatus.OK);
     }
 
-//     @GetMapping(path = "/play")
-//     public String updateStatus() {
+    @GetMapping(path = "/play")
+    public double updateStatus() {
 
-//         // StaffLeaveSettings top =
-//         // staffLeaveSettingsRepository.findTopByOrderByIdDesc();
-//         // return staffLeaveServiceImpl.getAllLeavesByName();
-//         // String token=request.getHeader("Authorization");
-//         // return jwtResolver.getUserTypeFromJwtToken(token);
-//         // return
-//         // staffLeaveLeftRepository.findByUserIdAndYear(jwtResolver.getIdFromJwtToken(token),
-//         // 2020);
-//         // return staffLeaveRepository.findByAppliedBy("uthakar");
-//         // return s.findLeaveTypeByLeaveName("cl");
-//         // staffLeaveServiceImpl.addToTable("el",
-//         // "a3cf94e4-20b1-11ea-bbd9-acd1b8c931f7");
-//         try {
-//             return staffLeaveServiceImpl.getSuffix("2021-03-26");
-//         } catch (ParseException e) {
-//             e.printStackTrace();
-//         }
-//         return "hi";
-//     }
+        // StaffLeaveSettings top =
+        // staffLeaveSettingsRepository.findTopByOrderByIdDesc();
+        // return staffLeaveServiceImpl.getAllLeavesByName();
+        // String token=request.getHeader("Authorization");
+        // return jwtResolver.getUserTypeFromJwtToken(token);
+        // return
+        // staffLeaveLeftRepository.findByUserIdAndYear(jwtResolver.getIdFromJwtToken(token),
+        // 2020);
+        // return staffLeaveRepository.findByAppliedBy("uthakar");
+        // return s.findLeaveTypeByLeaveName("cl");
+        // staffLeaveServiceImpl.addToTable("el",
+        // "a3cf94e4-20b1-11ea-bbd9-acd1b8c931f7");
+        try {
+            return staffLeaveServiceImpl.getDays("2021-04-05","2021-04-05",false,"Second Half", "Second Half");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
 
 // @ApiOperation(value = "get staff leave settings", response =
