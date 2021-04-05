@@ -9,12 +9,15 @@ import sgsits.cse.dis.academics.response.ResponseMessage;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 
 public interface SyllabusService {
         ResponseEntity<ResponseMessage> uploadFile(SyllabusFileForm schemeFileForm, MultipartFile file) throws IOException;
 
-        SyllabusFile getFile(String fileId);
+        SyllabusFile getFile(String fileName);
 
-        ResponseEntity<ResponseMessage> delete(String fileId) throws FileNotFoundException;
+        ResponseEntity<ResponseMessage> delete(String fileName) throws FileNotFoundException;
+
+    List<SyllabusFile> getAllSchemes();
 }

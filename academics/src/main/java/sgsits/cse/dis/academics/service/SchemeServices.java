@@ -18,7 +18,9 @@ public interface SchemeServices {
 	List<String> getSubjectCodesByYearAndSemesterAndCourse(String year,String sem,String courseId);
 	ResponseEntity<ResponseMessage> uploadFile(SchemeFileForm schemeFileForm,MultipartFile file) throws IOException;
 
-	SchemeFile getFile(String fileId);
+	SchemeFile getFile(String fileName);
 
-	ResponseEntity<ResponseMessage> delete(String fileId) throws FileNotFoundException;
+	ResponseEntity<ResponseMessage> delete(String fileName) throws FileNotFoundException;
+
+    List<SchemeFile> getAllSchemes();
 }

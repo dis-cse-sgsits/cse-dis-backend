@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import sgsits.cse.dis.academics.model.SchemeFile;
 
+import java.util.Optional;
+
 /**
  * <h1>SchemeRepository</h1> interface.
  * this repository contains Jpafunciton to perform crud operation.
@@ -12,7 +14,11 @@ import sgsits.cse.dis.academics.model.SchemeFile;
  */
 @Repository("schemeFileRepository")
 public interface SchemeFileRepository extends JpaRepository<SchemeFile, String> {
+
+
     @Modifying
     void deleteById(String  id);
     boolean existsById(String id);
+
+    Optional<Object> findByfileName(String fileName);
 }

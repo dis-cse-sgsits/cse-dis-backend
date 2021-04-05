@@ -18,6 +18,7 @@ import sgsits.cse.dis.academics.service.SyllabusService;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,21 +51,27 @@ public class SyllabusServiceImpl implements SyllabusService {
     }
 
     @Override
-    public SyllabusFile getFile(String fileId) {
-        return syllabusFileRepository.findById(fileId)
-                .orElseThrow(() -> new MyFileNotFoundException("File not found with id " + fileId));
+    public SyllabusFile getFile(String fileName) {
+        return (SyllabusFile) syllabusFileRepository.findByfileName(fileName)
+                .orElseThrow(() -> new MyFileNotFoundException("File not found with id " + fileName));
     }
 
     @Override
-    public ResponseEntity<ResponseMessage> delete(String fileId) throws FileNotFoundException {
-        Optional<SyllabusFile> syllabusFile = syllabusFileRepository.findById(fileId);
+    public ResponseEntity<ResponseMessage> delete(String fileName) throws FileNotFoundException {
+        Optional<Object> syllabusFile = syllabusFileRepository.findByfileName(fileName);
+
         if(syllabusFile.isPresent()){
-            syllabusFileRepository.delete(syllabusFile.get());
+            syllabusFileRepository.delete((SyllabusFile) syllabusFile.get());
             String message = "The file is deleted successfully.";
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
         }
         else{
-            throw new FileNotFoundException("File not found with id " + fileId);
+            throw new FileNotFoundException("File not found with id " + fileName);
         }
+    }
+
+    @Override
+    public List<SyllabusFile> getAllSchemes() {
+        return syllabusFileRepository.findAll();
     }
 }

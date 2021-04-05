@@ -79,21 +79,27 @@ public class SchemeServiceImpl implements SchemeServices {
 	}
 
 	public SchemeFile getFile(String fileId) {
-		return schemeFileRepository.findById(fileId)
+		return (SchemeFile) schemeFileRepository.findByfileName(fileId)
 				.orElseThrow(() -> new MyFileNotFoundException("File not found with id " + fileId));
 	}
 
-	public ResponseEntity<ResponseMessage> delete(String fileId) throws FileNotFoundException {
+	public ResponseEntity<ResponseMessage> delete(String fileName) throws FileNotFoundException {
 
-			Optional<SchemeFile> schemeFile = schemeFileRepository.findById(fileId);
+			Optional<Object> schemeFile = schemeFileRepository.findByfileName(fileName);
 			if(schemeFile.isPresent()){
-				schemeFileRepository.delete(schemeFile.get());
+				schemeFileRepository.delete((SchemeFile) schemeFile.get());
 				String message = "The file is deleted successfully.";
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 			}
 			else{
-				throw new FileNotFoundException("File not found with id " + fileId);
+				throw new FileNotFoundException("File not found with id " + fileName);
 			}
 	}
+
+	@Override
+	public List<SchemeFile> getAllSchemes() {
+			return schemeFileRepository.findAll();
+	}
+
 
 }

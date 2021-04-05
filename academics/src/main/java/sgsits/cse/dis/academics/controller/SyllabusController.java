@@ -23,6 +23,7 @@ import sgsits.cse.dis.academics.service.SyllabusService;
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @Api(value = "Syllabus Controller")
@@ -47,9 +48,9 @@ public class SyllabusController {
     }
 
     @ApiOperation(value = "Download Syllabus", response = ResponseMessage.class, httpMethod = "POST")
-    @GetMapping(path = RestAPI.DOWNLOAD+"/{fileId}")
-    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileId){
-        SyllabusFile dbFile = syllabusService.getFile(fileId);
+    @GetMapping(path = RestAPI.DOWNLOAD+"/{fileName}")
+    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName){
+        SyllabusFile dbFile = syllabusService.getFile(fileName);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(dbFile.getFileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dbFile.getFileName() + "\"")
@@ -57,8 +58,14 @@ public class SyllabusController {
     }
 
     @ApiOperation(value = "Delete Syllabus", response = ResponseMessage.class, httpMethod = "DELETE")
-    @DeleteMapping(path ="/{fileId}")
-    public ResponseEntity<ResponseMessage> deleteFile(@PathVariable String fileId) throws FileNotFoundException {
-        return syllabusService.delete(fileId);
+    @DeleteMapping(path ="/{fileName}")
+    public ResponseEntity<ResponseMessage> deleteFile(@PathVariable String fileName) throws FileNotFoundException {
+        return syllabusService.delete(fileName);
+    }
+
+    @ApiOperation(value = "Get all Syllabus info", response = ResponseMessage.class, httpMethod = "GET")
+    @GetMapping
+    public  ResponseEntity<List<SyllabusFile>> getAllSchemes(){
+        return new ResponseEntity<List<SyllabusFile>>(syllabusService.getAllSchemes(), HttpStatus.OK);
     }
 }
