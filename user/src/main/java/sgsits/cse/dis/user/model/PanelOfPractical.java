@@ -33,6 +33,9 @@ public class PanelOfPractical {
     @Column(name = "external_faculty", nullable = false)
     private String externalFaculty;
 
+    @Column(name = "lab_technician")
+    private String labTechnician;
+
     @Column(name = "lab_assistant")
     private String labAssistant;
 
@@ -40,6 +43,13 @@ public class PanelOfPractical {
 
     }
 
+    public String getLabTechnician() {
+        return labTechnician;
+    }
+
+    public void setLabTechnician(String labTechnician) {
+        this.labTechnician = labTechnician;
+    }
 
     public void setId(String id) {
         this.id = id;

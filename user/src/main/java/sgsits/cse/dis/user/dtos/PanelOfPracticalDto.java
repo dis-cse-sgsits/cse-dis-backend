@@ -11,7 +11,15 @@ public class PanelOfPracticalDto {
     private String internalFaculty2;
     private String externalFaculty;
     private String labAssistant;
+    private String labTechnician;
 
+    public String getLabTechnician() {
+        return labTechnician;
+    }
+
+    public void setLabTechnician(String labTechnician) {
+        this.labTechnician = labTechnician;
+    }
 
     public String getId() {
         return id;
