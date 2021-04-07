@@ -1,15 +1,25 @@
 package sgsits.cse.dis.academics.controller;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.multipart.MultipartFile;
+import sgsits.cse.dis.academics.repo.ExpertLectureRepository;
+import sgsits.cse.dis.academics.response.ResponseMessage;
 import sgsits.cse.dis.academics.service.ExpertLectureService;
 import sgsits.cse.dis.academics.constants.RestAPI;
 import sgsits.cse.dis.academics.request.ExpertForm;
@@ -27,6 +37,9 @@ public class ExpertLectureController {
 	
 	@Autowired
 	private ExpertLectureService expertLectureService;
+
+	@Autowired
+	private ExpertLectureRepository expertLectureRepository;
 	
 	@ApiOperation(value = "Add expert", response = String.class, httpMethod = "POST", produces = "application/json")
 	@PostMapping(path = RestAPI.ADD_EXPERT, produces = "application/json")
@@ -85,10 +98,17 @@ public class ExpertLectureController {
 	}
 	
 	@ApiOperation(value = "Update expert lecture status", response = String.class, httpMethod = "POST", produces = "application/json")
-	@PostMapping(path = RestAPI.UPDATE_EXPERT_LECTURE_STATUS, produces = "application/json")
-	public ResponseEntity<String> updateExpertLectureStatus(@PathVariable("expertLectureId") String expertLectureId)
+	@PutMapping(path = RestAPI.UPDATE_EXPERT_LECTURE_STATUS, produces = "application/json")
+	public ResponseEntity<String> updateExpertLectureStatus(@PathVariable("expertLectureId") String expertLectureId, @RequestParam("file") MultipartFile file)
 	{
-		return new ResponseEntity<String>(expertLectureService.updateExpertLectureStatus(expertLectureId), HttpStatus.OK);
+		try
+		{
+			return new ResponseEntity<String>(expertLectureService.updateExpertLectureStatus(expertLectureId, file), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			return new ResponseEntity<String>("Could not upload file; file invalid or size too large. Please try again.", HttpStatus.EXPECTATION_FAILED);
+		}
 	}
 
 	@ApiOperation(value = "Delete Expert", response = String.class, httpMethod = "DELETE", produces = "application/json")
@@ -110,5 +130,27 @@ public class ExpertLectureController {
 	public ResponseEntity<String> deleteExpertLecture(@PathVariable("expertLectureId") String expertLectureId)
 	{
 		return new ResponseEntity<String>(expertLectureService.deleteExpertLecture(expertLectureId), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Download notesheet", response = Resource.class, httpMethod = "GET")
+	@GetMapping(path = "/downloadNotesheet/{expertLectureId}")
+	public ResponseEntity<Resource> downloadNotesheet(@PathVariable("expertLectureId") String expertLectureId)
+	{
+		ExpertLectureDetails expertLectureDetails = expertLectureService.downloadNotesheet(expertLectureId);
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType(expertLectureDetails.getNotesheetFileType()))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"\"")
+				.body(new ByteArrayResource(expertLectureDetails.getNotesheet()));
+	}
+
+	@ApiOperation(value = "Download attendance", response = Resource.class, httpMethod = "GET")
+	@GetMapping(path = "/downloadAttendance/{expertLectureId}")
+	public ResponseEntity<Resource> downloadAttendance(@PathVariable("expertLectureId") String expertLectureId)
+	{
+		ExpertLectureDetails expertLectureDetails = expertLectureService.downloadAttendance(expertLectureId);
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType(expertLectureDetails.getAttendanceFileType()))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"\"")
+				.body(new ByteArrayResource(expertLectureDetails.getAttendance()));
 	}
 }

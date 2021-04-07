@@ -36,4 +36,6 @@ public class RestAPI {
 	public static final String DELETE_INDUSTRY_VISIT = "/deleteIndustryVisit/{industryVisitId}";
     public static final String EDIT_EXPERT_LECTURE = "/editExpertLecture";
 	public static final String DELETE_EXPERT_LECTURE = "/deleteExpertLecture/{expertLectureId}";
+    public static final String SEARCH_STUDENTS_WITHOUT_SCHOLARSHIP = "/searchStudentsWithoutScholarship";
+	public static final String SEARCH_STUDENTS_WITH_SCHOLARSHIP = "/searchStudentsWithScholarship";
 }

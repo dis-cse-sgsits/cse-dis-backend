@@ -5,12 +5,18 @@ import java.util.List;
 import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.Api;
+import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.academics.constants.RestAPI;
+import sgsits.cse.dis.academics.model.ExpertLectureDetails;
 import sgsits.cse.dis.academics.model.IndustryVisit;
 import sgsits.cse.dis.academics.request.IndustryVisitForm;
 import sgsits.cse.dis.academics.response.IndustryVisitResponse;
@@ -55,9 +61,16 @@ public class IndustryVisitController {
 
     @ApiOperation(value = "Update industry visit status", response = String.class, httpMethod = "PUT", produces = "application/json")
     @PutMapping(path = RestAPI.UPDATE_INDUSTRY_VISIT_STATUS, produces = "application/json")
-    public ResponseEntity<String> updateIndustryVisitStatus(@PathVariable("industryVisitId") String industryVisitId)
+    public ResponseEntity<String> updateIndustryVisitStatus(@PathVariable("industryVisitId") String industryVisitId, @RequestParam("file")MultipartFile file)
     {
-        return new ResponseEntity<String>(industryVisitService.updateIndustryVisitStatus(industryVisitId), HttpStatus.OK);
+        try {
+            return new ResponseEntity<String>(industryVisitService.updateIndustryVisitStatus(industryVisitId, file), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<String>("Could not upload file; file invalid or size too large. Please try again.", HttpStatus.EXPECTATION_FAILED);
+        }
+
     }
 
     @ApiOperation(value = "Edit industry visit", response = String.class, httpMethod = "PUT", produces = "application/json")
@@ -72,5 +85,27 @@ public class IndustryVisitController {
     public ResponseEntity<String> deleteIndustryVisit(@PathVariable("industryVisitId") String industryVisitId)
     {
         return new ResponseEntity<String>(industryVisitService.deleteIndustryVisit(industryVisitId), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Download notesheet", response = Resource.class, httpMethod = "GET")
+    @GetMapping(path = "/downloadNotesheet/{industryVisitId}")
+    public ResponseEntity<Resource> downloadNotesheet(@PathVariable("industryVisitId") String industryVisitId)
+    {
+        IndustryVisit industryVisit = industryVisitService.downloadNotesheet(industryVisitId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(industryVisit.getNotesheetFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"\"")
+                .body(new ByteArrayResource(industryVisit.getNotesheet()));
+    }
+
+    @ApiOperation(value = "Download attendance", response = Resource.class, httpMethod = "GET")
+    @GetMapping(path = "/downloadAttendance/{industryVisitId}")
+    public ResponseEntity<Resource> downloadAttendance(@PathVariable("industryVisitId") String industryVisitId)
+    {
+        IndustryVisit industryVisit = industryVisitService.downloadAttendance(industryVisitId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(industryVisit.getAttendanceFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"\"")
+                .body(new ByteArrayResource(industryVisit.getAttendance()));
     }
 }

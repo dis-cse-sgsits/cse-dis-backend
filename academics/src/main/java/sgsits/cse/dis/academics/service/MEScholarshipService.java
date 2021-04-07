@@ -13,5 +13,9 @@ public interface MEScholarshipService {
 
     List<MEScholarship> fetchMEStudentsWithScholarship(int year);
 
-    String cancelScholarship(List<MEScholarship> scholarshipStudents);
+    String cancelScholarship(List<String> scholarshipStudentsEnrollments);
+
+    List<MEScholarshipStudents> searchStudentsWithoutScholarship(int year, String name);
+
+    List<MEScholarship> searchStudentsWithScholarship(int year, String name);
 }

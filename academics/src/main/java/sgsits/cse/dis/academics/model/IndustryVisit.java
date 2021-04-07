@@ -60,9 +60,15 @@ public class IndustryVisit {
     private String totalExpenditure;
 
     @Column(name = "attendance")
-    private String attendance;
+    private byte[] attendance;
 
     @Column(name = "notesheet")
-    private String notesheet;
+    private byte[] notesheet;
+
+    @Column(name = "attendance_file_type")
+    private String attendanceFileType;
+
+    @Column(name = "notesheet_file_type")
+    private String notesheetFileType;
 
 }

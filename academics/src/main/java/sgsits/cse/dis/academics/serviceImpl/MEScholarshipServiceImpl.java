@@ -2,6 +2,7 @@ package sgsits.cse.dis.academics.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,6 @@ public class MEScholarshipServiceImpl implements MEScholarshipService{
         {
             if(meScholarshipRepository.existsByEnrollment(record.getEnrollmentId()))
                 continue;
-                System.out.println("Inside exists");
                 MEScholarshipStudents meStudent = new MEScholarshipStudents();
                 meStudent.setName(record.getFullName());
                 meStudent.setEmail(record.getEmail());
@@ -73,12 +73,49 @@ public class MEScholarshipServiceImpl implements MEScholarshipService{
     }
 
     @Override
-    public String cancelScholarship(List<MEScholarship> scholarshipStudents) {
-        for(MEScholarship student : scholarshipStudents)
+    public String cancelScholarship(List<String> scholarshipStudentsEnrollments) {
+        for(String enrollment : scholarshipStudentsEnrollments)
         {
-            meScholarshipRepository.delete(student);
+            MEScholarship meScholarship = meScholarshipRepository.findByEnrollment(enrollment);
+            meScholarshipRepository.delete(meScholarship);
         }
         return "Selected students' scholarship was revoked successfully.";
+    }
+
+    @Override
+    public List<MEScholarshipStudents> searchStudentsWithoutScholarship(int year, String name) {
+        List<MEScholarshipStudents> output = new ArrayList<MEScholarshipStudents>();
+        List<StudentProfile> records = userClient.fetchMEStudentsByYear(year);
+        for(StudentProfile record : records)
+        {
+            if(meScholarshipRepository.existsByEnrollment(record.getEnrollmentId()))
+                continue;
+            MEScholarshipStudents meStudent = new MEScholarshipStudents();
+            String studentName = record.getFullName();
+            studentName = studentName.toLowerCase();
+            if(studentName.contains(name.toLowerCase()))
+            {
+                meStudent.setName(record.getFullName());
+                meStudent.setEmail(record.getEmail());
+                meStudent.setEnrollment(record.getEnrollmentId());
+                meStudent.setAttendance("100%");
+                if (record.getCategory().equals("I")) {
+                    meStudent.setYear("I");
+                } else {
+                    meStudent.setYear("II");
+                }
+                meStudent.setAdmissionYear(record.getAdmissionYear());
+                meStudent.setStatus("Not approved");
+                output.add(meStudent);
+            }
+        }
+        return output;
+    }
+
+    @Override
+    public List<MEScholarship> searchStudentsWithScholarship(int year, String name) {
+        List<MEScholarship> output = meScholarshipRepository.findByYearAndNameContainingIgnoreCase(year,name);
+        return output;
     }
 
 

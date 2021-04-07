@@ -2,6 +2,7 @@ package sgsits.cse.dis.academics.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +46,22 @@ public class MEScholarshipController {
 
     @ApiOperation(value = "Cancel scholarship", response = String.class, httpMethod = "DELETE", produces = "application/json")
     @DeleteMapping(path = RestAPI.CANCEL_SCHOLARSHIP, produces = "application/json")
-    public ResponseEntity<String> cancelScholarship(@RequestBody List<MEScholarship> scholarshipStudents)
+    public ResponseEntity<String> cancelScholarship(@RequestBody List<String> scholarshipStudentsEnrollments)
     {
-        return new ResponseEntity<String>(meScholarshipService.cancelScholarship(scholarshipStudents), HttpStatus.OK);
+        return new ResponseEntity<String>(meScholarshipService.cancelScholarship(scholarshipStudentsEnrollments), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Search students without scholarship", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")
+    @GetMapping(path = RestAPI.SEARCH_STUDENTS_WITHOUT_SCHOLARSHIP, produces = "application/json")
+    public ResponseEntity<List<MEScholarshipStudents>> searchStudentsWithoutScholarship(@RequestParam("year") int year, @RequestParam("name") String name)
+    {
+        return new ResponseEntity<List<MEScholarshipStudents>> (meScholarshipService.searchStudentsWithoutScholarship(year, name), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Search students with scholarship", response = MEScholarship.class, httpMethod = "GET", produces = "application/json")
+    @GetMapping(path = RestAPI.SEARCH_STUDENTS_WITH_SCHOLARSHIP, produces = "application/json")
+    public ResponseEntity<List<MEScholarship>> searchStudentsWithScholarship(@RequestParam("year") int year, @RequestParam("name") String name)
+    {
+        return new ResponseEntity<List<MEScholarship>> (meScholarshipService.searchStudentsWithScholarship(year, name), HttpStatus.OK);
     }
 }

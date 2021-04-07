@@ -12,4 +12,8 @@ public interface MEScholarshipRepository extends JpaRepository <MEScholarship, S
     List<MEScholarship> findByYear(int year);
 
     boolean existsByEnrollment(String enrollmentId);
+
+    MEScholarship findByEnrollment(String enrollment);
+
+    List<MEScholarship> findByYearAndNameContainingIgnoreCase(int year,String name);
 }

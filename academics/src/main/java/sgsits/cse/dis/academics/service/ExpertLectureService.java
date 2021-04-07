@@ -1,7 +1,9 @@
 package sgsits.cse.dis.academics.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.academics.response.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +31,7 @@ public interface ExpertLectureService {
 
 	List<ExpertLecturesResponse> searchExpertLectures(String keyword, String status);
 
-	String updateExpertLectureStatus(String expertLectureId);
+	String updateExpertLectureStatus(String expertLectureId, MultipartFile file) throws IOException;
 
 
     String deleteExpert(String expertId);
@@ -37,4 +39,8 @@ public interface ExpertLectureService {
     String editExpertLecture(ExpertLectureDetails expertLectureDetails);
 
 	String deleteExpertLecture(String expertLectureId);
+
+	ExpertLectureDetails downloadNotesheet(String expertLectureId);
+
+	ExpertLectureDetails downloadAttendance(String expertLectureId);
 }

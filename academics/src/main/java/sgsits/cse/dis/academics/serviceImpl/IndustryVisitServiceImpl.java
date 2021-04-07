@@ -2,12 +2,14 @@ package sgsits.cse.dis.academics.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.academics.model.IndustryVisit;
 import sgsits.cse.dis.academics.repo.IndustryVisitRepository;
 import sgsits.cse.dis.academics.request.IndustryVisitForm;
 import sgsits.cse.dis.academics.response.IndustryVisitResponse;
 import sgsits.cse.dis.academics.service.IndustryVisitService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -86,21 +88,28 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
     }
 
     @Override
-    public String updateIndustryVisitStatus(String industryVisitId) {
+    public String updateIndustryVisitStatus(String industryVisitId, MultipartFile file) throws IOException {
         IndustryVisit industryVisit = industryVisitRepository.findByIndustryVisitId(industryVisitId);
-        String status = industryVisit.getStatus();
-        if(status.equals("Pending"))
+        String currentStatus = industryVisit.getStatus();
+        if (currentStatus.equals("Pending")) {
             industryVisit.setStatus("Upcoming");
-        else
-        if(status.equals("Upcoming"))
+            industryVisit.setNotesheetFileType(file.getContentType());
+            industryVisit.setNotesheet(file.getBytes());
+        } else if (currentStatus.equals("Upcoming")) {
             industryVisit.setStatus("Completed");
-        else
+            industryVisit.setAttendanceFileType(file.getContentType());
+            industryVisit.setAttendance(file.getBytes());
+        } else
             return "Already completed, cannot update status.";
+
         IndustryVisit test = industryVisitRepository.save(industryVisit);
-        if(test!=null)
-            return "Status updated successfully!";
-        else
-            return "Could not update status, please try again.";
+        if (test != null) {
+            if (currentStatus.equals("Pending"))
+                return "Note-sheet uploaded successfully. Status Updated.";
+            else
+                return "Attendance uploaded successfully. Status Updated.";
+        } else
+            return "Error updating status, please try again.";
     }
 
     @Override
@@ -121,5 +130,15 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
             return "Cannot delete a completed industry visit.";
         industryVisitRepository.delete(industryVisit);
         return "Industry visit deleted from the records successfully.";
+    }
+
+    @Override
+    public IndustryVisit downloadNotesheet(String industryVisitId) {
+        return industryVisitRepository.findByIndustryVisitId(industryVisitId);
+    }
+
+    @Override
+    public IndustryVisit downloadAttendance(String industryVisitId) {
+        return industryVisitRepository.findByIndustryVisitId(industryVisitId);
     }
 }

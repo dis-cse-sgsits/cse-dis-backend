@@ -1,11 +1,6 @@
 package sgsits.cse.dis.academics.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -76,12 +71,20 @@ public class ExpertLectureDetails {
 	
 	@Column(name = "payment_status")
 	private String paymentStatus;
-	
+
+	@Lob
 	@Column(name = "attendance")
-	private String attendance;
-	
+	private byte[] attendance;
+
+	@Column(name = "attendance_file_type")
+	private String attendanceFileType;
+
+	@Lob
 	@Column(name = "notesheet")
-	private String notesheet;
+	private byte[] notesheet;
+
+	@Column(name = "notesheet_file_type")
+	private String notesheetFileType;
 
 	@Column(name = "coordinator", nullable = false)
 	private String coordinator;

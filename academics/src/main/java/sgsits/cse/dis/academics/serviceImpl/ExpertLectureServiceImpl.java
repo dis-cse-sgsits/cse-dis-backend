@@ -1,5 +1,6 @@
 package sgsits.cse.dis.academics.serviceImpl;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +10,8 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.academics.service.ExpertLectureService;
 import sgsits.cse.dis.academics.model.ExpertDetails;
 import sgsits.cse.dis.academics.model.ExpertLectureDetails;
@@ -204,17 +207,33 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 	}
 
 	@Override
-	public String updateExpertLectureStatus(String expertLectureId) {
+	public String updateExpertLectureStatus(String expertLectureId, MultipartFile file) throws IOException
+	{
 		ExpertLectureDetails expertLecture = expertLectureRepository.findByExpertLectureId(expertLectureId);
 		String currentStatus = expertLecture.getStatus();
 		if(currentStatus.equals("Pending"))
+		{
+
 			expertLecture.setStatus("Upcoming");
+			expertLecture.setNotesheetFileType(file.getContentType());
+			expertLecture.setNotesheet(file.getBytes());
+		}
 		else if(currentStatus.equals("Upcoming"))
+		{
 			expertLecture.setStatus("Completed");
+			expertLecture.setAttendanceFileType(file.getContentType());
+			expertLecture.setAttendance(file.getBytes());
+
+		}
+		else
+			return "Already completed, cannot update status.";
 		ExpertLectureDetails test = expertLectureRepository.save(expertLecture);
-		
-		if(test!=null)
-			return "Status updated successfully.";
+		if(test!=null) {
+			if(currentStatus.equals("Pending"))
+				return "Note-sheet uploaded successfully. Status Updated.";
+			else
+				return "Attendance uploaded successfully. Status Updated.";
+		}
 		else
 			return "Error updating status, please try again.";
 	}
@@ -240,5 +259,14 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 
 	}
 
+	@Override
+	public ExpertLectureDetails downloadNotesheet(String expertLectureId) {
+		return expertLectureRepository.findByExpertLectureId(expertLectureId);
+	}
+
+	@Override
+	public ExpertLectureDetails downloadAttendance(String expertLectureId) {
+		return expertLectureRepository.findByExpertLectureId(expertLectureId);
+	}
 
 }
