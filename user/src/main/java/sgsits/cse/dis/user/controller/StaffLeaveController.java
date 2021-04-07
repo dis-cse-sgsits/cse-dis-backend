@@ -139,7 +139,6 @@ public class StaffLeaveController {
             HttpServletRequest request) throws ConflictException, ParseException {
         String token = request.getHeader("Authorization");
         applyStaffLeaveForm.setAppliedBy(jwtResolver.getUserNameFromJwtToken(token));
-        applyStaffLeaveForm.setUserId(jwtResolver.getIdFromJwtToken(token));
         return new ResponseEntity<String>(
                 "Leave updated for leave id " + staffLeaveServiceImpl.updateLeave(applyStaffLeaveForm), HttpStatus.OK);
     }

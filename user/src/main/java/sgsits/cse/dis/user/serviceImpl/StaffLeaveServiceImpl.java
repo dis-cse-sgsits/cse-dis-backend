@@ -185,7 +185,6 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
         staffLeave.setCreatedDate(simpleDateFormat.format(new Date()));
         staffLeave.setAppliedBy(applyStaffLeaveForm.getAppliedBy());
         staffLeave.setDetails(applyStaffLeaveForm.getDetails());
-        staffLeave.setRemarks(applyStaffLeaveForm.getRemarks());
         staffLeave.setStatus(applyStaffLeaveForm.getStatus());
         staffLeave.setFromDuration(applyStaffLeaveForm.getFromDuration());
         staffLeave.setToDuration(applyStaffLeaveForm.getToDuration());
@@ -213,7 +212,12 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
 
     @Override
     public List<StaffLeave> getLeavesByStatus(String status) {
-        return staffLeaveRepository.findByStatusIgnoreCase(status);
+        List<StaffLeave> leaves = staffLeaveRepository.findByStatusIgnoreCase(status);
+        for (StaffLeave l : leaves) {
+            String name = staffRepository.findNameByUsername(l.getAppliedBy());
+            l.setAppliedBy(name);
+        }
+        return leaves;
     }
 
     @Override
@@ -507,7 +511,6 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
 
     @Override
     public long updateLeave(ApplyStaffLeaveForm applyStaffLeaveForm) throws ConflictException, ParseException {
-        String userId = applyStaffLeaveForm.getUserId();
         StaffLeaveTypes leaveType = staffLeaveTypeRepository.findByLeaveName(applyStaffLeaveForm.getTypeOfLeave());
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String fdate = applyStaffLeaveForm.getFromDate();
@@ -523,22 +526,19 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
                 e.printStackTrace();
             }
         }
-        StaffLeave staffLeave = new StaffLeave();
-        staffLeave.setLeaveId(applyStaffLeaveForm.getLeaveId());
+        StaffLeave staffLeave = staffLeaveRepository.findByLeaveId(applyStaffLeaveForm.getLeaveId());
         staffLeave.setFromDate(applyStaffLeaveForm.getFromDate());
         staffLeave.setToDate(applyStaffLeaveForm.getToDate());
         staffLeave.setRemarks(applyStaffLeaveForm.getRemarks());
         staffLeave.setModifiedDate(simpleDateFormat.format(new Date()));
-        staffLeave.setAppliedBy(applyStaffLeaveForm.getAppliedBy());
+        staffLeave.setModifiedBy(applyStaffLeaveForm.getAppliedBy());
         staffLeave.setDetails(applyStaffLeaveForm.getDetails());
-        staffLeave.setRemarks(applyStaffLeaveForm.getRemarks());
         staffLeave.setStatus(applyStaffLeaveForm.getStatus());
         staffLeave.setFromDuration(applyStaffLeaveForm.getFromDuration());
         staffLeave.setToDuration(applyStaffLeaveForm.getToDuration());
         staffLeave.setConsiderHolidays(applyStaffLeaveForm.isConsiderHolidays());
         staffLeave.setSubject(applyStaffLeaveForm.getSubject());
         staffLeave.setTypeOfLeave(applyStaffLeaveForm.getTypeOfLeave());
-        staffLeave.setUserId(userId);
         staffLeave.setNoOfDays(getDays(applyStaffLeaveForm.getFromDate(), applyStaffLeaveForm.getToDate(),
                 applyStaffLeaveForm.isConsiderHolidays(), applyStaffLeaveForm.getFromDuration(),
                 applyStaffLeaveForm.getToDuration()));
@@ -560,6 +560,10 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     @Override
     public List<StaffLeave> getMyLeaves(String username) {
         List<StaffLeave> leaves = staffLeaveRepository.findByAppliedBy(username);
+        for (StaffLeave l : leaves) {
+            String name = staffRepository.findNameByUsername(l.getAppliedBy());
+            l.setAppliedBy(name);
+        }
         return leaves;
     }
 
@@ -571,7 +575,10 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
 
     @Override
     public StaffLeave getLeaveById(Long id) {
-        return staffLeaveRepository.findByLeaveId(id);
+        StaffLeave leave = staffLeaveRepository.findByLeaveId(id);
+        String name = staffRepository.findNameByUsername(leave.getAppliedBy());
+        leave.setAppliedBy(name);
+        return leave;
     }
 
     @Override
