@@ -2,6 +2,8 @@ package sgsits.cse.dis.moodle.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,50 +37,69 @@ public class MoodleGradesController {
 	// This API return's the moodle's database userid of a username. This is a general purpose API not related to only grades.
 	@ApiOperation(value = "Get Student's user id", response = Long.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_STUDENTS_USER_ID, produces = "application/json")
-	public ResponseEntity<Long> getStudentsUserId(@PathVariable("username") String courseId) throws NotFoundException {
-		return new ResponseEntity<Long>(moodleGradeServiceImpl.getStudentsUserId(courseId),HttpStatus.OK);
+	public ResponseEntity<Long> getStudentsUserId(@PathVariable("username") String username, HttpServletRequest request) throws NotFoundException {
+		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<Long>(moodleGradeServiceImpl.getStudentsUserId(username),HttpStatus.OK);
+	}
+	
+	// This API return's the moodle's database userid of a DIS userid. This is a general purpose API not related to only grades.
+	@ApiOperation(value = "Get Moodle's user id", response = Long.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = GradesURLConstants.GET_MOODLE_USER_ID, produces = "application/json")
+	public ResponseEntity<Long> getMoodleUserId(HttpServletRequest request) throws NotFoundException {
+		String username=jwtResolver.getUserNameFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<Long>(moodleGradeServiceImpl.getStudentsUserId(username),HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Get Grade Items Of Course", response = GradeItemsData.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_GRADE_ITEMS_OF_COURSE, produces = "application/json")
-	public ResponseEntity<List<GradeItemsData>> getGradeItemsOfCourse(@PathVariable("courseid") String courseId) {
+	public ResponseEntity<List<GradeItemsData>> getGradeItemsOfCourse(@PathVariable("courseid") String courseId, HttpServletRequest request) throws NotFoundException {
+		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
 		return new ResponseEntity<List<GradeItemsData>>(moodleGradeServiceImpl.getGradeItemsOfCourse(courseId),HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Get Grader Report", response = GraderReportData.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_GRADER_REPORT, produces = "application/json")
-	public ResponseEntity<List<List<GraderReportData>>> getGraderReport(@PathVariable("courseid") String courseId, @PathVariable("itemid") String itemId) {
-		return new ResponseEntity<List<List<GraderReportData>>>(moodleGradeServiceImpl.getGraderReport(courseId, itemId),HttpStatus.OK);
+	public ResponseEntity<List<List<GraderReportData>>> getGraderReport(@PathVariable("courseid") Long courseId, @PathVariable("itemid") Long itemId, HttpServletRequest request) throws NotFoundException {
+		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<List<List<GraderReportData>>>(moodleGradeServiceImpl.getGraderReport(courseId, itemId,userType),HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Get Teacher's User Report", response = GraderReportData.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_USER_REPORT, produces = "application/json")
-	public ResponseEntity<List<List<GraderReportData>>> getUserReport(@PathVariable("courseid") String courseId, @PathVariable("userid") String userId) {
-		return new ResponseEntity<List<List<GraderReportData>>>(moodleGradeServiceImpl.getUserReport(courseId, userId),HttpStatus.OK);
+	public ResponseEntity<List<List<GraderReportData>>> getUserReport(@PathVariable("courseid") Long courseId, @PathVariable("userid") Long userId, HttpServletRequest request) throws NotFoundException  {
+		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<List<List<GraderReportData>>>(moodleGradeServiceImpl.getUserReport(courseId, userId, userType),HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Get all courses by a grader", response = Course.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_COURSES_BY_GRADER, produces = "application/json")
-	public ResponseEntity<List<Course>> getAllCoursesByGrader(@PathVariable("username") String username) {
-		return new ResponseEntity<List<Course>>(moodleGradeServiceImpl.getAllCoursesByGrader(username),HttpStatus.OK);
+	public ResponseEntity<List<Course>> getAllCoursesByGrader(@PathVariable("username") String username, HttpServletRequest request) throws NotFoundException  {
+		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<List<Course>>(moodleGradeServiceImpl.getAllCoursesByGrader(username, userType),HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Get all students of a course", response = Students.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_STUDENTS_OF_COURSE, produces = "application/json")
-	public ResponseEntity<List<Students>> getAllStudentsOfCourse(@PathVariable("courseId") Long courseId) {
-		return new ResponseEntity<List<Students>>(moodleGradeServiceImpl.getAllStudentsOfCourse(courseId),HttpStatus.OK);
-
+	public ResponseEntity<List<Students>> getAllStudentsOfCourse(@PathVariable("courseId") Long courseId, HttpServletRequest request) throws NotFoundException {
+		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<List<Students>>(moodleGradeServiceImpl.getAllStudentsOfCourse(courseId, userType),HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Get student's overview report", response = StudentOverviewReport.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_STUDENTS_OVREVIEW_REPORT, produces = "application/json")
-	public ResponseEntity<List<StudentOverviewReport>> getStudentsOverviewReport(@PathVariable("userid") Long userid) {
-		return new ResponseEntity<List<StudentOverviewReport>>(moodleGradeServiceImpl.getStudentsOverviewReport(userid),HttpStatus.OK);
+	public ResponseEntity<List<StudentOverviewReport>> getStudentsOverviewReport(HttpServletRequest request) throws NotFoundException{
+		String username = jwtResolver.getUserNameFromJwtToken(request.getHeader("Authorization"));
+		Long userId = moodleGradeServiceImpl.getStudentsUserId(username);
+		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<List<StudentOverviewReport>>(moodleGradeServiceImpl.getStudentsOverviewReport(userId,userType),HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Get Student's User Report", response = GraderReportData.class, httpMethod = "GET", produces = "application/json")
 	@GetMapping(value = GradesURLConstants.GET_STUDENTS_USER_REPORT, produces = "application/json")
-	public ResponseEntity<List<GraderReportData>> getStudentsUserReport(@PathVariable("courseid") String courseId, @PathVariable("userid") String userId) {
-		return new ResponseEntity<List<GraderReportData>>(moodleGradeServiceImpl.getStudentsUserReport(courseId, userId),HttpStatus.OK);
+	public ResponseEntity<List<GraderReportData>> getStudentsUserReport(@PathVariable("courseid") Long courseId, HttpServletRequest request) throws NotFoundException{
+		String username = jwtResolver.getUserNameFromJwtToken(request.getHeader("Authorization"));
+		Long userId = moodleGradeServiceImpl.getStudentsUserId(username);
+		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<List<GraderReportData>>(moodleGradeServiceImpl.getStudentsUserReport(courseId, userId, userType),HttpStatus.OK);
 	}
 }

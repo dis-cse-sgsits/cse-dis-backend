@@ -8,7 +8,8 @@ public class GradesURLConstants {
 	public static final String GET_COURSES_BY_GRADER = "/getCoursesByGrader/{username}";
 	public static final String GET_STUDENTS_OF_COURSE = "/getStudentsOfCourse/{courseId}";
 
-	public static final String GET_STUDENTS_OVREVIEW_REPORT = "/getStudentsOverviewReport/{userid}";
-	public static final String GET_STUDENTS_USER_REPORT = "/getStudentsUserReport/{courseid}/{userid}";
+	public static final String GET_STUDENTS_OVREVIEW_REPORT = "/getStudentsOverviewReport";
+	public static final String GET_STUDENTS_USER_REPORT = "/getStudentsUserReport/{courseid}";
 	public static final String GET_STUDENTS_USER_ID = "/getStudentsUserId/{username}";
+	public static final String GET_MOODLE_USER_ID = "/getMoodleUserId";
 }

@@ -17,17 +17,17 @@ import sgsits.cse.dis.moodle.response.Students;
 public interface moodleGradeService {
 	List<GradeItemsData> getGradeItemsOfCourse(String courseId);
 
-	List<List<GraderReportData>> getGraderReport(String courseId, String itemId);
+	List<List<GraderReportData>> getGraderReport(Long courseId, Long itemId, String userType) throws NotFoundException;
 
-	List<List<GraderReportData>> getUserReport(String courseId, String userId);
+	List<List<GraderReportData>> getUserReport(Long courseId, Long userId, String userType) throws NotFoundException;
 
-	List<Course> getAllCoursesByGrader(String username);
+	List<Course> getAllCoursesByGrader(String username, String userType) throws NotFoundException;
 
-	List<Students> getAllStudentsOfCourse(Long courseId);
+	List<Students> getAllStudentsOfCourse(Long courseId, String userType) throws NotFoundException;
 	
-	List<StudentOverviewReport> getStudentsOverviewReport(Long userId);
+	List<StudentOverviewReport> getStudentsOverviewReport(Long userId,String userType) throws NotFoundException;
 
-	List<GraderReportData> getStudentsUserReport(String courseId, String userId);
+	List<GraderReportData> getStudentsUserReport(Long courseId, Long userId, String userType) throws NotFoundException;
 	
 	Long getStudentsUserId(String username) throws NotFoundException;
 }
