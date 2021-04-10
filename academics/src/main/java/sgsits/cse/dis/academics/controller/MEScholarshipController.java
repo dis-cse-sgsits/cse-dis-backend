@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import sgsits.cse.dis.academics.constants.RestAPI;
 import sgsits.cse.dis.academics.model.MEScholarship;
+import sgsits.cse.dis.academics.request.CancelScholarship;
 import sgsits.cse.dis.academics.response.MEScholarshipStudents;
 import sgsits.cse.dis.academics.service.MEScholarshipService;
 
@@ -46,9 +47,9 @@ public class MEScholarshipController {
 
     @ApiOperation(value = "Cancel scholarship", response = String.class, httpMethod = "DELETE", produces = "application/json")
     @DeleteMapping(path = RestAPI.CANCEL_SCHOLARSHIP, produces = "application/json")
-    public ResponseEntity<String> cancelScholarship(@RequestBody List<String> scholarshipStudentsEnrollments)
+    public ResponseEntity<String> cancelScholarship(@RequestBody CancelScholarship cancelScholarship)
     {
-        return new ResponseEntity<String>(meScholarshipService.cancelScholarship(scholarshipStudentsEnrollments), HttpStatus.OK);
+        return new ResponseEntity<String>(meScholarshipService.cancelScholarship(cancelScholarship), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Search students without scholarship", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")

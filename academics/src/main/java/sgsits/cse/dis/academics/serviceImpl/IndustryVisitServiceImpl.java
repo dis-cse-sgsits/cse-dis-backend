@@ -91,14 +91,18 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
     public String updateIndustryVisitStatus(String industryVisitId, MultipartFile file) throws IOException {
         IndustryVisit industryVisit = industryVisitRepository.findByIndustryVisitId(industryVisitId);
         String currentStatus = industryVisit.getStatus();
+        String[] parse = (file.getOriginalFilename()).split("\\.");
+        String extension = parse[parse.length-1];
         if (currentStatus.equals("Pending")) {
             industryVisit.setStatus("Upcoming");
             industryVisit.setNotesheetFileType(file.getContentType());
             industryVisit.setNotesheet(file.getBytes());
+            industryVisit.setNotesheetExtension(extension);
         } else if (currentStatus.equals("Upcoming")) {
             industryVisit.setStatus("Completed");
             industryVisit.setAttendanceFileType(file.getContentType());
             industryVisit.setAttendance(file.getBytes());
+            industryVisit.setAttendanceExtension(extension);
         } else
             return "Already completed, cannot update status.";
 

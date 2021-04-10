@@ -97,7 +97,7 @@ public class ExpertLectureController {
 		return new ResponseEntity<List<ExpertLecturesResponse>>(expertLectureService.searchExpertLectures(keyword, status), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "Update expert lecture status", response = String.class, httpMethod = "POST", produces = "application/json")
+	@ApiOperation(value = "Update expert lecture status", response = String.class, httpMethod = "PUT", produces = "application/json")
 	@PutMapping(path = RestAPI.UPDATE_EXPERT_LECTURE_STATUS, produces = "application/json")
 	public ResponseEntity<String> updateExpertLectureStatus(@PathVariable("expertLectureId") String expertLectureId, @RequestParam("file") MultipartFile file)
 	{
@@ -132,14 +132,14 @@ public class ExpertLectureController {
 		return new ResponseEntity<String>(expertLectureService.deleteExpertLecture(expertLectureId), HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Download notesheet", response = Resource.class, httpMethod = "GET")
-	@GetMapping(path = "/downloadNotesheet/{expertLectureId}")
+	@ApiOperation(value = "Download notesheet", response = Resource.class, httpMethod = "GET", produces = "application/pdf")
+	@GetMapping(path = "/downloadNotesheet/{expertLectureId}", produces = "application/pdf")
 	public ResponseEntity<Resource> downloadNotesheet(@PathVariable("expertLectureId") String expertLectureId)
 	{
 		ExpertLectureDetails expertLectureDetails = expertLectureService.downloadNotesheet(expertLectureId);
 		return ResponseEntity.ok()
 				.contentType(MediaType.parseMediaType(expertLectureDetails.getNotesheetFileType()))
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"\"")
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"."+expertLectureDetails.getNotesheetExtension()+"\"")
 				.body(new ByteArrayResource(expertLectureDetails.getNotesheet()));
 	}
 
@@ -150,7 +150,7 @@ public class ExpertLectureController {
 		ExpertLectureDetails expertLectureDetails = expertLectureService.downloadAttendance(expertLectureId);
 		return ResponseEntity.ok()
 				.contentType(MediaType.parseMediaType(expertLectureDetails.getAttendanceFileType()))
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"\"")
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"."+expertLectureDetails.getAttendanceExtension()+"\"")
 				.body(new ByteArrayResource(expertLectureDetails.getAttendance()));
 	}
 }

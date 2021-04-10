@@ -94,7 +94,7 @@ public class IndustryVisitController {
         IndustryVisit industryVisit = industryVisitService.downloadNotesheet(industryVisitId);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(industryVisit.getNotesheetFileType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"."+industryVisit.getNotesheetExtension()+"\"")
                 .body(new ByteArrayResource(industryVisit.getNotesheet()));
     }
 
@@ -105,7 +105,7 @@ public class IndustryVisitController {
         IndustryVisit industryVisit = industryVisitService.downloadAttendance(industryVisitId);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(industryVisit.getAttendanceFileType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"."+industryVisit.getAttendanceExtension()+"\"")
                 .body(new ByteArrayResource(industryVisit.getAttendance()));
     }
 }

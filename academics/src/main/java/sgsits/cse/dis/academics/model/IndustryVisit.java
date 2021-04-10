@@ -71,4 +71,9 @@ public class IndustryVisit {
     @Column(name = "notesheet_file_type")
     private String notesheetFileType;
 
+    @Column(name = "notesheet_extension")
+    private String notesheetExtension;
+
+    @Column(name = "attendance_extension")
+    private String attendanceExtension;
 }

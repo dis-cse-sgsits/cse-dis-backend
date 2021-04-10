@@ -211,19 +211,24 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 	{
 		ExpertLectureDetails expertLecture = expertLectureRepository.findByExpertLectureId(expertLectureId);
 		String currentStatus = expertLecture.getStatus();
+		String fileName = file.getOriginalFilename();
+		String[] parse = fileName.split("\\.");
+		System.out.println(parse.length);
+		String extension = parse[parse.length-1];
 		if(currentStatus.equals("Pending"))
 		{
 
 			expertLecture.setStatus("Upcoming");
 			expertLecture.setNotesheetFileType(file.getContentType());
 			expertLecture.setNotesheet(file.getBytes());
+			expertLecture.setNotesheetExtension(extension);
 		}
 		else if(currentStatus.equals("Upcoming"))
 		{
 			expertLecture.setStatus("Completed");
 			expertLecture.setAttendanceFileType(file.getContentType());
 			expertLecture.setAttendance(file.getBytes());
-
+			expertLecture.setAttendanceExtension(extension);
 		}
 		else
 			return "Already completed, cannot update status.";

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import sgsits.cse.dis.academics.feignClient.UserClient;
 import sgsits.cse.dis.academics.model.MEScholarship;
 import sgsits.cse.dis.academics.repo.MEScholarshipRepository;
+import sgsits.cse.dis.academics.request.CancelScholarship;
 import sgsits.cse.dis.academics.response.MEScholarshipStudents;
 import sgsits.cse.dis.academics.response.StudentProfile;
 import sgsits.cse.dis.academics.service.MEScholarshipService;
@@ -73,8 +74,8 @@ public class MEScholarshipServiceImpl implements MEScholarshipService{
     }
 
     @Override
-    public String cancelScholarship(List<String> scholarshipStudentsEnrollments) {
-        for(String enrollment : scholarshipStudentsEnrollments)
+    public String cancelScholarship(CancelScholarship cancelScholarship) {
+        for(String enrollment : cancelScholarship.getEnrollments())
         {
             MEScholarship meScholarship = meScholarshipRepository.findByEnrollment(enrollment);
             meScholarshipRepository.delete(meScholarship);

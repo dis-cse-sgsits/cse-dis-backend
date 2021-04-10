@@ -3,6 +3,7 @@ package sgsits.cse.dis.academics.service;
 import java.util.List;
 
 import sgsits.cse.dis.academics.model.MEScholarship;
+import sgsits.cse.dis.academics.request.CancelScholarship;
 import sgsits.cse.dis.academics.response.MEScholarshipStudents;
 
 public interface MEScholarshipService {
@@ -13,7 +14,7 @@ public interface MEScholarshipService {
 
     List<MEScholarship> fetchMEStudentsWithScholarship(int year);
 
-    String cancelScholarship(List<String> scholarshipStudentsEnrollments);
+    String cancelScholarship(CancelScholarship cancelScholarship);
 
     List<MEScholarshipStudents> searchStudentsWithoutScholarship(int year, String name);
 

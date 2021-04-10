@@ -89,5 +89,11 @@ public class ExpertLectureDetails {
 	@Column(name = "coordinator", nullable = false)
 	private String coordinator;
 
+	@Column(name = "notesheet_extension")
+	private String notesheetExtension;
+
+	@Column(name = "attendance_extension")
+	private String attendanceExtension;
+
 }
 	
