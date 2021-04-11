@@ -221,7 +221,7 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		for(MoodleContext c : con)
 		{
 			Optional<MoodleRoleAssignments> role_assn = moodleRoleAssignmentsRepo.findByContextidAndUserid(c.getId(), userId);
-			if(role_assn.isEmpty())
+			if(!role_assn.isPresent())
 				continue;
 			Long role_id = role_assn.get().getRoleid();
 			return moodleRoleRepo.findById(role_id);
@@ -238,12 +238,12 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		for(CoursesOfStudentData course : courseList)
 		{
 			Optional<MoodleGradeItems> item = moodleGradeItemsRepo.findByCourseidAndItemname(course.getCourseId(), "course total");
-			if(item.isEmpty())
+			if(!item.isPresent())
 				ans.add(new StudentOverviewReport(course.getCourseName(), 0.0, course.getCourseId(),0.0));
 			else
 			{
 				Optional<MoodleGradeGrades> grade = moodleGradeGradesRepo.findByItemidAndUserid(item.get().getId(), userId);
-				if(grade.isEmpty())
+				if(!grade.isPresent())
 					ans.add(new StudentOverviewReport(course.getCourseName(), 0.0, course.getCourseId(),0.0));
 				else
 					ans.add(new StudentOverviewReport(course.getCourseName(), grade.get().getFinalgrade(), course.getCourseId(),grade.get().getRawgrademax()));

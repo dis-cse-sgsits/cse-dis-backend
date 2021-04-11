@@ -270,6 +270,7 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 		   List<Long> tableid1=MoodleAttendanceTeacherBulkRepo.getById(mu1.getId(),mc.getId());
 		   List<StudentAttendanceData> studentAttendanceData =new ArrayList<>();
 		   Long count=0L;
+		   Long slot=0L;
 	for(int i=0;i<tableid.size();i++) {
 		  for(MoodleUser mu: moodleUser) {
 			  StudentAttendanceData sat =new StudentAttendanceData();
@@ -282,7 +283,7 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 				   sat.setLastname(mu.getLastname()); 
 				   for(MoodleAttendanceTeacher mat: moodleAttendanceTeacher) {
 						   			  
-							   if(mc.getId()==mat.getSubjectid() &&  tableid.get(i) == mas.getTableid()) {
+							   if(mc.getId()==mat.getSubjectid() && mat.getId() == mas.getTableid() &&  tableid.get(i) == mas.getTableid()) {
 							   count=MoodleAttendanceStudentRepo.getByAttendance(mu.getId(),tableid.get(i));
 							   sat.setCoursename(mc.getFullname());	 
 							   sat.setCoursecode(coursecode);

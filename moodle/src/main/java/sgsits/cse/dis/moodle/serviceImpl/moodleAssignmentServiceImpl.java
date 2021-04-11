@@ -193,7 +193,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 		for(MoodleContext c : con)
 		{
 			Optional<MoodleRoleAssignments> role_assn = moodleRoleAssignmentsRepo.findByContextidAndUserid(c.getId(), userId);
-			if(role_assn.isEmpty())
+			if(!role_assn.isPresent())
 				continue;
 			Long role_id = role_assn.get().getRoleid();
 			return moodleRoleRepo.findById(role_id);
@@ -252,7 +252,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
             throw new  NotFoundException("Invalid User Type");
 		Optional<List<MoodleAssign>> assn = moodleAssignRepo.findByCourse(id);
 		List<Assignment> res =  new ArrayList<Assignment>();
-		if(assn.isEmpty())
+		if(!assn.isPresent())
 			return res;
 		for(MoodleAssign curr : assn.get())
 		{
@@ -307,7 +307,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 						sub.getUserid(),sub.getAssignment(),sub.getAttemptnumber());
 				
 				TeacherReportData toAdd;
-				if(grade.isEmpty())
+				if(!grade.isPresent())
 				{
 					toAdd = new TeacherReportData(
 							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),null,null,
