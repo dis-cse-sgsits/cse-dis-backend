@@ -266,6 +266,8 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 	@Override
 	public	List<List<TeacherReportData>> getTeachersReport(Long courseId,Long studentId,Long assnId,String userType) throws NotFoundException
 	{
+		if(userType.equals("student"))
+            throw new  NotFoundException("Invalid User Type");
 		List<List<TeacherReportData>> ans = new ArrayList<List<TeacherReportData>>();
 		String courseName = moodleCourseRepo.findById(courseId).get().getFullname();
 		
