@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import sgsits.cse.dis.moodle.exception.NotFoundException;
 import sgsits.cse.dis.moodle.model.MoodleCourse;
 import sgsits.cse.dis.moodle.model.MoodleQuestion;
 import sgsits.cse.dis.moodle.model.MoodleQuestionAnswers;
@@ -53,8 +54,11 @@ public class moodleQuizServiceImpl implements moodleQuizService, Serializable {
 	
 
 	@Override
-	public List<QuizData> getQuizzesOfCourse(Long userId, Long courseId) {
+	public List<QuizData> getQuizzesOfCourse(Long userId, Long courseId, String userType) throws NotFoundException {
 		List<QuizData> allQuizzes = new ArrayList<QuizData>();
+		
+		if(!userType.equals("student"))
+            throw new  NotFoundException("Invalid User Type");
 		
 		List<MoodleCourse> course = moodleCourseRepo.findAllById(courseId);
 		List<MoodleQuiz> quizList = moodleQuizRepo.findByCourse(courseId);
@@ -80,8 +84,11 @@ public class moodleQuizServiceImpl implements moodleQuizService, Serializable {
 	}
 	
 	@Override
-	public List<QuestionData> getCompleteQuiz(Long userId, Long quizId) {
+	public List<QuestionData> getCompleteQuiz(Long userId, Long quizId, String userType) throws NotFoundException {
 		List<QuestionData> allQuestions = new ArrayList<QuestionData>();
+		
+		if(!userType.equals("student"))
+            throw new  NotFoundException("Invalid User Type");
 		
 		MoodleQuiz quiz = moodleQuizRepo.findAllById(quizId);
 		

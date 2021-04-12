@@ -84,11 +84,12 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 	}
 	
 	@Override
-	public List<List<GraderReportData>> getGraderReport(String courseId, String itemId) {
-		List<List<GraderReportData>> graderReport = new ArrayList<List<GraderReportData>>();
+	public List<List<GraderReportData>> getGraderReport(Long courseIdL, Long itemIdL, String userType) throws NotFoundException {
 		
-		Long courseIdL = Long.parseLong(courseId);
-		Long itemIdL = Long.parseLong(itemId);
+		List<List<GraderReportData>> graderReport = new ArrayList<List<GraderReportData>>();
+
+		if(userType.equals("student"))
+			throw new  NotFoundException("Invalid User Type");
 		
 		// List for taking courseCode and courseName
 		List<MoodleCourse> courseDetails = moodleCourseRepo.findAllById(courseIdL);
@@ -139,14 +140,13 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 	}
 	
 	@Override
-	public List<List<GraderReportData>> getUserReport(String courseId, String userId) {
+	public List<List<GraderReportData>> getUserReport(Long courseIdL, Long userIdL, String userType) throws NotFoundException {
 		List<List<GraderReportData>> userReport = new ArrayList<List<GraderReportData>>();
 		List<List<GraderReportData>> tempUserReport = new ArrayList<List<GraderReportData>>();
+		if(userType.equals("student"))
+			throw new  NotFoundException("Invalid User Type");
 		
-		Long courseIdL = Long.parseLong(courseId);
-		Long userIdL = Long.parseLong(userId);
-		
-		tempUserReport = getGraderReport(courseId, "0");
+		tempUserReport = getGraderReport(courseIdL,0L, userType);
 		
 		if (userIdL == 0) {
 			userReport = tempUserReport;
@@ -165,11 +165,14 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 	
 
 	@Override
-	public List<Course> getAllCoursesByGrader(String username)
+	public List<Course> getAllCoursesByGrader(String username, String userType) throws NotFoundException
 	{	
 		Long userid = moodleUserRepo.findByUsername(username).get(0).getId();
 		List<MoodleUserEnrollment> enrollList = moodleUserEnrollmentRepo.findByUserid(userid);
 		List<Course> courses = new ArrayList<Course>();
+		if(userType.equals("student"))
+			throw new  NotFoundException("Invalid User Type");
+		
 		for(MoodleUserEnrollment enroll : enrollList)
 		{
 			Optional<MoodleEnrollement> en = moodleEnrollmentRepo.findById(enroll.getEnrolid());
@@ -184,10 +187,12 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 	}
 
 	@Override
-	public List<Students> getAllStudentsOfCourse(Long courseId) {
+	public List<Students> getAllStudentsOfCourse(Long courseId, String userType) throws NotFoundException {
 		List<MoodleEnrollement> enrolls = moodleEnrollmentRepo.findByCourseid(courseId);
 		List<MoodleUserEnrollment> userenrolls = new ArrayList<MoodleUserEnrollment>();
 		List<Students> studs = new ArrayList<Students>();
+		if(userType.equals("student"))
+			throw new  NotFoundException("Invalid User Type");
 		for(MoodleEnrollement e : enrolls)
 		{
 			List<MoodleUserEnrollment> id = moodleUserEnrollmentRepo.findByEnrolid(e.getId());
@@ -225,9 +230,11 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 	}
 
 	@Override
-	public List<StudentOverviewReport> getStudentsOverviewReport(Long userId) {
-		List<CoursesOfStudentData> courseList = moodleAssignmentServiceImpl.getAllCoursesOfStudent(userId);
+	public List<StudentOverviewReport> getStudentsOverviewReport(Long userId, String userType) throws NotFoundException {
+		List<CoursesOfStudentData> courseList = moodleAssignmentServiceImpl.getAllCoursesOfStudent(userId,userType);
 		List<StudentOverviewReport> ans = new ArrayList<StudentOverviewReport>();
+		if(!userType.equals("student"))
+			throw new  NotFoundException("Invalid User Type");
 		for(CoursesOfStudentData course : courseList)
 		{
 			Optional<MoodleGradeItems> item = moodleGradeItemsRepo.findByCourseidAndItemname(course.getCourseId(), "course total");
@@ -246,14 +253,15 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 	}
 
 	@Override
-	public List<GraderReportData> getStudentsUserReport(String courseId, String userId) {
-		List<List<GraderReportData>> curr = getUserReport(courseId, userId);
+	public List<GraderReportData> getStudentsUserReport(Long courseId, Long userId, String userType) throws NotFoundException {
+		if(!userType.equals("student"))
+			throw new  NotFoundException("Invalid User Type");
+		List<List<GraderReportData>> curr = getUserReport(courseId, userId, userType);
 		List<GraderReportData> ans = new ArrayList<GraderReportData>();
 		if(!curr.isEmpty())
 			ans = curr.get(0);
 		return ans;
 	}
-
 	@Override
 	public Long getStudentsUserId(String username) throws NotFoundException {
 		List<MoodleUser> user = moodleUserRepo.findByUsername(username);

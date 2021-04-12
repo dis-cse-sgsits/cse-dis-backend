@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import sgsits.cse.dis.moodle.exception.NotFoundException;
 import sgsits.cse.dis.moodle.model.MoodleAssign;
 import sgsits.cse.dis.moodle.model.MoodleAssignGrades;
 import sgsits.cse.dis.moodle.model.MoodleAssignSubmission;
@@ -77,7 +78,9 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 
 
 	@Override
-	public List<CoursesOfStudentData> getAllCoursesOfStudent(Long userId) {
+	public List<CoursesOfStudentData> getAllCoursesOfStudent(Long userId, String userType) throws NotFoundException{
+		if(!userType.equals("student"))
+            throw new  NotFoundException("Invalid User Type");
 		List<CoursesOfStudentData> allCoursesOfStudent = new ArrayList<CoursesOfStudentData>();
 		
 		List<MoodleUserEnrollment> userEnrollList = moodleUserEnrollmentRepo.findByUserid(userId);
@@ -101,7 +104,9 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 	}
 
 	@Override
-	public List<StudentSubjectReportData> getStudentSubjectReport(Long userId, Long courseId) {
+	public List<StudentSubjectReportData> getStudentSubjectReport(Long userId, Long courseId, String userType)  throws NotFoundException {
+		if(!userType.equals("student"))
+            throw new  NotFoundException("Invalid User Type");
 		List<StudentSubjectReportData> studentSubjectReport = new ArrayList<StudentSubjectReportData>();
 		
 		List<MoodleCourse> courseDetails = moodleCourseRepo.findAllById(courseId);
@@ -205,14 +210,16 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 	}
 
 	@Override
-	public List<StudentSubjectReportData> getReportForPendingAssignments(Long userId) {
+	public List<StudentSubjectReportData> getReportForPendingAssignments(Long userId, String userType) throws NotFoundException {
+		if(!userType.equals("student"))
+            throw new  NotFoundException("Invalid User Type");
 		List<StudentSubjectReportData> pendingAssignmentsReport = new ArrayList<StudentSubjectReportData>();
 		List<StudentSubjectReportData> tempPendingAssigns = new ArrayList<StudentSubjectReportData>();
-		List<CoursesOfStudentData> coursesOfStudent = getAllCoursesOfStudent(userId);
+		List<CoursesOfStudentData> coursesOfStudent = getAllCoursesOfStudent(userId,userType);
 		
 		for (CoursesOfStudentData courseElement : coursesOfStudent) {
 			MoodleCourse course = moodleCourseRepo.findAllByShortname(courseElement.getCourseCode());
-			tempPendingAssigns = getStudentSubjectReport(userId, course.getId());
+			tempPendingAssigns = getStudentSubjectReport(userId, course.getId(), userType);
 			
 			for (StudentSubjectReportData tempElement : tempPendingAssigns) {
 				if (!tempElement.getSubmitted()) {
@@ -226,9 +233,11 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 	}
 
 	@Override
-	public Integer getNumberOfPendingAssignments(Long userId) {
+	public Integer getNumberOfPendingAssignments(Long userId, String userType) throws NotFoundException{
+		if(!userType.equals("student"))
+            throw new  NotFoundException("Invalid User Type");
 		Integer numOfPendingAssignments = 0;
-		List<StudentSubjectReportData> pendingAssignments = getReportForPendingAssignments(userId);
+		List<StudentSubjectReportData> pendingAssignments = getReportForPendingAssignments(userId,userType);
 		numOfPendingAssignments = pendingAssignments.size();
 		
 		return numOfPendingAssignments;
@@ -237,8 +246,10 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 	
 
 	@Override
-	public List<Assignment> getAssignmentsOfCourse(Long id)
+	public List<Assignment> getAssignmentsOfCourse(Long id, String userType) throws NotFoundException
 	{
+		if(userType.equals("student"))
+            throw new  NotFoundException("Invalid User Type");
 		Optional<List<MoodleAssign>> assn = moodleAssignRepo.findByCourse(id);
 		List<Assignment> res =  new ArrayList<Assignment>();
 		if(!assn.isPresent())
@@ -253,8 +264,10 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 
 	
 	@Override
-	public	List<List<TeacherReportData>> getTeachersReport(Long courseId,Long studentId,Long assnId)
+	public	List<List<TeacherReportData>> getTeachersReport(Long courseId,Long studentId,Long assnId,String userType) throws NotFoundException
 	{
+		if(userType.equals("student"))
+            throw new  NotFoundException("Invalid User Type");
 		List<List<TeacherReportData>> ans = new ArrayList<List<TeacherReportData>>();
 		String courseName = moodleCourseRepo.findById(courseId).get().getFullname();
 		
@@ -267,7 +280,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 		}
 		else
 		{
-			studIds = moodleGradeServiceImpl.getAllStudentsOfCourse(courseId);
+			studIds = moodleGradeServiceImpl.getAllStudentsOfCourse(courseId,userType);
 		}
 		
 		// collecting list of all assns whose data is required
@@ -278,7 +291,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 			assns.add(new Assignment(curr.getId(), curr.getCourse(), curr.getName(),getDateFromUnixDate(curr.getDuedate())));
 		}
 		else
-			assns = getAssignmentsOfCourse(courseId);
+			assns = getAssignmentsOfCourse(courseId, userType);
 		
 		// generating final data
 		for(Students stud : studIds)
