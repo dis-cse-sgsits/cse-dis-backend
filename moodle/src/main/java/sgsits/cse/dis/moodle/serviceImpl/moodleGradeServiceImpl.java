@@ -254,8 +254,11 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 
 	@Override
 	public List<GraderReportData> getStudentsUserReport(Long courseId, Long userId, String userType) throws NotFoundException {
-		if(!userType.equals("student"))
-			throw new  NotFoundException("Invalid User Type");
+		//if(!userType.equals("student"))
+		//	throw new  NotFoundException("Invalid User Type");
+		
+		userType = "teacher";
+		
 		List<List<GraderReportData>> curr = getUserReport(courseId, userId, userType);
 		List<GraderReportData> ans = new ArrayList<GraderReportData>();
 		if(!curr.isEmpty())
