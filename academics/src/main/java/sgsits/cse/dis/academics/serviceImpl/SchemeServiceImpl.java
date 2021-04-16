@@ -86,13 +86,14 @@ public class SchemeServiceImpl implements SchemeServices {
 	public ResponseEntity<ResponseMessage> delete(String fileName) throws FileNotFoundException {
 
 			Optional<Object> schemeFile = schemeFileRepository.findByfileName(fileName);
+
 			if(schemeFile.isPresent()){
 				schemeFileRepository.delete((SchemeFile) schemeFile.get());
 				String message = "The file is deleted successfully.";
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 			}
 			else{
-				throw new FileNotFoundException("File not found with id " + fileName);
+				throw new FileNotFoundException("File not found with file name " + fileName);
 			}
 	}
 

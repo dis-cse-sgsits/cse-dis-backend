@@ -140,4 +140,32 @@ public class PanelOfPracticalServiceImpl implements PanelOfPracticalService {
             throw new FileNotFoundException("Panel not found with id " + id);
         }
     }
+
+    @Override
+    public void updatePOP( PanelOfPracticalDto panelOfPracticalDto, String id ) throws ConflictException, EventDoesNotExistException {
+        Optional<PanelOfPractical> pop = panelOfPracticalRepository.findByid(id);
+
+        if (pop.isPresent()) {
+            PanelOfPractical existing =pop.get();
+//            System.out.println(existing);
+
+            PanelOfPractical panelOfPractical = new PanelOfPractical(
+                    existing.getId(),
+                    panelOfPracticalDto.getSubjectCode(),
+                    panelOfPracticalDto.getSubjectName(),
+                    panelOfPracticalDto.getInternalFaculty1(),
+                    panelOfPracticalDto.getInternalFaculty2(),
+                    panelOfPracticalDto.getExternalFaculty(),
+                    panelOfPracticalDto.getLabAssistant(),
+                    panelOfPracticalDto.getLabTechnician()
+            );
+
+            panelOfPracticalRepository.save(panelOfPractical);
+
+            if (panelOfPractical.equals(null))
+                throw new ConflictException("Panel with id [" + id + "] couldn't be updated");
+
+        } else
+            throw new EventDoesNotExistException("Panel with id [" + id + "] not found.");
+    }
 }

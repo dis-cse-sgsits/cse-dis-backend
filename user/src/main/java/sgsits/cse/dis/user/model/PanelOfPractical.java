@@ -108,7 +108,7 @@ public class PanelOfPractical {
     }
 
 
-    public PanelOfPractical(String id, String subjectCode, String subjectName, String internalFaculty1, String internalFaculty2, String externalFaculty, String currentDesignation, String labAssistant) {
+    public PanelOfPractical(String id, String subjectCode, String subjectName, String internalFaculty1, String internalFaculty2, String externalFaculty, String labAssistant, String labTechnician) {
         this.id = id;
         this.subjectCode = subjectCode;
         this.subjectName = subjectName;
@@ -116,5 +116,6 @@ public class PanelOfPractical {
         this.internalFaculty2 = internalFaculty2;
         this.externalFaculty = externalFaculty;
         this.labAssistant = labAssistant;
+        this.labTechnician = labTechnician;
     }
 }

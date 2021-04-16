@@ -32,4 +32,6 @@ public interface PanelOfPracticalService{
     PanelOfPractical getPOPById(String id);
 
     ResponseEntity<ResponseMessage> deletePOP(String id) throws FileNotFoundException;
+
+    void updatePOP( PanelOfPracticalDto panelOfPracticalDto, String id ) throws ConflictException, EventDoesNotExistException;
 }

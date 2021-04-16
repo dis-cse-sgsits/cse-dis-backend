@@ -58,6 +58,15 @@ public class PanelOfPracticalController {
         return panelOfPracticalService.deletePOP(id);
     }
 
+    @ApiOperation(value = "Update Panel of Practical By id", response = Object.class, httpMethod = "PUT", produces = "application/json")
+    @PutMapping(value = "/panelOfPractical/{id}")
+    public ResponseEntity<ResponseMessage> updatePOP(
+            HttpServletRequest request, @RequestBody PanelOfPracticalDto panelOfPracticalDto, @PathVariable String id)
+            throws InternalServerError, ConflictException, EventDoesNotExistException {
+        panelOfPracticalService.updatePOP(panelOfPracticalDto, id);
+        return ResponseEntity.status(HttpStatus.OK).body( new ResponseMessage("Panel of Practical Updated Added"));
+    }
+
     @ApiOperation(value = "Add External Examiner", response = Object.class, httpMethod = "POST", produces = "application/json")
     @PostMapping(value = "/externalExaminer")
     public ResponseEntity<ResponseMessage> addExternalExaminer(
