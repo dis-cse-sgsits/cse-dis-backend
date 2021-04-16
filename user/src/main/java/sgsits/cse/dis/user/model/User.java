@@ -83,6 +83,9 @@ public class User{
     
 	@Column(name = "user_type")
 	private String userType;
+	
+	@Column(name = "last_login")
+	private Date lastLogin;
 
 	public User() {}
 
@@ -204,6 +207,14 @@ public class User{
 
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+	
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
 	}
 
 }
