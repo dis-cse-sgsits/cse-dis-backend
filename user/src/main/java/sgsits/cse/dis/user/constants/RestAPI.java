@@ -28,6 +28,7 @@ public class RestAPI {
 	public static final String GET_REMAINING_STUDENTS = "/getRemainingStudents/{session}/{ugOrPg}";
 	public static final String GET_STUDENTS_BATCH = "/getStudentsBatch/{studentId}/{ugOrPg}";
 	public static final String GET_GUIDES_BATCH = "/getGuidesBatch/{guideId}/{ugOrPg}";
+	public static final String GET_ALL_GUIDES = "/getAllGuides";
 	
 	//Side Navigation
 	public static final String GET_SIDE_NAVIGATION_DETAILS = "/getSideNavigationDetails";
