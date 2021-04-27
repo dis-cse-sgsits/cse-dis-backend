@@ -17,4 +17,6 @@ public class EditExpertLectureForm {
 
     public long conveyance;
 
+    public String coordinator;
+
 }

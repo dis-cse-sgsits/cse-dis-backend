@@ -254,6 +254,7 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 		expertLectureDetails.setTime(editExpertLectureForm.getTime());
 		expertLectureDetails.setVenue(editExpertLectureForm.getVenue());
 		expertLectureDetails.setAudience(editExpertLectureForm.getAudience());
+		expertLectureDetails.setCoordinator(editExpertLectureForm.getCoordinator());
 		expertLectureDetails.setHonorarium(editExpertLectureForm.getHonorarium());
 		expertLectureDetails.setConveyance(editExpertLectureForm.getConveyance());
 		expertLectureDetails.setTotalAmount(editExpertLectureForm.getHonorarium()+ editExpertLectureForm.getConveyance());

@@ -40,4 +40,5 @@ public class RestAPI {
 	public static final String SEARCH_STUDENTS_WITH_SCHOLARSHIP = "/searchStudentsWithScholarship";
 	public static final String UPDATE_PAYMENT_STATUS_AND_REMARKS = "/updatePaymentStatusAndRemarks/{expertLectureId}";
 	public static final String UPDATE_REMARKS = "/updateRemarks/{industryVisitId}";
+    public static final String UPLOAD_IMAGES = "/uploadImages";
 }

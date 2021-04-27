@@ -1,5 +1,7 @@
 package sgsits.cse.dis.academics.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.netflix.ribbon.proxy.annotation.Http;
@@ -20,7 +22,9 @@ import sgsits.cse.dis.academics.model.ExpertLectureDetails;
 import sgsits.cse.dis.academics.model.IndustryVisit;
 import sgsits.cse.dis.academics.request.EditIndustryVisitForm;
 import sgsits.cse.dis.academics.request.IndustryVisitForm;
+import sgsits.cse.dis.academics.response.FileResponseMessage;
 import sgsits.cse.dis.academics.response.IndustryVisitResponse;
+import sgsits.cse.dis.academics.service.FileStorageService;
 import sgsits.cse.dis.academics.service.IndustryVisitService;
 
 @CrossOrigin(origins = "*")
@@ -31,6 +35,9 @@ public class IndustryVisitController {
 
     @Autowired
     private IndustryVisitService industryVisitService;
+
+    @Autowired
+    FileStorageService fileStorageService;
 
     @ApiOperation(value = "Add industry visit", response = String.class, httpMethod = "POST", produces = "application/json")
     @PostMapping(path = RestAPI.ADD_INDUSTRY_VISIT, produces = "application/json")
@@ -116,5 +123,27 @@ public class IndustryVisitController {
                                                                 @RequestParam(value = "remarks") String remarks)
     {
         return new ResponseEntity<String>(industryVisitService.updateRemarks(industryVisitId, remarks), HttpStatus.OK);
+    }
+
+    @PostMapping(path = RestAPI.UPLOAD_IMAGES)
+    public ResponseEntity<FileResponseMessage> uploadImages(@RequestParam("photos") MultipartFile[] photos)
+    {
+        String message = "";
+        try {
+            List<String> fileNames = new ArrayList<>();
+
+            Arrays.asList(photos).stream().forEach(photo -> {
+                fileStorageService.save(photo);
+                fileNames.add(photo.getOriginalFilename());
+            });
+
+            message = "Upload the images successfully: "+ fileNames;
+            return new ResponseEntity<FileResponseMessage>(new FileResponseMessage(message), HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            message = "Failed to upload photos.";
+            return new ResponseEntity<FileResponseMessage>(new FileResponseMessage(message), HttpStatus.EXPECTATION_FAILED);
+        }
     }
 }
