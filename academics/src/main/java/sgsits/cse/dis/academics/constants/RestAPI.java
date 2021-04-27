@@ -32,10 +32,12 @@ public class RestAPI {
     public static final String VIEW_INDUSTRY_VISIT_DETAILS = "/viewIndustryVisitDetails/{industryVisitId}";
 	public static final String SEARCH_INDUSTRY_VISITS = "/searchIndustryVisits";
 	public static final String UPDATE_INDUSTRY_VISIT_STATUS = "/updateIndustryVisitStatus/{industryVisitId}";
-	public static final String EDIT_INDUSTRY_VISIT = "/editIndustryVisit";
+	public static final String EDIT_INDUSTRY_VISIT = "/editIndustryVisit/{industryVisitId}";
 	public static final String DELETE_INDUSTRY_VISIT = "/deleteIndustryVisit/{industryVisitId}";
-    public static final String EDIT_EXPERT_LECTURE = "/editExpertLecture";
+    public static final String EDIT_EXPERT_LECTURE = "/editExpertLecture/{expertLectureId}";
 	public static final String DELETE_EXPERT_LECTURE = "/deleteExpertLecture/{expertLectureId}";
     public static final String SEARCH_STUDENTS_WITHOUT_SCHOLARSHIP = "/searchStudentsWithoutScholarship";
 	public static final String SEARCH_STUDENTS_WITH_SCHOLARSHIP = "/searchStudentsWithScholarship";
+	public static final String UPDATE_PAYMENT_STATUS_AND_REMARKS = "/updatePaymentStatusAndRemarks/{expertLectureId}";
+	public static final String UPDATE_REMARKS = "/updateRemarks/{industryVisitId}";
 }

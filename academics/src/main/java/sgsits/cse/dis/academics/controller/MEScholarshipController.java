@@ -45,8 +45,8 @@ public class MEScholarshipController {
         return new ResponseEntity<List<MEScholarship>>(meScholarshipService.fetchMEStudentsWithScholarship(year), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Cancel scholarship", response = String.class, httpMethod = "DELETE", produces = "application/json")
-    @DeleteMapping(path = RestAPI.CANCEL_SCHOLARSHIP, produces = "application/json")
+    @ApiOperation(value = "Cancel scholarship", response = String.class, httpMethod = "PUT", produces = "application/json")
+    @PutMapping(path = RestAPI.CANCEL_SCHOLARSHIP, produces = "application/json")
     public ResponseEntity<String> cancelScholarship(@RequestBody CancelScholarship cancelScholarship)
     {
         return new ResponseEntity<String>(meScholarshipService.cancelScholarship(cancelScholarship), HttpStatus.OK);

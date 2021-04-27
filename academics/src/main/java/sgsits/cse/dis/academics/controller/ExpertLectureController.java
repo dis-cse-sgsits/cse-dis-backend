@@ -19,6 +19,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.academics.repo.ExpertLectureRepository;
+import sgsits.cse.dis.academics.request.EditExpertLectureForm;
 import sgsits.cse.dis.academics.response.ResponseMessage;
 import sgsits.cse.dis.academics.service.ExpertLectureService;
 import sgsits.cse.dis.academics.constants.RestAPI;
@@ -75,7 +76,14 @@ public class ExpertLectureController {
 	{
 		return new ResponseEntity<String>(expertLectureService.addExpertLecture(addExpertLectureForm), HttpStatus.OK);
 	}
-	
+
+	@ApiOperation(value = "Edit Expert Lecture", response = String.class, httpMethod = "PUT", produces = "application/json")
+	@PutMapping(path = RestAPI.EDIT_EXPERT_LECTURE, produces = "application/json")
+	public ResponseEntity<String> editExpertLecture(@PathVariable("expertLectureId") String expertLectureId, @RequestBody EditExpertLectureForm editExpertLectureForm)
+	{
+		return new ResponseEntity<String>(expertLectureService.editExpertLecture(expertLectureId, editExpertLectureForm), HttpStatus.OK);
+	}
+
 	@ApiOperation(value="Get Expert Lectures by status", response=ExpertLecturesResponse.class, httpMethod="GET", produces="application/json")
 	@GetMapping(path=RestAPI.GET_EXPERT_LECTURES_BY_STATUS, produces="application/json")
 	public ResponseEntity<List<ExpertLecturesResponse>> getExpertLecturesByStatus(@PathVariable("status") String status)
@@ -118,12 +126,12 @@ public class ExpertLectureController {
 		return new ResponseEntity<String>(expertLectureService.deleteExpert(expertId), HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Edit expert lecture", response = String.class, httpMethod = "PUT", produces = "application/json")
-	@PutMapping(path = RestAPI.EDIT_EXPERT_LECTURE, produces = "application/json")
-	public ResponseEntity<String> editExpertLecture(@RequestBody ExpertLectureDetails expertLectureDetails)
-	{
-		return new ResponseEntity<String>(expertLectureService.editExpertLecture(expertLectureDetails), HttpStatus.OK);
-	}
+//	@ApiOperation(value = "Edit expert lecture", response = String.class, httpMethod = "PUT", produces = "application/json")
+//	@PutMapping(path = RestAPI.EDIT_EXPERT_LECTURE, produces = "application/json")
+//	public ResponseEntity<String> editExpertLecture(@RequestBody ExpertLectureDetails expertLectureDetails)
+//	{
+//		return new ResponseEntity<String>(expertLectureService.editExpertLecture(expertLectureDetails), HttpStatus.OK);
+//	}
 
 	@ApiOperation(value = "Delete expert lecture", response = String.class, httpMethod = "DELETE", produces = "application/json")
 	@DeleteMapping(path = RestAPI.DELETE_EXPERT_LECTURE, produces = "application/json")
@@ -152,5 +160,14 @@ public class ExpertLectureController {
 				.contentType(MediaType.parseMediaType(expertLectureDetails.getAttendanceFileType()))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"."+expertLectureDetails.getAttendanceExtension()+"\"")
 				.body(new ByteArrayResource(expertLectureDetails.getAttendance()));
+	}
+
+	@ApiOperation(value = "Update payment status and remarks", response = String.class, httpMethod = "PUT")
+	@PutMapping(path = RestAPI.UPDATE_PAYMENT_STATUS_AND_REMARKS, produces = "application/json")
+	public ResponseEntity<String> updatePaymentStatusAndRemarks(@PathVariable("expertLectureId") String expertLectureId,
+																@RequestParam(value = "payment_status") String paymentStatus,
+																@RequestParam(value = "remarks") String remarks)
+	{
+		return new ResponseEntity<String>(expertLectureService.updatePaymentStatusAndRemarks(expertLectureId, paymentStatus, remarks), HttpStatus.OK);
 	}
 }

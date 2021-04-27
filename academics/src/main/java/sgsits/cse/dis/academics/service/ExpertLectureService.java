@@ -1,6 +1,7 @@
 package sgsits.cse.dis.academics.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import sgsits.cse.dis.academics.request.EditExpertLectureForm;
 import sgsits.cse.dis.academics.response.*;
 
 import java.io.IOException;
@@ -33,14 +34,15 @@ public interface ExpertLectureService {
 
 	String updateExpertLectureStatus(String expertLectureId, MultipartFile file) throws IOException;
 
-
     String deleteExpert(String expertId);
 
-    String editExpertLecture(ExpertLectureDetails expertLectureDetails);
+    String editExpertLecture(String expertLectureId, EditExpertLectureForm editExpertLectureForm);
 
 	String deleteExpertLecture(String expertLectureId);
 
 	ExpertLectureDetails downloadNotesheet(String expertLectureId);
 
 	ExpertLectureDetails downloadAttendance(String expertLectureId);
+
+	String updatePaymentStatusAndRemarks(String expertLectureId, String paymentStatus, String remarks);
 }

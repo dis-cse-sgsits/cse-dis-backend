@@ -76,4 +76,7 @@ public class IndustryVisit {
 
     @Column(name = "attendance_extension")
     private String attendanceExtension;
+
+    @Column(name = "remarks")
+    private String remarks;
 }

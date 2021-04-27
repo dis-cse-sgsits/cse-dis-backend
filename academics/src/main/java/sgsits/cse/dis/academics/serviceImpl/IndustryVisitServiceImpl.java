@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.academics.model.IndustryVisit;
 import sgsits.cse.dis.academics.repo.IndustryVisitRepository;
+import sgsits.cse.dis.academics.request.EditIndustryVisitForm;
 import sgsits.cse.dis.academics.request.IndustryVisitForm;
 import sgsits.cse.dis.academics.response.IndustryVisitResponse;
 import sgsits.cse.dis.academics.service.IndustryVisitService;
@@ -117,14 +118,22 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
     }
 
     @Override
-    public String editIndustryVisit(IndustryVisit industryVisit) {
+    public String editIndustryVisit(String industryVisitId, EditIndustryVisitForm editIndustryVisitForm) {
+        IndustryVisit industryVisit = industryVisitRepository.findByIndustryVisitId(industryVisitId);
         if(industryVisit.getStatus().equals("Completed"))
             return "Cannot edit details of a completed visit.";
+
+        industryVisit.setDate(editIndustryVisitForm.getDate());
+        industryVisit.setTime(editIndustryVisitForm.getTime());
+        industryVisit.setParticipants(editIndustryVisitForm.getParticipants());
+        industryVisit.setCoordinator1(editIndustryVisitForm.getCoordinator1());
+        industryVisit.setCoordinator2(editIndustryVisitForm.getCoordinator2());
+
         IndustryVisit test = industryVisitRepository.save(industryVisit);
         if(test!=null)
-            return "Details updated successfully!";
+            return "Industry Visit details updated successfully.";
         else
-            return "Could not update visit details, please try again.";
+            return "Could not update details, please try again.";
     }
 
     @Override
@@ -144,5 +153,18 @@ public class IndustryVisitServiceImpl implements IndustryVisitService {
     @Override
     public IndustryVisit downloadAttendance(String industryVisitId) {
         return industryVisitRepository.findByIndustryVisitId(industryVisitId);
+    }
+
+    @Override
+    public String updateRemarks(String industryVisitId, String remarks) {
+        IndustryVisit industryVisit = industryVisitRepository.findByIndustryVisitId(industryVisitId);
+        industryVisit.setRemarks(remarks);
+
+        IndustryVisit test = industryVisitRepository.save(industryVisit);
+
+        if(test!=null)
+            return "Details updated successfully.";
+        else
+            return "Could not update details, please try again";
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import sgsits.cse.dis.academics.request.EditExpertLectureForm;
 import sgsits.cse.dis.academics.service.ExpertLectureService;
 import sgsits.cse.dis.academics.model.ExpertDetails;
 import sgsits.cse.dis.academics.model.ExpertLectureDetails;
@@ -244,9 +245,19 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 	}
 
 	@Override
-	public String editExpertLecture(ExpertLectureDetails expertLectureDetails) {
+	public String editExpertLecture(String expertLectureId, EditExpertLectureForm editExpertLectureForm) {
+		ExpertLectureDetails expertLectureDetails = expertLectureRepository.findByExpertLectureId(expertLectureId);
 		if(expertLectureDetails.getStatus().equals("Completed"))
-			return "Cannot edit details for a completed expert lecture.";
+			return "Cannot edit details of a completed expert lecture.";
+
+		expertLectureDetails.setDate(editExpertLectureForm.getDate());
+		expertLectureDetails.setTime(editExpertLectureForm.getTime());
+		expertLectureDetails.setVenue(editExpertLectureForm.getVenue());
+		expertLectureDetails.setAudience(editExpertLectureForm.getAudience());
+		expertLectureDetails.setHonorarium(editExpertLectureForm.getHonorarium());
+		expertLectureDetails.setConveyance(editExpertLectureForm.getConveyance());
+		expertLectureDetails.setTotalAmount(editExpertLectureForm.getHonorarium()+ editExpertLectureForm.getConveyance());
+
 		ExpertLectureDetails test = expertLectureRepository.save(expertLectureDetails);
 		if(test!=null)
 			return "Expert lecture details updated successfully.";
@@ -272,6 +283,21 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 	@Override
 	public ExpertLectureDetails downloadAttendance(String expertLectureId) {
 		return expertLectureRepository.findByExpertLectureId(expertLectureId);
+	}
+
+	@Override
+	public String updatePaymentStatusAndRemarks(String expertLectureId, String paymentStatus, String remarks) {
+		ExpertLectureDetails expertLectureDetails = expertLectureRepository.findByExpertLectureId(expertLectureId);
+		if(expertLectureDetails.getPaymentStatus().equals("Completed"))
+			return "Payment already completed, cannot update payment status.";
+		expertLectureDetails.setPaymentStatus(paymentStatus);
+		expertLectureDetails.setRemarks(remarks);
+
+		ExpertLectureDetails test = expertLectureRepository.save(expertLectureDetails);
+		if(test!=null)
+			return "Details updated successfully.";
+		else
+			return "Could not update details, please try again.";
 	}
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.academics.constants.RestAPI;
 import sgsits.cse.dis.academics.model.ExpertLectureDetails;
 import sgsits.cse.dis.academics.model.IndustryVisit;
+import sgsits.cse.dis.academics.request.EditIndustryVisitForm;
 import sgsits.cse.dis.academics.request.IndustryVisitForm;
 import sgsits.cse.dis.academics.response.IndustryVisitResponse;
 import sgsits.cse.dis.academics.service.IndustryVisitService;
@@ -75,9 +76,9 @@ public class IndustryVisitController {
 
     @ApiOperation(value = "Edit industry visit", response = String.class, httpMethod = "PUT", produces = "application/json")
     @PutMapping(path = RestAPI.EDIT_INDUSTRY_VISIT, produces = "application/json")
-    public ResponseEntity<String> editIndustryVisit(@RequestBody IndustryVisit industryVisit)
+    public ResponseEntity<String> editIndustryVisit(@PathVariable("industryVisitId") String industryVisitId, @RequestBody EditIndustryVisitForm editIndustryVisitForm)
     {
-        return new ResponseEntity<String>(industryVisitService.editIndustryVisit(industryVisit), HttpStatus.OK);
+        return new ResponseEntity<String>(industryVisitService.editIndustryVisit(industryVisitId, editIndustryVisitForm), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete industry visit", response = String.class, httpMethod = "DELETE", produces = "application/json")
@@ -107,5 +108,13 @@ public class IndustryVisitController {
                 .contentType(MediaType.parseMediaType(industryVisit.getAttendanceFileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"."+industryVisit.getAttendanceExtension()+"\"")
                 .body(new ByteArrayResource(industryVisit.getAttendance()));
+    }
+
+    @ApiOperation(value = "Update remarks", response = String.class, httpMethod = "PUT")
+    @PutMapping(path = RestAPI.UPDATE_REMARKS, produces = "application/json")
+    public ResponseEntity<String> updateRemarks(@PathVariable("industryVisitId") String industryVisitId,
+                                                                @RequestParam(value = "remarks") String remarks)
+    {
+        return new ResponseEntity<String>(industryVisitService.updateRemarks(industryVisitId, remarks), HttpStatus.OK);
     }
 }

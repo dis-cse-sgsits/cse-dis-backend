@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>academics</name>
-	<description>Acdemics Service of DIS</description>
+	<description>Academics Service of DIS</description>
 
 	<properties>
 		<java.version>1.8</java.version>
