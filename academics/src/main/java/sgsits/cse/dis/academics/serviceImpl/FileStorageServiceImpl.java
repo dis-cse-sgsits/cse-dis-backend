@@ -1,5 +1,6 @@
 package sgsits.cse.dis.academics.serviceImpl;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.academics.service.FileStorageService;
 
@@ -8,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@Service
 public class FileStorageServiceImpl implements FileStorageService {
 
     private final Path root = Paths.get("uploads");
@@ -17,7 +19,8 @@ public class FileStorageServiceImpl implements FileStorageService {
     {
         try
         {
-            Files.createDirectory(root);
+            if(!Files.exists(root))
+                Files.createDirectory(root);
         } catch (IOException e)
         {
             throw new RuntimeException("Could not initialize upload directory.");

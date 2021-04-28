@@ -13,6 +13,7 @@ import sgsits.cse.dis.academics.constants.RestAPI;
 import sgsits.cse.dis.academics.model.MEScholarship;
 import sgsits.cse.dis.academics.request.CancelScholarship;
 import sgsits.cse.dis.academics.response.MEScholarshipStudents;
+import sgsits.cse.dis.academics.response.ResponseMessage;
 import sgsits.cse.dis.academics.service.MEScholarshipService;
 
 @CrossOrigin(origins = "*")
@@ -31,11 +32,11 @@ public class MEScholarshipController {
         return new ResponseEntity<List<MEScholarshipStudents>>(meScholarshipService.fetchMEStudentsWithoutScholarship(year), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Approve students for scholarship", response = String.class, httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "Approve students for scholarship", response = ResponseMessage.class, httpMethod = "POST", produces = "application/json")
     @PostMapping(path = RestAPI.APPROVE_STUDENTS_FOR_SCHOLARSHIP, produces = "application/json")
-    public ResponseEntity<String> approveStudents(@RequestBody List<MEScholarshipStudents> students)
+    public ResponseEntity<ResponseMessage> approveStudents(@RequestBody List<MEScholarshipStudents> students)
     {
-        return new ResponseEntity<String>(meScholarshipService.approveStudents(students), HttpStatus.OK);
+        return new ResponseEntity<ResponseMessage>(new ResponseMessage(meScholarshipService.approveStudents(students)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Fetch all ME students without scholarship", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")
@@ -45,11 +46,11 @@ public class MEScholarshipController {
         return new ResponseEntity<List<MEScholarship>>(meScholarshipService.fetchMEStudentsWithScholarship(year), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Cancel scholarship", response = String.class, httpMethod = "PUT", produces = "application/json")
+    @ApiOperation(value = "Cancel scholarship", response = ResponseMessage.class, httpMethod = "PUT", produces = "application/json")
     @PutMapping(path = RestAPI.CANCEL_SCHOLARSHIP, produces = "application/json")
-    public ResponseEntity<String> cancelScholarship(@RequestBody CancelScholarship cancelScholarship)
+    public ResponseEntity<ResponseMessage> cancelScholarship(@RequestBody CancelScholarship cancelScholarship)
     {
-        return new ResponseEntity<String>(meScholarshipService.cancelScholarship(cancelScholarship), HttpStatus.OK);
+        return new ResponseEntity<ResponseMessage>(new ResponseMessage(meScholarshipService.cancelScholarship(cancelScholarship)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Search students without scholarship", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")

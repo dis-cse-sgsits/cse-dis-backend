@@ -42,11 +42,11 @@ public class ExpertLectureController {
 	@Autowired
 	private ExpertLectureRepository expertLectureRepository;
 	
-	@ApiOperation(value = "Add expert", response = String.class, httpMethod = "POST", produces = "application/json")
+	@ApiOperation(value = "Add expert", response = ResponseMessage.class, httpMethod = "POST", produces = "application/json")
 	@PostMapping(path = RestAPI.ADD_EXPERT, produces = "application/json")
-	public ResponseEntity<String> addExpert(@RequestBody ExpertForm addExpertForm)
+	public ResponseEntity<ResponseMessage> addExpert(@RequestBody ExpertForm addExpertForm)
 	{
-		return new ResponseEntity<String>(expertLectureService.addExpert(addExpertForm), HttpStatus.OK);
+		return new ResponseEntity<ResponseMessage>(new ResponseMessage(expertLectureService.addExpert(addExpertForm)), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Find expert", response = ExpertDetails.class, httpMethod = "GET", produces = "Application/json")
@@ -56,11 +56,11 @@ public class ExpertLectureController {
 		return new ResponseEntity<ExpertDetails>(expertLectureService.findExpert(name, designation), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "Edit expert", response = String.class, httpMethod = "PUT", produces = "application/json")
+	@ApiOperation(value = "Edit expert", response = ResponseMessage.class, httpMethod = "PUT", produces = "application/json")
 	@PutMapping(path = RestAPI.EDIT_EXPERT, produces = "application/json")
-	public ResponseEntity<String> editExpert(@RequestBody ExpertForm editExpertForm)
+	public ResponseEntity<ResponseMessage> editExpert(@RequestBody ExpertForm editExpertForm)
 	{
-		return new ResponseEntity<String>(expertLectureService.editExpert(editExpertForm), HttpStatus.OK);
+		return new ResponseEntity<ResponseMessage>(new ResponseMessage(expertLectureService.editExpert(editExpertForm)), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value="Get Experts' Names and Designations", response = ExpertNamesAndDesignationsResponse.class, httpMethod = "GET", produces = "application/json")
@@ -70,18 +70,18 @@ public class ExpertLectureController {
 		return new ResponseEntity<List<ExpertNamesAndDesignationsResponse>> (expertLectureService.getExpertNamesAndDesignations(), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value="Add Expert Lecture", response=String.class, httpMethod="POST", produces="application/json")
+	@ApiOperation(value="Add Expert Lecture", response=ResponseMessage.class, httpMethod="POST", produces="application/json")
 	@PostMapping(path=RestAPI.ADD_EXPERT_LECTURE, produces="application/json")
-	public ResponseEntity<String> addExpertLecture(@RequestBody AddExpertLectureForm addExpertLectureForm)
+	public ResponseEntity<ResponseMessage> addExpertLecture(@RequestBody AddExpertLectureForm addExpertLectureForm)
 	{
-		return new ResponseEntity<String>(expertLectureService.addExpertLecture(addExpertLectureForm), HttpStatus.OK);
+		return new ResponseEntity<ResponseMessage>(new ResponseMessage(expertLectureService.addExpertLecture(addExpertLectureForm)), HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Edit Expert Lecture", response = String.class, httpMethod = "PUT", produces = "application/json")
+	@ApiOperation(value = "Edit Expert Lecture", response = ResponseMessage.class, httpMethod = "PUT", produces = "application/json")
 	@PutMapping(path = RestAPI.EDIT_EXPERT_LECTURE, produces = "application/json")
-	public ResponseEntity<String> editExpertLecture(@PathVariable("expertLectureId") String expertLectureId, @RequestBody EditExpertLectureForm editExpertLectureForm)
+	public ResponseEntity<ResponseMessage> editExpertLecture(@PathVariable("expertLectureId") String expertLectureId, @RequestBody EditExpertLectureForm editExpertLectureForm)
 	{
-		return new ResponseEntity<String>(expertLectureService.editExpertLecture(expertLectureId, editExpertLectureForm), HttpStatus.OK);
+		return new ResponseEntity<ResponseMessage>(new ResponseMessage(expertLectureService.editExpertLecture(expertLectureId, editExpertLectureForm)), HttpStatus.OK);
 	}
 
 	@ApiOperation(value="Get Expert Lectures by status", response=ExpertLecturesResponse.class, httpMethod="GET", produces="application/json")
@@ -105,25 +105,25 @@ public class ExpertLectureController {
 		return new ResponseEntity<List<ExpertLecturesResponse>>(expertLectureService.searchExpertLectures(keyword, status), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "Update expert lecture status", response = String.class, httpMethod = "PUT", produces = "application/json")
+	@ApiOperation(value = "Update expert lecture status", response = ResponseMessage.class, httpMethod = "PUT", produces = "application/json")
 	@PutMapping(path = RestAPI.UPDATE_EXPERT_LECTURE_STATUS, produces = "application/json")
-	public ResponseEntity<String> updateExpertLectureStatus(@PathVariable("expertLectureId") String expertLectureId, @RequestParam("file") MultipartFile file)
+	public ResponseEntity<ResponseMessage> updateExpertLectureStatus(@PathVariable("expertLectureId") String expertLectureId, @RequestParam("file") MultipartFile file)
 	{
 		try
 		{
-			return new ResponseEntity<String>(expertLectureService.updateExpertLectureStatus(expertLectureId, file), HttpStatus.OK);
+			return new ResponseEntity<ResponseMessage>(new ResponseMessage(expertLectureService.updateExpertLectureStatus(expertLectureId, file)), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
-			return new ResponseEntity<String>("Could not upload file; file invalid or size too large. Please try again.", HttpStatus.EXPECTATION_FAILED);
+			return new ResponseEntity<ResponseMessage>(new ResponseMessage("Could not upload file; file invalid or size too large. Please try again."), HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 
-	@ApiOperation(value = "Delete Expert", response = String.class, httpMethod = "DELETE", produces = "application/json")
+	@ApiOperation(value = "Delete Expert", response = ResponseMessage.class, httpMethod = "DELETE", produces = "application/json")
 	@DeleteMapping(path = RestAPI.DELETE_EXPERT, produces = "application/json")
-	public ResponseEntity<String> deleteExpert(@PathVariable("expertId") String expertId)
+	public ResponseEntity<ResponseMessage> deleteExpert(@PathVariable("expertId") String expertId)
 	{
-		return new ResponseEntity<String>(expertLectureService.deleteExpert(expertId), HttpStatus.OK);
+		return new ResponseEntity<ResponseMessage>(new ResponseMessage(expertLectureService.deleteExpert(expertId)), HttpStatus.OK);
 	}
 
 //	@ApiOperation(value = "Edit expert lecture", response = String.class, httpMethod = "PUT", produces = "application/json")
@@ -133,11 +133,11 @@ public class ExpertLectureController {
 //		return new ResponseEntity<String>(expertLectureService.editExpertLecture(expertLectureDetails), HttpStatus.OK);
 //	}
 
-	@ApiOperation(value = "Delete expert lecture", response = String.class, httpMethod = "DELETE", produces = "application/json")
+	@ApiOperation(value = "Delete expert lecture", response = ResponseMessage.class, httpMethod = "DELETE", produces = "application/json")
 	@DeleteMapping(path = RestAPI.DELETE_EXPERT_LECTURE, produces = "application/json")
-	public ResponseEntity<String> deleteExpertLecture(@PathVariable("expertLectureId") String expertLectureId)
+	public ResponseEntity<ResponseMessage> deleteExpertLecture(@PathVariable("expertLectureId") String expertLectureId)
 	{
-		return new ResponseEntity<String>(expertLectureService.deleteExpertLecture(expertLectureId), HttpStatus.OK);
+		return new ResponseEntity<ResponseMessage>(new ResponseMessage(expertLectureService.deleteExpertLecture(expertLectureId)), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Download notesheet", response = Resource.class, httpMethod = "GET", produces = "application/pdf")
@@ -162,12 +162,12 @@ public class ExpertLectureController {
 				.body(new ByteArrayResource(expertLectureDetails.getAttendance()));
 	}
 
-	@ApiOperation(value = "Update payment status and remarks", response = String.class, httpMethod = "PUT")
+	@ApiOperation(value = "Update payment status and remarks", response = ResponseMessage.class, httpMethod = "PUT")
 	@PutMapping(path = RestAPI.UPDATE_PAYMENT_STATUS_AND_REMARKS, produces = "application/json")
-	public ResponseEntity<String> updatePaymentStatusAndRemarks(@PathVariable("expertLectureId") String expertLectureId,
+	public ResponseEntity<ResponseMessage> updatePaymentStatusAndRemarks(@PathVariable("expertLectureId") String expertLectureId,
 																@RequestParam(value = "payment_status") String paymentStatus,
 																@RequestParam(value = "remarks") String remarks)
 	{
-		return new ResponseEntity<String>(expertLectureService.updatePaymentStatusAndRemarks(expertLectureId, paymentStatus, remarks), HttpStatus.OK);
+		return new ResponseEntity<ResponseMessage>(new ResponseMessage(expertLectureService.updatePaymentStatusAndRemarks(expertLectureId, paymentStatus, remarks)), HttpStatus.OK);
 	}
 }

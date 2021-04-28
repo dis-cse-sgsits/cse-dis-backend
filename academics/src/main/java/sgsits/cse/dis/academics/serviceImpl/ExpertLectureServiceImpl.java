@@ -289,8 +289,8 @@ public class ExpertLectureServiceImpl implements ExpertLectureService {
 	@Override
 	public String updatePaymentStatusAndRemarks(String expertLectureId, String paymentStatus, String remarks) {
 		ExpertLectureDetails expertLectureDetails = expertLectureRepository.findByExpertLectureId(expertLectureId);
-		if(expertLectureDetails.getPaymentStatus().equals("Completed"))
-			return "Payment already completed, cannot update payment status.";
+//		if(expertLectureDetails.getPaymentStatus().equals("Completed"))
+//			return "Payment already completed, cannot update payment status.";
 		expertLectureDetails.setPaymentStatus(paymentStatus);
 		expertLectureDetails.setRemarks(remarks);
 

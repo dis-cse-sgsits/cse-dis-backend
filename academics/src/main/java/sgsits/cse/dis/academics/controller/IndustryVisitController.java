@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -18,12 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.academics.constants.RestAPI;
-import sgsits.cse.dis.academics.model.ExpertLectureDetails;
 import sgsits.cse.dis.academics.model.IndustryVisit;
 import sgsits.cse.dis.academics.request.EditIndustryVisitForm;
 import sgsits.cse.dis.academics.request.IndustryVisitForm;
-import sgsits.cse.dis.academics.response.FileResponseMessage;
 import sgsits.cse.dis.academics.response.IndustryVisitResponse;
+import sgsits.cse.dis.academics.response.ResponseMessage;
 import sgsits.cse.dis.academics.service.FileStorageService;
 import sgsits.cse.dis.academics.service.IndustryVisitService;
 
@@ -39,11 +37,11 @@ public class IndustryVisitController {
     @Autowired
     FileStorageService fileStorageService;
 
-    @ApiOperation(value = "Add industry visit", response = String.class, httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "Add industry visit", response = ResponseMessage.class, httpMethod = "POST", produces = "application/json")
     @PostMapping(path = RestAPI.ADD_INDUSTRY_VISIT, produces = "application/json")
-    public ResponseEntity<String> addIndustryVisit(@RequestBody IndustryVisitForm industryVisitForm)
+    public ResponseEntity<ResponseMessage> addIndustryVisit(@RequestBody IndustryVisitForm industryVisitForm)
     {
-        return new ResponseEntity<String>(industryVisitService.addIndustryVisit(industryVisitForm),HttpStatus.OK);
+        return new ResponseEntity<ResponseMessage>(new ResponseMessage(industryVisitService.addIndustryVisit(industryVisitForm)),HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get industry visits by status", response = IndustryVisitResponse.class, httpMethod = "GET", produces = "application/json")
@@ -67,32 +65,32 @@ public class IndustryVisitController {
         return new ResponseEntity<List<IndustryVisitResponse>>(industryVisitService.searchIndustryVisits(status, keyword), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Update industry visit status", response = String.class, httpMethod = "PUT", produces = "application/json")
+    @ApiOperation(value = "Update industry visit status", response = ResponseMessage.class, httpMethod = "PUT", produces = "application/json")
     @PutMapping(path = RestAPI.UPDATE_INDUSTRY_VISIT_STATUS, produces = "application/json")
-    public ResponseEntity<String> updateIndustryVisitStatus(@PathVariable("industryVisitId") String industryVisitId, @RequestParam("file")MultipartFile file)
+    public ResponseEntity<ResponseMessage> updateIndustryVisitStatus(@PathVariable("industryVisitId") String industryVisitId, @RequestParam("file")MultipartFile file)
     {
         try {
-            return new ResponseEntity<String>(industryVisitService.updateIndustryVisitStatus(industryVisitId, file), HttpStatus.OK);
+            return new ResponseEntity<ResponseMessage>(new ResponseMessage(industryVisitService.updateIndustryVisitStatus(industryVisitId, file)), HttpStatus.OK);
         }
         catch (Exception e)
         {
-            return new ResponseEntity<String>("Could not upload file; file invalid or size too large. Please try again.", HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<ResponseMessage>(new ResponseMessage("Could not upload file; file invalid or size too large. Please try again."), HttpStatus.EXPECTATION_FAILED);
         }
 
     }
 
-    @ApiOperation(value = "Edit industry visit", response = String.class, httpMethod = "PUT", produces = "application/json")
+    @ApiOperation(value = "Edit industry visit", response = ResponseMessage.class, httpMethod = "PUT", produces = "application/json")
     @PutMapping(path = RestAPI.EDIT_INDUSTRY_VISIT, produces = "application/json")
-    public ResponseEntity<String> editIndustryVisit(@PathVariable("industryVisitId") String industryVisitId, @RequestBody EditIndustryVisitForm editIndustryVisitForm)
+    public ResponseEntity<ResponseMessage> editIndustryVisit(@PathVariable("industryVisitId") String industryVisitId, @RequestBody EditIndustryVisitForm editIndustryVisitForm)
     {
-        return new ResponseEntity<String>(industryVisitService.editIndustryVisit(industryVisitId, editIndustryVisitForm), HttpStatus.OK);
+        return new ResponseEntity<ResponseMessage>(new ResponseMessage(industryVisitService.editIndustryVisit(industryVisitId, editIndustryVisitForm)), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete industry visit", response = String.class, httpMethod = "DELETE", produces = "application/json")
+    @ApiOperation(value = "Delete industry visit", response = ResponseMessage.class, httpMethod = "DELETE", produces = "application/json")
     @DeleteMapping(path = RestAPI.DELETE_INDUSTRY_VISIT, produces = "application/json")
-    public ResponseEntity<String> deleteIndustryVisit(@PathVariable("industryVisitId") String industryVisitId)
+    public ResponseEntity<ResponseMessage> deleteIndustryVisit(@PathVariable("industryVisitId") String industryVisitId)
     {
-        return new ResponseEntity<String>(industryVisitService.deleteIndustryVisit(industryVisitId), HttpStatus.OK);
+        return new ResponseEntity<ResponseMessage>(new ResponseMessage(industryVisitService.deleteIndustryVisit(industryVisitId)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Download notesheet", response = Resource.class, httpMethod = "GET")
@@ -117,16 +115,16 @@ public class IndustryVisitController {
                 .body(new ByteArrayResource(industryVisit.getAttendance()));
     }
 
-    @ApiOperation(value = "Update remarks", response = String.class, httpMethod = "PUT")
+    @ApiOperation(value = "Update remarks", response = ResponseMessage.class, httpMethod = "PUT")
     @PutMapping(path = RestAPI.UPDATE_REMARKS, produces = "application/json")
-    public ResponseEntity<String> updateRemarks(@PathVariable("industryVisitId") String industryVisitId,
+    public ResponseEntity<ResponseMessage> updateRemarks(@PathVariable("industryVisitId") String industryVisitId,
                                                                 @RequestParam(value = "remarks") String remarks)
     {
-        return new ResponseEntity<String>(industryVisitService.updateRemarks(industryVisitId, remarks), HttpStatus.OK);
+        return new ResponseEntity<ResponseMessage>(new ResponseMessage(industryVisitService.updateRemarks(industryVisitId, remarks)), HttpStatus.OK);
     }
 
     @PostMapping(path = RestAPI.UPLOAD_IMAGES)
-    public ResponseEntity<FileResponseMessage> uploadImages(@RequestParam("photos") MultipartFile[] photos)
+    public ResponseEntity<ResponseMessage> uploadImages(@RequestParam("photos") MultipartFile[] photos)
     {
         String message = "";
         try {
@@ -138,12 +136,12 @@ public class IndustryVisitController {
             });
 
             message = "Upload the images successfully: "+ fileNames;
-            return new ResponseEntity<FileResponseMessage>(new FileResponseMessage(message), HttpStatus.OK);
+            return new ResponseEntity<ResponseMessage>(new ResponseMessage(message), HttpStatus.OK);
         }
         catch (Exception e)
         {
             message = "Failed to upload photos.";
-            return new ResponseEntity<FileResponseMessage>(new FileResponseMessage(message), HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<ResponseMessage>(new ResponseMessage(message), HttpStatus.EXPECTATION_FAILED);
         }
     }
 }
