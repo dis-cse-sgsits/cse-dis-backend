@@ -2,8 +2,11 @@ package sgsits.cse.dis.academics.controller;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import sgsits.cse.dis.academics.model.FileInfo;
 import sgsits.cse.dis.academics.repo.ExpertLectureRepository;
 import sgsits.cse.dis.academics.request.EditExpertLectureForm;
 import sgsits.cse.dis.academics.response.ResponseMessage;
@@ -29,6 +34,7 @@ import sgsits.cse.dis.academics.response.ExpertLecturesResponse;
 import sgsits.cse.dis.academics.response.ExpertNamesAndDesignationsResponse;
 import sgsits.cse.dis.academics.model.ExpertDetails;
 import sgsits.cse.dis.academics.model.ExpertLectureDetails;
+import sgsits.cse.dis.academics.service.FileStorageService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -41,6 +47,9 @@ public class ExpertLectureController {
 
 	@Autowired
 	private ExpertLectureRepository expertLectureRepository;
+
+	@Autowired
+	FileStorageService fileStorageService;
 	
 	@ApiOperation(value = "Add expert", response = ResponseMessage.class, httpMethod = "POST", produces = "application/json")
 	@PostMapping(path = RestAPI.ADD_EXPERT, produces = "application/json")
@@ -169,5 +178,49 @@ public class ExpertLectureController {
 																@RequestParam(value = "remarks") String remarks)
 	{
 		return new ResponseEntity<ResponseMessage>(new ResponseMessage(expertLectureService.updatePaymentStatusAndRemarks(expertLectureId, paymentStatus, remarks)), HttpStatus.OK);
+	}
+
+	@PostMapping(path = RestAPI.UPLOAD_IMAGES)
+	public ResponseEntity<ResponseMessage> uploadImages(@PathVariable("id") String expertLectureId, @RequestParam("photos") MultipartFile[] photos)
+	{
+		String message = "";
+		int size = photos.length;
+		try {
+
+			Arrays.asList(photos).stream().forEach(photo -> {
+				fileStorageService.saveExpertLecture(expertLectureId, photo, size);
+			});
+
+			message = "Uploaded the photos successfully.";
+			return new ResponseEntity<ResponseMessage>(new ResponseMessage(message), HttpStatus.OK);
+		}
+		catch (Exception e)
+		{
+			message = "Failed to upload photos.";
+			return new ResponseEntity<ResponseMessage>(new ResponseMessage(message), HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+
+	@GetMapping(path = RestAPI.IMAGES)
+	public ResponseEntity<List<FileInfo>> getListFiles(@RequestParam(value = "expert_lecture_id") String expertLectureId)
+	{
+		List<FileInfo> fileInfos = fileStorageService.loadAll().map(path -> {
+			String filename = path.getFileName().toString();
+			String url = MvcUriComponentsBuilder
+					.fromMethodName(ExpertLectureController.class, "getFile", path.getFileName().toString()).build().toString();
+
+			return new FileInfo(filename, url);
+		}).collect(Collectors.toList());
+
+		fileInfos = fileStorageService.filterImagesExpertLecture(expertLectureId, fileInfos);
+
+		return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
+	}
+
+	@GetMapping("/images/{filename:.+}")
+	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+		Resource file = fileStorageService.load(filename);
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
 	}
 }
