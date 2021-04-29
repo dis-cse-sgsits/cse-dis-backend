@@ -192,32 +192,22 @@ public class ExpertLectureController {
 	@GetMapping(path = "/downloadNotesheet/{expertLectureId}", produces = "application/pdf")
 	public ResponseEntity<?> downloadNotesheet(HttpServletRequest request, @PathVariable("expertLectureId") String expertLectureId)
 	{
-		if (!jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization")).equals("student"))
-		{
-			ExpertLectureDetails expertLectureDetails = expertLectureService.downloadNotesheet(expertLectureId);
-			return ResponseEntity.ok()
-					.contentType(MediaType.parseMediaType(expertLectureDetails.getNotesheetFileType()))
-					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"."+expertLectureDetails.getNotesheetExtension()+"\"")
-					.body(new ByteArrayResource(expertLectureDetails.getNotesheet()));
-		}
-		else
-			return new ResponseEntity<ResponseMessage>(new ResponseMessage("Sorry, you are not allowed to use this service."), HttpStatus.BAD_REQUEST);
+		ExpertLectureDetails expertLectureDetails = expertLectureService.downloadNotesheet(expertLectureId);
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType(expertLectureDetails.getNotesheetFileType()))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"."+expertLectureDetails.getNotesheetExtension()+"\"")
+				.body(new ByteArrayResource(expertLectureDetails.getNotesheet()));
 	}
 
 	@ApiOperation(value = "Download attendance", response = Resource.class, httpMethod = "GET")
 	@GetMapping(path = "/downloadAttendance/{expertLectureId}")
 	public ResponseEntity<?> downloadAttendance(HttpServletRequest request, @PathVariable("expertLectureId") String expertLectureId)
 	{
-		if (!jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization")).equals("student"))
-		{
-			ExpertLectureDetails expertLectureDetails = expertLectureService.downloadAttendance(expertLectureId);
-			return ResponseEntity.ok()
-					.contentType(MediaType.parseMediaType(expertLectureDetails.getAttendanceFileType()))
-					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"."+expertLectureDetails.getAttendanceExtension()+"\"")
-					.body(new ByteArrayResource(expertLectureDetails.getAttendance()));
-		}
-		else
-			return new ResponseEntity<ResponseMessage>(new ResponseMessage("Sorry, you are not allowed to use this service."), HttpStatus.BAD_REQUEST);
+		ExpertLectureDetails expertLectureDetails = expertLectureService.downloadAttendance(expertLectureId);
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType(expertLectureDetails.getAttendanceFileType()))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Expert-Lecture_"+expertLectureDetails.getTopic()+"_"+expertLectureDetails.getDate()+"."+expertLectureDetails.getAttendanceExtension()+"\"")
+				.body(new ByteArrayResource(expertLectureDetails.getAttendance()));
 	}
 
 	@ApiOperation(value = "Update payment status and remarks", response = ResponseMessage.class, httpMethod = "PUT")
@@ -265,22 +255,17 @@ public class ExpertLectureController {
 	public ResponseEntity<?> getListFiles(HttpServletRequest request,
 													   @RequestParam(value = "expert_lecture_id") String expertLectureId)
 	{
-		if (!jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization")).equals("student"))
-		{
-			List<FileInfo> fileInfos = fileStorageService.loadAll().map(path -> {
-				String filename = path.getFileName().toString();
-				String url = MvcUriComponentsBuilder
+		List<FileInfo> fileInfos = fileStorageService.loadAll().map(path -> {
+		String filename = path.getFileName().toString();
+		String url = MvcUriComponentsBuilder
 						.fromMethodName(ExpertLectureController.class, "getFile", path.getFileName().toString()).build().toString();
 
-				return new FileInfo(filename, url);
-			}).collect(Collectors.toList());
+		return new FileInfo(filename, url);
+		}).collect(Collectors.toList());
 
-			fileInfos = fileStorageService.filterImagesExpertLecture(expertLectureId, fileInfos);
+		fileInfos = fileStorageService.filterImagesExpertLecture(expertLectureId, fileInfos);
 
-			return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
-		}
-		else
-			return new ResponseEntity<ResponseMessage>(new ResponseMessage("Sorry, you are not allowed to use this service."), HttpStatus.BAD_REQUEST);
+		return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
 	}
 
 	@GetMapping("/images/{filename:.+}")

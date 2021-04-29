@@ -127,32 +127,22 @@ public class IndustryVisitController {
     @GetMapping(path = "/downloadNotesheet/{industryVisitId}")
     public ResponseEntity<?> downloadNotesheet(HttpServletRequest request, @PathVariable("industryVisitId") String industryVisitId)
     {
-        if (!jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization")).equals("student"))
-        {
-            IndustryVisit industryVisit = industryVisitService.downloadNotesheet(industryVisitId);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(industryVisit.getNotesheetFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"."+industryVisit.getNotesheetExtension()+"\"")
-                    .body(new ByteArrayResource(industryVisit.getNotesheet()));
-        }
-        else
-            return new ResponseEntity<ResponseMessage>(new ResponseMessage("Sorry, you are not allowed to use this service."), HttpStatus.BAD_REQUEST);
+        IndustryVisit industryVisit = industryVisitService.downloadNotesheet(industryVisitId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(industryVisit.getNotesheetFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Note-sheet_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"."+industryVisit.getNotesheetExtension()+"\"")
+                .body(new ByteArrayResource(industryVisit.getNotesheet()));
     }
 
     @ApiOperation(value = "Download attendance", response = Resource.class, httpMethod = "GET")
     @GetMapping(path = "/downloadAttendance/{industryVisitId}")
     public ResponseEntity<?> downloadAttendance(HttpServletRequest request, @PathVariable("industryVisitId") String industryVisitId)
     {
-        if (!jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization")).equals("student"))
-        {
-            IndustryVisit industryVisit = industryVisitService.downloadAttendance(industryVisitId);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(industryVisit.getAttendanceFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"."+industryVisit.getAttendanceExtension()+"\"")
-                    .body(new ByteArrayResource(industryVisit.getAttendance()));
-        }
-        else
-            return new ResponseEntity<ResponseMessage>(new ResponseMessage("Sorry, you are not allowed to use this service."), HttpStatus.BAD_REQUEST);
+        IndustryVisit industryVisit = industryVisitService.downloadAttendance(industryVisitId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(industryVisit.getAttendanceFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+"Attendance_"+"Industry-Visit_"+industryVisit.getCompanyName()+"_"+industryVisit.getDate()+"."+industryVisit.getAttendanceExtension()+"\"")
+                .body(new ByteArrayResource(industryVisit.getAttendance()));
     }
 
     @ApiOperation(value = "Update remarks", response = ResponseMessage.class, httpMethod = "PUT")
@@ -195,22 +185,17 @@ public class IndustryVisitController {
     @GetMapping(path = RestAPI.IMAGES)
     public ResponseEntity<?> getListFiles(HttpServletRequest request, @RequestParam(value = "industry_visit_id") String industryVisitId)
     {
-        if (!jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization")).equals("student"))
-        {
-            List<FileInfo> fileInfos = fileStorageService.loadAll().map(path -> {
-                String filename = path.getFileName().toString();
-                String url = MvcUriComponentsBuilder
-                        .fromMethodName(IndustryVisitController.class, "getFile", path.getFileName().toString()).build().toString();
+        List<FileInfo> fileInfos = fileStorageService.loadAll().map(path -> {
+            String filename = path.getFileName().toString();
+            String url = MvcUriComponentsBuilder
+                    .fromMethodName(IndustryVisitController.class, "getFile", path.getFileName().toString()).build().toString();
 
-                return new FileInfo(filename, url);
-            }).collect(Collectors.toList());
+            return new FileInfo(filename, url);
+        }).collect(Collectors.toList());
 
-            fileInfos = fileStorageService.filterImagesIndustryVisit(industryVisitId, fileInfos);
+        fileInfos = fileStorageService.filterImagesIndustryVisit(industryVisitId, fileInfos);
 
-            return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
-        }
-        else
-            return new ResponseEntity<ResponseMessage>(new ResponseMessage("Sorry, you are not allowed to use this service."), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
     }
 
     @GetMapping("/images/{filename:.+}")
