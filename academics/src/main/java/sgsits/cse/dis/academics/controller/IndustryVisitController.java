@@ -125,7 +125,7 @@ public class IndustryVisitController {
 
     @ApiOperation(value = "Download notesheet", response = Resource.class, httpMethod = "GET")
     @GetMapping(path = "/downloadNotesheet/{industryVisitId}")
-    public ResponseEntity<?> downloadNotesheet(HttpServletRequest request, @PathVariable("industryVisitId") String industryVisitId)
+    public ResponseEntity<?> downloadNotesheet(@PathVariable("industryVisitId") String industryVisitId)
     {
         IndustryVisit industryVisit = industryVisitService.downloadNotesheet(industryVisitId);
         return ResponseEntity.ok()
@@ -136,7 +136,7 @@ public class IndustryVisitController {
 
     @ApiOperation(value = "Download attendance", response = Resource.class, httpMethod = "GET")
     @GetMapping(path = "/downloadAttendance/{industryVisitId}")
-    public ResponseEntity<?> downloadAttendance(HttpServletRequest request, @PathVariable("industryVisitId") String industryVisitId)
+    public ResponseEntity<?> downloadAttendance(@PathVariable("industryVisitId") String industryVisitId)
     {
         IndustryVisit industryVisit = industryVisitService.downloadAttendance(industryVisitId);
         return ResponseEntity.ok()
@@ -183,7 +183,7 @@ public class IndustryVisitController {
     }
 
     @GetMapping(path = RestAPI.IMAGES)
-    public ResponseEntity<?> getListFiles(HttpServletRequest request, @RequestParam(value = "industry_visit_id") String industryVisitId)
+    public ResponseEntity<?> getListFiles(@RequestParam(value = "industry_visit_id") String industryVisitId)
     {
         List<FileInfo> fileInfos = fileStorageService.loadAll().map(path -> {
             String filename = path.getFileName().toString();

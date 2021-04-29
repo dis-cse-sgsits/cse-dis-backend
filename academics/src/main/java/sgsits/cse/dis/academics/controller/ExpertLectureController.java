@@ -190,7 +190,7 @@ public class ExpertLectureController {
 
 	@ApiOperation(value = "Download notesheet", response = Resource.class, httpMethod = "GET", produces = "application/pdf")
 	@GetMapping(path = "/downloadNotesheet/{expertLectureId}", produces = "application/pdf")
-	public ResponseEntity<?> downloadNotesheet(HttpServletRequest request, @PathVariable("expertLectureId") String expertLectureId)
+	public ResponseEntity<?> downloadNotesheet(@PathVariable("expertLectureId") String expertLectureId)
 	{
 		ExpertLectureDetails expertLectureDetails = expertLectureService.downloadNotesheet(expertLectureId);
 		return ResponseEntity.ok()
@@ -201,7 +201,7 @@ public class ExpertLectureController {
 
 	@ApiOperation(value = "Download attendance", response = Resource.class, httpMethod = "GET")
 	@GetMapping(path = "/downloadAttendance/{expertLectureId}")
-	public ResponseEntity<?> downloadAttendance(HttpServletRequest request, @PathVariable("expertLectureId") String expertLectureId)
+	public ResponseEntity<?> downloadAttendance(@PathVariable("expertLectureId") String expertLectureId)
 	{
 		ExpertLectureDetails expertLectureDetails = expertLectureService.downloadAttendance(expertLectureId);
 		return ResponseEntity.ok()
@@ -252,8 +252,7 @@ public class ExpertLectureController {
 	}
 
 	@GetMapping(path = RestAPI.IMAGES)
-	public ResponseEntity<?> getListFiles(HttpServletRequest request,
-													   @RequestParam(value = "expert_lecture_id") String expertLectureId)
+	public ResponseEntity<?> getListFiles(@RequestParam(value = "expert_lecture_id") String expertLectureId)
 	{
 		List<FileInfo> fileInfos = fileStorageService.loadAll().map(path -> {
 		String filename = path.getFileName().toString();
@@ -269,7 +268,7 @@ public class ExpertLectureController {
 	}
 
 	@GetMapping("/images/{filename:.+}")
-	public ResponseEntity<Resource> getFile(HttpServletRequest request, @PathVariable String filename) {
+	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
 		Resource file = fileStorageService.load(filename);
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
