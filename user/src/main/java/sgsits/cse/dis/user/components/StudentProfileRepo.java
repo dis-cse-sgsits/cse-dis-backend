@@ -40,7 +40,7 @@ public class StudentProfileRepo {
     public void addOrUpdateStudentProfile(final StudentProfile studentProfile) throws InternalServerError {
 
         try {
-
+            System.out.println(studentProfile.getSchemeYear() +" "+studentProfile.getSchemeSemester());
             if(studentProfileRepository.existsByEnrollmentId(studentProfile.getEnrollmentId())){
                 StudentProfile student = studentProfileRepository.findByEnrollmentId(studentProfile.getEnrollmentId()).get();
                 studentProfile.setId(student.getId());

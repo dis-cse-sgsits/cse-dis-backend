@@ -17,6 +17,7 @@ import sgsits.cse.dis.user.repo.StaffBasicProfileRepository;
 import sgsits.cse.dis.user.service.PanelOfPracticalService;
 
 import java.io.FileNotFoundException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,13 +47,13 @@ public class PanelOfPracticalServiceImpl implements PanelOfPracticalService {
             panelOfPractical.setSubjectName(panelOfPracticalDto.getSubjectName());
             panelOfPractical.setLabAssistant(panelOfPracticalDto.getLabAssistant());
             panelOfPractical.setLabTechnician(panelOfPracticalDto.getLabTechnician());
-
+            panelOfPractical.setLabTechnician(panelOfPracticalDto.getLabTechnician());
+            panelOfPractical.setCreationDate(new Date());
             panelOfPracticalRepository.save(panelOfPractical);
         } catch(Exception e){
             System.out.println(e);
             throw new InternalServerError("Cannot add Panel of Practical");
         }
-
     }
 
     @Override
@@ -157,7 +158,8 @@ public class PanelOfPracticalServiceImpl implements PanelOfPracticalService {
                     panelOfPracticalDto.getInternalFaculty2(),
                     panelOfPracticalDto.getExternalFaculty(),
                     panelOfPracticalDto.getLabAssistant(),
-                    panelOfPracticalDto.getLabTechnician()
+                    panelOfPracticalDto.getLabTechnician(),
+                    existing.getCreationDate()
             );
 
             panelOfPracticalRepository.save(panelOfPractical);

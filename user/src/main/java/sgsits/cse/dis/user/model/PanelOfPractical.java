@@ -2,8 +2,8 @@ package sgsits.cse.dis.user.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Date;
 import javax.persistence.*;
-import java.sql.Date;
 
 @Entity
 @Table(name = "panel_of_practical")
@@ -38,6 +38,9 @@ public class PanelOfPractical {
 
     @Column(name = "lab_assistant")
     private String labAssistant;
+
+    @Column(name = "creation_date")
+    private Date creationDate;
 
     public PanelOfPractical() {
 
@@ -107,8 +110,15 @@ public class PanelOfPractical {
         return labAssistant;
     }
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
 
-    public PanelOfPractical(String id, String subjectCode, String subjectName, String internalFaculty1, String internalFaculty2, String externalFaculty, String labAssistant, String labTechnician) {
+    public void setCreationDate( Date creationDate ) {
+        this.creationDate = creationDate;
+    }
+
+    public PanelOfPractical( String id, String subjectCode, String subjectName, String internalFaculty1, String internalFaculty2, String externalFaculty, String labAssistant, String labTechnician, Date creationDate) {
         this.id = id;
         this.subjectCode = subjectCode;
         this.subjectName = subjectName;
@@ -117,5 +127,6 @@ public class PanelOfPractical {
         this.externalFaculty = externalFaculty;
         this.labAssistant = labAssistant;
         this.labTechnician = labTechnician;
+        this.creationDate = creationDate;
     }
 }

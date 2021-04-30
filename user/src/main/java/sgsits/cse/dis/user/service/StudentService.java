@@ -1,9 +1,11 @@
 package sgsits.cse.dis.user.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.user.dtos.*;
 import sgsits.cse.dis.user.exception.InternalServerError;
+import sgsits.cse.dis.user.message.response.ResponseMessage;
 import sgsits.cse.dis.user.model.*;
 
 import java.util.List;
@@ -29,5 +31,9 @@ public interface StudentService {
     List<UgProjectDetailDto> geUgProjectDetails(final String userId);
 
 
+    ResponseEntity<ResponseMessage> uploadEnrollmentTemplate( EnrollmentTemplate schemeFileForm, MultipartFile file );
 
+    EnrollmentTemplate getFile( String fileName );
+
+    ResponseEntity<ResponseMessage> deleteTemplate( String fileName );
 }

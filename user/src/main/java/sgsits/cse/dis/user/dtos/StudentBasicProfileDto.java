@@ -1,5 +1,6 @@
 package sgsits.cse.dis.user.dtos;
 
+import javax.persistence.Column;
 import java.sql.Date;
 
 public class StudentBasicProfileDto {
@@ -42,6 +43,24 @@ public class StudentBasicProfileDto {
     private String category;
     private String gender;
     private String bloodGroup;
+    private int schemeSemester;
+    private int schemeYear;
+
+    public int getSchemeSemester() {
+        return schemeSemester;
+    }
+
+    public void setSchemeSemester( int schemeSemester ) {
+        this.schemeSemester = schemeSemester;
+    }
+
+    public int getSchemeYear() {
+        return schemeYear;
+    }
+
+    public void setSchemeYear( int schemeYear ) {
+        this.schemeYear = schemeYear;
+    }
 
     public String getUserId() {
         return userId;

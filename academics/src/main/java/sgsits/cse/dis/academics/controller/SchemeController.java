@@ -46,6 +46,8 @@ public class SchemeController {
         return schemeServices.uploadFile(schemeFileForm,file);
     }
 
+
+
     @ApiOperation(value = "Download Scheme", response = ResponseMessage.class, httpMethod = "GET")
     @GetMapping(path = RestAPI.DOWNLOAD+"/{fileName}")
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName){
@@ -61,6 +63,8 @@ public class SchemeController {
     public ResponseEntity<ResponseMessage> deleteFile(@PathVariable String fileName) throws FileNotFoundException {
         return schemeServices.delete(fileName);
     }
+
+
 
     @ApiOperation(value = "Get all Scheme info", response = ResponseMessage.class, httpMethod = "GET")
     @GetMapping

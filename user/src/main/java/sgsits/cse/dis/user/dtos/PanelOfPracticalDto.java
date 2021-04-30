@@ -1,6 +1,7 @@
 package sgsits.cse.dis.user.dtos;
 
 import javax.persistence.Column;
+import java.util.Date;
 
 public class PanelOfPracticalDto {
 
@@ -12,6 +13,15 @@ public class PanelOfPracticalDto {
     private String externalFaculty;
     private String labAssistant;
     private String labTechnician;
+    private Date creationDate;
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate( Date creationDate ) {
+        this.creationDate = creationDate;
+    }
 
     public String getLabTechnician() {
         return labTechnician;

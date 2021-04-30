@@ -1,10 +1,13 @@
 package sgsits.cse.dis.user.controller;
 
+import com.google.common.net.HttpHeaders;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +16,8 @@ import sgsits.cse.dis.user.constants.RestAPI;
 import sgsits.cse.dis.user.dtos.*;
 import sgsits.cse.dis.user.exception.InternalServerError;
 import sgsits.cse.dis.user.exception.UnauthorizedException;
+import sgsits.cse.dis.user.model.EnrollmentTemplate;
+import sgsits.cse.dis.user.repo.EnrollmentTemplateRepository;
 import sgsits.cse.dis.user.service.StaffService;
 import sgsits.cse.dis.user.utility.ExcelHelper;
 import sgsits.cse.dis.user.jwt.JwtResolver;
@@ -24,6 +29,8 @@ import sgsits.cse.dis.user.serviceImpl.userProfileServiceImpl.*;
 import sgsits.cse.dis.user.serviceImpl.userProfileServiceImpl.UserOtherAchievementService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -444,7 +451,9 @@ public class UserProfileController {
         return new ResponseEntity<>(staffService.getStaffBasicProfile(id), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Student Basic Profile Data", response = Object.class, httpMethod = "GET", produces = "application/json")
+
+
+    @ApiOperation(value = "Get All Student Profile", response = Object.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(value = "/studentBasicProfile")
     public ResponseEntity<StudentBasicProfileDto> getStudentBasicProfile(
             HttpServletRequest request, final String userId, final String userType) throws InternalServerError {
@@ -453,6 +462,7 @@ public class UserProfileController {
                 request.getHeader(ControllerConstants.AUTHORIZATION)) : userId;
         return new ResponseEntity<>(studentService.getStudentBasicProfile(id), HttpStatus.OK);
     }
+
 
     @ApiOperation(value = "add or update Staff Basic Profile Data", response = Object.class, httpMethod = "POST", produces = "application/json")
     @PostMapping(value = "/addStaffBasicProfile")
@@ -506,6 +516,7 @@ public class UserProfileController {
 
         if (ExcelHelper.hasExcelFormat(file)) {
             try {
+                System.out.println("ctrlr");
                 studentServiceImpl.saveExcelData(file,jwtResolver.getIdFromJwtToken(request.getHeader("Authorization")), sheetNo);
 
                 message = "Uploaded the file successfully: " + file.getOriginalFilename();
@@ -521,6 +532,43 @@ public class UserProfileController {
     }
 
 
+    @PostMapping("/uploadEnrollmentTemplate")
+    public ResponseEntity<ResponseMessage> uploadEnrollmentTemplate(
+            @RequestPart("templateName") String templateName,
+            @RequestPart("file") MultipartFile file) throws IOException {
+
+        EnrollmentTemplate schemeFileForm = new EnrollmentTemplate();
+        return studentServiceImpl.uploadEnrollmentTemplate(schemeFileForm,file);
+    }
+
+
+
+    @ApiOperation(value = "Download Template", response = ResponseMessage.class, httpMethod = "GET")
+    @GetMapping(path = "/downloadEnrollmentTemplate"+"/{fileName}")
+    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName){
+        EnrollmentTemplate dbFile = studentServiceImpl.getFile(fileName);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(dbFile.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dbFile.getFileName() + "\"")
+                .body(new ByteArrayResource(dbFile.getData()));
+    }
+
+    @ApiOperation(value = "Delete Template", response = ResponseMessage.class, httpMethod = "DELETE")
+    @DeleteMapping(path ="/deleteEnrollmentTemplate/{fileName}")
+    public ResponseEntity<ResponseMessage> deleteFile(@PathVariable String fileName) throws FileNotFoundException {
+        return studentServiceImpl.deleteTemplate(fileName);
+    }
+
+
+//    @ApiOperation(value = "Download Scheme", response = ResponseMessage.class, httpMethod = "GET")
+//    @GetMapping(path = RestAPI.DOWNLOAD+"/{fileName}")
+//    public ResponseEntity<ByteArrayResource> downloadFile( @PathVariable String fileName){
+//        SchemeFile dbFile = schemeServices.getFile(fileName);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(dbFile.getFileType()))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dbFile.getFileName() + "\"")
+//                .body(new ByteArrayResource(dbFile.getData()));
+//    }
 
 
     public void getStudentPlacement(HttpServletRequest request) {

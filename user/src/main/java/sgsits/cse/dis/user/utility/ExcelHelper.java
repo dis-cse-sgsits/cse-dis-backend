@@ -1,5 +1,6 @@
 package sgsits.cse.dis.user.utility;
 
+import com.microsoft.schemas.office.visio.x2012.main.CellType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -11,6 +12,7 @@ import sgsits.cse.dis.user.model.StudentProfile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -124,15 +126,22 @@ public class ExcelHelper {
                             student.setBloodGroup(currentCell.getStringCellValue());
                             break;
 
+                        case 16: //Scheme Year
+                            student.setSchemeYear((int)currentCell.getNumericCellValue());
+                            break;
+
+                        case 17: //Scheme Semester
+                            student.setSchemeSemester((int)currentCell.getNumericCellValue());
+                            break;
+
                         default:
                             break;
                     }
-
-                    student.setCreatedDate(simpleDateFormat.format(new Date()));
 //                    System.out.println(cellIdx);
                     cellIdx++;
                 }
                 student.setCreatedBy(createdBy);
+                student.setCreatedDate(simpleDateFormat.format(new Date()));
                 students.add(student);
             }
 

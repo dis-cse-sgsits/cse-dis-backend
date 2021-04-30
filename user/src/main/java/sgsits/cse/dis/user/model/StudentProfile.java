@@ -41,6 +41,12 @@ public class StudentProfile {
 	@Column(name = "admission_year")
 	private int admissionYear;
 
+	@Column(name = "scheme_year")
+	private int schemeYear;
+
+	@Column(name = "scheme_semester")
+	private int schemeSemester;
+
 	@Column(name = "course_id")
 	private String courseId;
 
@@ -79,6 +85,9 @@ public class StudentProfile {
 
 	@Column(name = "blood_group")
 	private String bloodGroup;
+
+	@Column(name = "name")
+	private String name;
 
 	public Long getId() {
 		return id;
@@ -256,6 +265,21 @@ public class StudentProfile {
 		this.bloodGroup = bloodGroup;
 	}
 
+	public int getSchemeYear() {
+		return schemeYear;
+	}
+
+	public void setSchemeYear( int schemeYear ) {
+		this.schemeYear = schemeYear;
+	}
+
+	public int getSchemeSemester() {
+		return schemeSemester;
+	}
+
+	public void setSchemeSemester( int schemeSemester ) {
+		this.schemeSemester = schemeSemester;
+	}
 
 	@PreUpdate
 	@PostUpdate
