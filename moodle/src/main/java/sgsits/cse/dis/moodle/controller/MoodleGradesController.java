@@ -24,6 +24,7 @@ import sgsits.cse.dis.moodle.constants.GradesURLConstants;
 import sgsits.cse.dis.moodle.exception.NotFoundException;
 import sgsits.cse.dis.moodle.response.Course;
 import sgsits.cse.dis.moodle.response.Students;
+import sgsits.cse.dis.moodle.response.TagData;
 
 
 @CrossOrigin(origins = "*")
@@ -101,5 +102,14 @@ public class MoodleGradesController {
 		Long userId = moodleGradeServiceImpl.getStudentsUserId(username);
 		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
 		return new ResponseEntity<List<GraderReportData>>(moodleGradeServiceImpl.getStudentsUserReport(courseId, userId, userType),HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Get All Tags Of Course", response = TagData.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = GradesURLConstants.GET_ALL_TAGS_OF_COURSE, produces = "application/json")
+	public ResponseEntity<List<TagData>> getAllTagsOfCourse(@PathVariable("courseid") Long courseId, HttpServletRequest request) throws NotFoundException{
+		String username = jwtResolver.getUserNameFromJwtToken(request.getHeader("Authorization"));
+		Long userId = moodleGradeServiceImpl.getStudentsUserId(username);
+		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<List<TagData>>(moodleGradeServiceImpl.getAllTagsOfCourse(courseId, userId, userType),HttpStatus.OK);
 	}
 }

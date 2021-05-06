@@ -19,11 +19,20 @@ public class StudentSubjectReportData {
 	private Long graderId;
 	private String graderFirstName;
 	private String graderLastName;
+	private Long tagId;
+	private String tagName;
+	private String tagRawName;
 	
+	public StudentSubjectReportData() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public StudentSubjectReportData(Long courseId, String courseCode, String courseName, Long courseTeacherId,
 			String courseTeacherFirstName, String courseTeacherLastName, String assignmentName, String dueDate,
 			Boolean submitted, String dateOfCreation, String dateOfSubmission, Double gradeObtained, Long gradeMaximum,
-			Long graderId, String graderFirstName, String graderLastName) {
+			Long graderId, String graderFirstName, String graderLastName, Long tagId, String tagName,
+			String tagRawName) {
 		super();
 		this.courseId = courseId;
 		this.courseCode = courseCode;
@@ -41,6 +50,9 @@ public class StudentSubjectReportData {
 		this.graderId = graderId;
 		this.graderFirstName = graderFirstName;
 		this.graderLastName = graderLastName;
+		this.tagId = tagId;
+		this.tagName = tagName;
+		this.tagRawName = tagRawName;
 	}
 
 	public Long getCourseId() {
@@ -170,6 +182,32 @@ public class StudentSubjectReportData {
 	public void setGraderLastName(String graderLastName) {
 		this.graderLastName = graderLastName;
 	}
+
+	public Long getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(Long tagId) {
+		this.tagId = tagId;
+	}
+
+	public String getTagName() {
+		return tagName;
+	}
+
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
+	}
+
+	public String getTagRawName() {
+		return tagRawName;
+	}
+
+	public void setTagRawName(String tagRawName) {
+		this.tagRawName = tagRawName;
+	}
+	
+	
 	
 
 }

@@ -12,4 +12,6 @@ public class GradesURLConstants {
 	public static final String GET_STUDENTS_USER_REPORT = "/getStudentsUserReport/{courseid}";
 	public static final String GET_STUDENTS_USER_ID = "/getStudentsUserId/{username}";
 	public static final String GET_MOODLE_USER_ID = "/getMoodleUserId";
+	
+	public static final String GET_ALL_TAGS_OF_COURSE = "/getAllTagsOfCourse/{courseid}";
 }

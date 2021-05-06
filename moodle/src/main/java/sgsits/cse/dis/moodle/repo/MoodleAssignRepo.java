@@ -16,5 +16,6 @@ public interface MoodleAssignRepo extends JpaRepository<MoodleAssign, Long> {
 
 
 	Optional<List<MoodleAssign>> findByCourse(Long course);
+	Optional<MoodleAssign> findAllById(Long id);
 
 }

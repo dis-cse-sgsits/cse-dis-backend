@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,21 +28,28 @@ import sgsits.cse.dis.moodle.response.StudentOverviewReport;
 import sgsits.cse.dis.moodle.exception.NotFoundException;
 import sgsits.cse.dis.moodle.model.MoodleContext;
 import sgsits.cse.dis.moodle.model.MoodleCourse;
+import sgsits.cse.dis.moodle.model.MoodleCourseModules;
 import sgsits.cse.dis.moodle.model.MoodleEnrollement;
 import sgsits.cse.dis.moodle.model.MoodleRole;
 import sgsits.cse.dis.moodle.model.MoodleRoleAssignments;
+import sgsits.cse.dis.moodle.model.MoodleTag;
+import sgsits.cse.dis.moodle.model.MoodleTagInstance;
 import sgsits.cse.dis.moodle.model.MoodleUser;
 import sgsits.cse.dis.moodle.model.MoodleUserEnrollment;
 import sgsits.cse.dis.moodle.repo.MoodleContextRepo;
+import sgsits.cse.dis.moodle.repo.MoodleCourseModulesRepo;
 import sgsits.cse.dis.moodle.repo.MoodleCourseRepo;
 import sgsits.cse.dis.moodle.repo.MoodleEnrollmentRepo;
 import sgsits.cse.dis.moodle.repo.MoodleRoleAssignmentsRepo;
 import sgsits.cse.dis.moodle.repo.MoodleRoleRepo;
+import sgsits.cse.dis.moodle.repo.MoodleTagInstanceRepo;
+import sgsits.cse.dis.moodle.repo.MoodleTagRepo;
 import sgsits.cse.dis.moodle.repo.MoodleUserEnrollmentRepo;
 import sgsits.cse.dis.moodle.repo.MoodleUserRepo;
 import sgsits.cse.dis.moodle.response.Course;
 import sgsits.cse.dis.moodle.response.CoursesOfStudentData;
 import sgsits.cse.dis.moodle.response.Students;
+import sgsits.cse.dis.moodle.response.TagData;
 import sgsits.cse.dis.moodle.service.moodleAssignmentService;
 import sgsits.cse.dis.moodle.service.moodleGradeService;
 
@@ -68,6 +78,13 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 	public MoodleContextRepo moodlecontextRepo;
 	@Autowired
 	public moodleAssignmentService moodleAssignmentServiceImpl;
+	
+	@Autowired
+	public MoodleCourseModulesRepo moodleCourseModulesRepo;
+	@Autowired
+	public MoodleTagRepo moodleTagRepo;
+	@Autowired
+	public MoodleTagInstanceRepo moodleTagInstanceRepo;
 	
 	@Override
 	public List<GradeItemsData> getGradeItemsOfCourse(String courseId) {
@@ -106,6 +123,22 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		for (MoodleGradeItems gradeItem : gradeItemsDetailed) {
 			List<MoodleGradeGrades> gradeGradesDetails = moodleGradeGradesRepo.findByItemid(gradeItem.getId());
 			
+			Long tagId = 0L;
+			String tagName = null;
+			String tagRawName = null;
+			Optional<MoodleCourseModules> courseModules = moodleCourseModulesRepo.findAllByInstanceAndCourse(gradeItem.getIteminstance(), courseIdL);
+			if (courseModules.isPresent()) {
+				Optional<MoodleTagInstance> tagInstance = moodleTagInstanceRepo.findAllByItemid(courseModules.get().getId());
+				if (tagInstance.isPresent()) {
+					Optional<MoodleTag> tagDetails = moodleTagRepo.findAllById(tagInstance.get().getTagid());
+					if (tagDetails.isPresent()) {
+						tagId = tagDetails.get().getId();
+						tagName = tagDetails.get().getName();
+						tagRawName = tagDetails.get().getRawname();
+					}
+				}
+			}
+			
 			// initializing 2d empty list of lists for entering final data if empty
 			if (graderReport.isEmpty()) {
 				for (int i=0; i<gradeGradesDetails.size(); i++) {
@@ -130,7 +163,13 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 																gradeItem.getItemname(),
 																finalGrade,
 																totalGrade,
-																percentage));
+																percentage,
+																gradeItem.getItemtype(),
+																gradeItem.getItemmodule(),
+																gradeItem.getIteminstance(),
+																tagId,
+																tagName,
+																tagRawName));
 		    }
 			
 			
@@ -272,4 +311,35 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 			throw new NotFoundException("username does not exist");
 		return user.get(0).getId();
 	}
+
+	@Override
+	public List<TagData> getAllTagsOfCourse(Long courseId, Long userId, String userType) throws NotFoundException {
+		List<TagData> allTagsOfCourse = new ArrayList<TagData>();
+		
+		if(userType.equals("student"))
+			throw new  NotFoundException("Invalid User Type");
+		
+		List<MoodleGradeItems> gradeItems = moodleGradeItemsRepo.findByCourseid(courseId);
+		for (MoodleGradeItems item : gradeItems) {
+			Optional<MoodleCourseModules> courseModules = moodleCourseModulesRepo.findAllByInstanceAndCourse(item.getIteminstance(), courseId);
+			if (courseModules.isPresent()) {
+				Optional<MoodleTagInstance> tagInstance = moodleTagInstanceRepo.findAllByItemid(courseModules.get().getId());
+				if (tagInstance.isPresent()) {
+					Optional<MoodleTag> tagDetails = moodleTagRepo.findAllById(tagInstance.get().getTagid());
+					if (tagDetails.isPresent()) {
+						Long tagId = tagDetails.get().getId();
+						String tagName = tagDetails.get().getName();
+						String tagRawName = tagDetails.get().getRawname();
+						allTagsOfCourse.add(new TagData(tagId, tagName, tagRawName));
+					}
+				}
+			}
+		}
+		Set<TagData> s= new HashSet<TagData>();
+	    s.addAll(allTagsOfCourse);         
+	    allTagsOfCourse = new ArrayList<TagData>();
+	    allTagsOfCourse.addAll(s);        
+		return allTagsOfCourse;
+	}
+	
 }
