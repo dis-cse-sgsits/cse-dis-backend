@@ -21,17 +21,7 @@ import sgsits.cse.dis.academics.request.FacultyTimeTableForm;
 import sgsits.cse.dis.academics.service.CoursesService;
 import sgsits.cse.dis.academics.service.SemesterTimeTableServices;
 
-/**
- * <h1><b>SemesterTimeTableServicesImpl</b> class.</h1>
- * <p>This class contains implementation of all the time table settings
- *  services which are defined in the <b>TimeTableSettingServices</b> interface.
- * 
- * @author Arjit Mishra.
- * @version 1.0.
- * @since 3-MAR-2020
- * @throws ConflictException.
- * @inheritDoc
- */
+
 
 @Service
 public class SemesterTimeTableServicesImpl implements SemesterTimeTableServices {

@@ -1,0 +1,127 @@
+try {
+            System.out.println("Util");
+            Workbook workbook = new XSSFWorkbook(is);
+            Sheet sheet = workbook.getSheet(workbook.getSheetName(sheetNo));
+            Iterator<Row> rows = sheet.iterator();
+            List<StudentProfile> students = new ArrayList<StudentProfile>();
+
+            int rowNumber = 0;
+            while (rows.hasNext()) {
+                Row currentRow = rows.next();
+
+                // skip header
+                if (rowNumber == 0) {
+                    rowNumber++;
+                    continue;
+                }
+
+                Iterator<Cell> cellsInRow = currentRow.iterator();
+
+                StudentProfile student = new StudentProfile();
+
+                int cellIdx = 0;
+                while (cellsInRow.hasNext()) {
+
+                    Cell c = currentRow.getCell(cellIdx);
+                    if (c == null || c.getStringCellValue().trim().isEmpty()) {
+                        cellIdx+=1;
+                    }
+                    Cell currentCell = cellsInRow.next();
+
+
+                    System.out.println("in the loop" +cellIdx);
+//                    System.out.println(currentCell.getStringCellValue());
+                    switch (cellIdx) {
+
+                        case 0: // enrollment id
+                            student.setEnrollmentId(currentCell.getStringCellValue());
+                            break;
+
+
+                        case 1: //full name
+                            student.setFullName(currentCell.getStringCellValue());
+                            break;
+
+                        case 2: // admission year
+                            student.setAdmissionYear((int)(currentCell.getNumericCellValue()));
+                            break;
+
+                        case 3: //course id
+                            student.setCourseId(currentCell.getStringCellValue());
+                            break;
+
+                        case 4: // Mobile Number
+                            student.setMobileNo(Long.parseLong(currentCell.getStringCellValue()));
+                            break;
+
+                        case 5://email
+                            student.setEmail(currentCell.getStringCellValue());
+                            break;
+
+                        case 6: // Dob
+                            SimpleDateFormat sdf1 = new SimpleDateFormat("dd-mm-yyyy");
+                            java.util.Date date = sdf1.parse(currentCell.getStringCellValue());
+                            java.sql.Date dob = new java.sql.Date(date.getTime());
+                            student.setDob(dob);
+                            break;
+
+                        case 7://father name
+                            student.setFatherName(currentCell.getStringCellValue());
+                            break;
+
+                        case 8://father Contact
+                            student.setFatherContact(Long.parseLong(currentCell.getStringCellValue()));
+                            break;
+
+                        case 9://father email
+                            student.setFatherEmail(currentCell.getStringCellValue());
+                            break;
+
+                        case 10:// mother name
+                            student.setMotherName(currentCell.getStringCellValue());
+                            break;
+
+                        case 11://mother contact
+                            student.setMotherContact(Long.parseLong(currentCell.getStringCellValue()));
+                            break;
+
+                        case 12:// mother email
+                            student.setMotherEmail(currentCell.getStringCellValue());
+                            break;
+
+                        case 13:// category
+                            student.setCategory(currentCell.getStringCellValue());
+                            break;
+
+                        case 14:// gender
+                            student.setGender(currentCell.getStringCellValue());
+                            break;
+
+                        case 15: //blood group
+                            student.setBloodGroup(currentCell.getStringCellValue());
+                            break;
+
+                        case 16: //Scheme Semester
+                            student.setSchemeSemester(Integer.parseInt(currentCell.getStringCellValue()));
+                            break;
+
+                        case 17: //Scheme Year
+                            student.setSchemeYear(Integer.parseInt(currentCell.getStringCellValue()));
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    student.setCreatedDate(simpleDateFormat.format(new Date()));
+//                    System.out.println(cellIdx);
+                    cellIdx++;
+                }
+                student.setCreatedBy(createdBy);
+                students.add(student);
+            }
+
+            workbook.close();
+
+            return students;
+        }

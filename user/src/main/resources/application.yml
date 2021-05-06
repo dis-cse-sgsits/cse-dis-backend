@@ -3,15 +3,19 @@ spring:
     # url: jdbc:mysql://localhost:3306/user
     url: jdbc:mysql://18.219.152.230/user
     username: root
-    password: sonal
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     generate-ddl: true
     show-sql: true
-#    hibernate:
-#      naming:
-#        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
   application:
     name: user
@@ -23,6 +27,8 @@ eureka:
   client:
     service-url:
       default-zone: http://localhost:8761/eureka
+    register-with-eureka: false
+    fetch-registry: false
 
 dis:
   app:
@@ -41,3 +47,6 @@ dis:
         file-size-threshold: 2000KB
         max-file-size: 15MB
         max-request-size: 25MB
+
+SchedulingJob:
+  enrollment-update-delay: PT5S
