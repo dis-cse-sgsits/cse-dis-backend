@@ -6,6 +6,8 @@ import java.text.DecimalFormat;
 
 import sgsits.cse.dis.moodle.repo.MoodleAttendanceTeacherBulkRepo;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,8 +25,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.google.common.base.Optional;
 
 import javassist.NotFoundException;
+import net.bytebuddy.asm.Advice.OffsetMapping.Sort;
 import sgsits.cse.dis.moodle.repo.MoodleUserRepo;
 import sgsits.cse.dis.moodle.response.Course;
+import sgsits.cse.dis.moodle.response.GraderReportData;
 import sgsits.cse.dis.moodle.response.StudentAttendanceData;
 import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
 import sgsits.cse.dis.moodle.service.moodleAttendanceService;
@@ -200,13 +204,28 @@ public class moodleAttendanceServicesImpl implements moodleAttendanceService, Se
 				  if(sat.getId() !=null && sat.getCoursecode() !=null)
 		 			{
 		 			totalStudentAttendanceData.add(sat);
+		 			Collections.sort(totalStudentAttendanceData, new Comparator<TotalStudentAttendanceData>(){
+						  public int compare(TotalStudentAttendanceData o1,TotalStudentAttendanceData o2) {							
+								return o1.getCoursecode().compareTo(o2.getCoursecode());							
+								 }						  
+					  });
 		 			}
 		 		else if(sat1.getId() !=null && sat1.getCoursecode() !=null)
 		 		 {totalStudentAttendanceData.add(sat1);
+		 		Collections.sort(totalStudentAttendanceData, new Comparator<TotalStudentAttendanceData>(){
+					  public int compare(TotalStudentAttendanceData o1,TotalStudentAttendanceData o2) {							
+							return o1.getCoursecode().compareTo(o2.getCoursecode());							
+							 }						  
+				  });
 		 		 }
 		 		else if(sat.getId() !=null && sat.getCoursecode() !=null && sat1.getId() !=null && sat1.getCoursecode() !=null) {
 		 			totalStudentAttendanceData.add(sat);	
 		 			totalStudentAttendanceData.add(sat1);
+		 			Collections.sort(totalStudentAttendanceData, new Comparator<TotalStudentAttendanceData>(){
+						  public int compare(TotalStudentAttendanceData o1,TotalStudentAttendanceData o2) {							
+								return o1.getCoursecode().compareTo(o2.getCoursecode());							
+								 }						  
+					  });
 		 		}
 			 }
 		 	
@@ -259,39 +278,38 @@ public class moodleAttendanceServicesImpl implements moodleAttendanceService, Se
 public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String userid,String userType) throws NotFoundException{
 	 String username;
 	 if(userType.equals("faculty") || userType.equals("head") && userid != null) {
-		 username= userClient.getByUserName(userid);
-	
-		List<MoodleUser> moodleUser = MoodleUserRepo.findAll();
+		 username= userClient.getByUserName(userid);		
 		MoodleCourse mc= MoodleCourseRepo.findAllByShortname(coursecode);
+		List<MoodleUser> moodleUser = MoodleUserRepo.findAll();
 		MoodleUser mu1=MoodleUserRepo.findAllByUsername(username);
 		   List<MoodleAttendanceTeacher> moodleAttendanceTeacher=MoodleAttendanceTeacherRepo.findAllByTakenby(mu1.getId());
 		   List<MoodleAttendanceTeacherBulk> moodleAttendanceTeacherBulk=MoodleAttendanceTeacherBulkRepo.findAllByTeacherid(mu1.getId());
 		   List<Long> tableid=MoodleAttendanceTeacherRepo.getById(mu1.getId(),mc.getId());
 		   List<Long> tableid1=MoodleAttendanceTeacherBulkRepo.getById(mu1.getId(),mc.getId());
-		   List<StudentAttendanceData> studentAttendanceData =new ArrayList<>();
+		   List<StudentAttendanceData> studentAttendanceData =new ArrayList<StudentAttendanceData>();	
+		   List<StudentAttendanceData> sat2= new ArrayList<>();
 		   Long count=0L;
 		   Long slot=0L;
-	for(int i=0;i<tableid.size();i++) {
+	   
+	for(int i=0;i<tableid.size();i++) {	
 		  for(MoodleUser mu: moodleUser) {
 			  StudentAttendanceData sat =new StudentAttendanceData();
 			  List<MoodleAttendanceStudent> moodleAttendanceStudent=MoodleAttendanceStudentRepo.findAllByStudentid(mu.getId());
 			  for(MoodleAttendanceStudent mas:moodleAttendanceStudent) {
-			 if(mu.getId()==mas.getStudentid()) {
-				  sat.setId(mu.getId());
-				   sat.setUsername(mu.getUsername());
-				   sat.setFirstname(mu.getFirstname());
-				   sat.setLastname(mu.getLastname()); 
-				   for(MoodleAttendanceTeacher mat: moodleAttendanceTeacher) {
-						   			  
+			 if(mu.getId()==mas.getStudentid()) {			 
+				   for(MoodleAttendanceTeacher mat: moodleAttendanceTeacher) {					   			  
 							   if(mc.getId()==mat.getSubjectid() && mat.getId() == mas.getTableid() &&  tableid.get(i) == mas.getTableid()) {
-							   count=MoodleAttendanceStudentRepo.getByAttendance(mu.getId(),tableid.get(i));
+							  count=MoodleAttendanceStudentRepo.getByAttendance(mu.getId(),tableid.get(i));
+							 // studentAttendanceData.get(i).add(new StudentAttendanceData(mu.getId(),mu.getUsername(),mu.getFirstname(),mu.getLastname(),mc.getFullname(),count,mat.getSlot(),mas.getDate_attendence(),mc.getShortname()));						  
+							  sat.setId(mu.getId());							  
+							  sat.setUsername(mu.getUsername());
+					           sat.setFirstname(mu.getFirstname());
+							   sat.setLastname(mu.getLastname()); 
 							   sat.setCoursename(mc.getFullname());	 
 							   sat.setCoursecode(coursecode);
 							   sat.setAttendance(count);
 							   sat.setDate_attendance(mas.getDate_attendence());
-							   sat.setSlot(mat.getSlot());
-							  
-							   
+							   sat.setSlot(mat.getSlot());			  
 						   }		    
 				   }
 			  	}
@@ -299,8 +317,8 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 			  
 			  if(sat.getId()!=null && sat.getCoursename() != null) {
 				  studentAttendanceData.add(sat);
-				 
-			 }
+				  
+				  }
 		  }  
 				 
 	}
@@ -329,11 +347,22 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 					  
 			  }	 
 			  }
+			
 			  if(sat1.getId()!=null && sat1.getCoursename() != null) {
 				  studentAttendanceData.add(sat1);
-				 
+				  Collections.sort(studentAttendanceData, new Comparator<StudentAttendanceData>(){
+					  public int compare(StudentAttendanceData o1,StudentAttendanceData o2) {
+						int c;
+						c=o1.getId().compareTo(o2.getId());	 
+						if(c==0)
+							return o1.getDate_attendance().compareTo(o2.getDate_attendance());	
+						return c;
+							 }
+					  
+				  });
+				  
 			  }
-		  }
+	  }
 	}
 		return studentAttendanceData;
 	 }
@@ -491,10 +520,22 @@ public List<StudentAttendanceData> getAllStudentDetails(String coursecode,String
 			  
 			  if(sat.getId()!=null && sat.getCoursename() != null) {
 				 
-				  totalStudentAttendanceData.add(sat);			 
+				  totalStudentAttendanceData.add(sat);	
+				  Collections.sort(totalStudentAttendanceData, new Comparator<TotalStudentAttendanceData>(){
+					  public int compare(TotalStudentAttendanceData o1,TotalStudentAttendanceData o2) {			
+						return o1.getId().compareTo(o2.getId());	 
+							 }
+					  
+				  });
 			 }
 			  else if(sat1.getId() !=null && sat1.getCoursename() != null){
 				 totalStudentAttendanceData.add(sat1);
+				 Collections.sort(totalStudentAttendanceData, new Comparator<TotalStudentAttendanceData>(){
+					  public int compare(TotalStudentAttendanceData o1,TotalStudentAttendanceData o2) {				
+						return o1.getId().compareTo(o2.getId());	 
+							 }
+					  
+				  });
 			 }
 				 
 	}		
