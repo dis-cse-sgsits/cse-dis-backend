@@ -582,6 +582,7 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     }
 
     @Override
+    @Transactional
     public String cancelLeave(Long id) {
         StaffLeave leave = staffLeaveRepository.findByLeaveId(id);
         double days = leave.getNoOfDays();
