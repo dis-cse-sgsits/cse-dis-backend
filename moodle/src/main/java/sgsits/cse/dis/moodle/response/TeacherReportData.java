@@ -5,9 +5,18 @@ public class TeacherReportData {
 	private Double grade;
 	private String creationDate,submissionDate,dueDate;
 	private Boolean submitted;
+	private Long tagId;
+	private String tagName;
+	private String tagRawName;
+	
+	public TeacherReportData() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	
 	public TeacherReportData(String studentName, String courseName, String assnName, String graderName, Double grade,
-			String creationDate, String submissionDate, String dueDate, Boolean submitted) {
+			String creationDate, String submissionDate, String dueDate, Boolean submitted, Long tagId, String tagName,
+			String tagRawName) {
 		super();
 		this.studentName = studentName;
 		this.courseName = courseName;
@@ -18,6 +27,9 @@ public class TeacherReportData {
 		this.submissionDate = submissionDate;
 		this.dueDate = dueDate;
 		this.submitted = submitted;
+		this.tagId = tagId;
+		this.tagName = tagName;
+		this.tagRawName = tagRawName;
 	}
 	
 	public String getStudentName() {
@@ -74,4 +86,24 @@ public class TeacherReportData {
 	public void setSubmitted(Boolean submitted) {
 		this.submitted = submitted;
 	}
+	public Long getTagId() {
+		return tagId;
+	}
+	public void setTagId(Long tagId) {
+		this.tagId = tagId;
+	}
+	public String getTagName() {
+		return tagName;
+	}
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
+	}
+	public String getTagRawName() {
+		return tagRawName;
+	}
+	public void setTagRawName(String tagRawName) {
+		this.tagRawName = tagRawName;
+	}
+	
+	
 }

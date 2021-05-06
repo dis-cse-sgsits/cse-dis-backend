@@ -18,19 +18,25 @@ import sgsits.cse.dis.moodle.model.MoodleAssignSubmission;
 
 import sgsits.cse.dis.moodle.model.MoodleContext;
 import sgsits.cse.dis.moodle.model.MoodleCourse;
+import sgsits.cse.dis.moodle.model.MoodleCourseModules;
 import sgsits.cse.dis.moodle.model.MoodleEnrollement;
 import sgsits.cse.dis.moodle.model.MoodleRole;
 import sgsits.cse.dis.moodle.model.MoodleRoleAssignments;
+import sgsits.cse.dis.moodle.model.MoodleTag;
+import sgsits.cse.dis.moodle.model.MoodleTagInstance;
 import sgsits.cse.dis.moodle.model.MoodleUser;
 import sgsits.cse.dis.moodle.model.MoodleUserEnrollment;
 import sgsits.cse.dis.moodle.repo.MoodleAssignGradesRepo;
 import sgsits.cse.dis.moodle.repo.MoodleAssignRepo;
 import sgsits.cse.dis.moodle.repo.MoodleAssignSubmissionRepo;
 import sgsits.cse.dis.moodle.repo.MoodleContextRepo;
+import sgsits.cse.dis.moodle.repo.MoodleCourseModulesRepo;
 import sgsits.cse.dis.moodle.repo.MoodleCourseRepo;
 import sgsits.cse.dis.moodle.repo.MoodleEnrollmentRepo;
 import sgsits.cse.dis.moodle.repo.MoodleRoleAssignmentsRepo;
 import sgsits.cse.dis.moodle.repo.MoodleRoleRepo;
+import sgsits.cse.dis.moodle.repo.MoodleTagInstanceRepo;
+import sgsits.cse.dis.moodle.repo.MoodleTagRepo;
 import sgsits.cse.dis.moodle.repo.MoodleUserEnrollmentRepo;
 import sgsits.cse.dis.moodle.repo.MoodleUserRepo;
 import sgsits.cse.dis.moodle.response.CoursesOfStudentData;
@@ -74,6 +80,13 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 
 	@Autowired
 	private moodleGradeService moodleGradeServiceImpl;
+	
+	@Autowired
+	public MoodleCourseModulesRepo moodleCourseModulesRepo;
+	@Autowired
+	public MoodleTagRepo moodleTagRepo;
+	@Autowired
+	public MoodleTagInstanceRepo moodleTagInstanceRepo;
 
 
 
@@ -119,6 +132,22 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 			
 			List<MoodleAssignSubmission> assignSubmission = moodleAssignSubmissionRepo.findByAssignmentAndUserid(assignment.getId(), userId);
 			
+			Long tagId = 0L;
+			String tagName = null;
+			String tagRawName = null;
+			Optional<MoodleCourseModules> courseModules = moodleCourseModulesRepo.findAllByInstanceAndCourse(assignment.getId(), courseId);
+			if (courseModules.isPresent()) {
+				Optional<MoodleTagInstance> tagInstance = moodleTagInstanceRepo.findAllByItemid(courseModules.get().getId());
+				if (tagInstance.isPresent()) {
+					Optional<MoodleTag> tagDetails = moodleTagRepo.findAllById(tagInstance.get().getTagid());
+					if (tagDetails.isPresent()) {
+						tagId = tagDetails.get().getId();
+						tagName = tagDetails.get().getName();
+						tagRawName = tagDetails.get().getRawname();
+					}
+				}
+			}
+			
 			MoodleUser grader = new MoodleUser();
 			Double gradeObtained = 0D;
 			
@@ -153,7 +182,10 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 																	assignment.getGrade(),
 																	grader.getId(),
 																	grader.getFirstname(),
-																	grader.getLastname()
+																	grader.getLastname(),
+																	tagId,
+																	tagName,
+																	tagRawName
 																	));
 					
 		}
@@ -306,6 +338,23 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 				Optional<MoodleAssignGrades> grade = moodleAssignGradesRepo.findByUseridAndAssignmentAndAttemptnumber(
 						sub.getUserid(),sub.getAssignment(),sub.getAttemptnumber());
 				
+				Long tagId = 0L;
+				String tagName = null;
+				String tagRawName = null;
+				Optional<MoodleCourseModules> courseModules = moodleCourseModulesRepo.findAllByInstanceAndCourse(assn.getAssignId(), courseId);
+				if (courseModules.isPresent()) {
+					Optional<MoodleTagInstance> tagInstance = moodleTagInstanceRepo.findAllByItemid(courseModules.get().getId());
+					if (tagInstance.isPresent()) {
+						Optional<MoodleTag> tagDetails = moodleTagRepo.findAllById(tagInstance.get().getTagid());
+						if (tagDetails.isPresent()) {
+							tagId = tagDetails.get().getId();
+							tagName = tagDetails.get().getName();
+							tagRawName = tagDetails.get().getRawname();
+						}
+					}
+				}
+				
+				
 				TeacherReportData toAdd;
 				if(!grade.isPresent())
 				{
@@ -313,7 +362,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),null,null,
 							getDateFromUnixDate(sub.getTimecreated()),
 							(sub.getStatus().equals("new")?null:getDateFromUnixDate(sub.getTimemodified())),
-							assn.getDueDate(),(sub.getStatus().equals("new")?false:true));
+							assn.getDueDate(),(sub.getStatus().equals("new")?false:true), tagId, tagName, tagRawName);
 				}
 				else
 				{
@@ -323,7 +372,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),
 							graderName,grade.get().getGrade(),getDateFromUnixDate(sub.getTimecreated()),
 							(sub.getStatus().equals("new")?null:getDateFromUnixDate(sub.getTimemodified())),
-							assn.getDueDate(),(sub.getStatus().equals("new")?false:true));
+							assn.getDueDate(),(sub.getStatus().equals("new")?false:true), tagId, tagName, tagRawName);
 				}
 				currans.add(toAdd);
 			}

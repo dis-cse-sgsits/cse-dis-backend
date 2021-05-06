@@ -11,6 +11,7 @@ import sgsits.cse.dis.moodle.response.GradeItemsData;
 import sgsits.cse.dis.moodle.exception.NotFoundException;
 import sgsits.cse.dis.moodle.response.Course;
 import sgsits.cse.dis.moodle.response.Students;
+import sgsits.cse.dis.moodle.response.TagData;
 
 
 @Service
@@ -30,4 +31,6 @@ public interface moodleGradeService {
 	List<GraderReportData> getStudentsUserReport(Long courseId, Long userId, String userType) throws NotFoundException;
 	
 	Long getStudentsUserId(String username) throws NotFoundException;
+
+	List<TagData> getAllTagsOfCourse(Long courseId, Long userId, String userType) throws NotFoundException;
 }
