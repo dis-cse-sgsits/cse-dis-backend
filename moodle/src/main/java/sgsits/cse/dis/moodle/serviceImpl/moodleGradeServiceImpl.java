@@ -94,9 +94,34 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		Long courseIdL = Long.parseLong(courseId);
 		gradeItemsDetailed = moodleGradeItemsRepo.findByCourseid(courseIdL);
 		for (MoodleGradeItems gradeItem : gradeItemsDetailed) {
-			gradeItems.add(new GradeItemsData(gradeItem.getId(), gradeItem.getCourseid(), gradeItem.getItemname()));
-		}
+			List<MoodleGradeGrades> gradeGradesDetails = moodleGradeGradesRepo.findByItemid(gradeItem.getId());
+			
+			Long tagId = 0L;
+			String tagName = null;
+			String tagRawName = null;
+			Optional<MoodleCourseModules> courseModules = moodleCourseModulesRepo.findAllByInstanceAndCourse(gradeItem.getIteminstance(), courseIdL);
+			if (courseModules.isPresent()) {
+				Optional<MoodleTagInstance> tagInstance = moodleTagInstanceRepo.findAllByItemid(courseModules.get().getId());
+				if (tagInstance.isPresent()) {
+					Optional<MoodleTag> tagDetails = moodleTagRepo.findAllById(tagInstance.get().getTagid());
+					if (tagDetails.isPresent()) {
+						tagId = tagDetails.get().getId();
+						tagName = tagDetails.get().getName();
+						tagRawName = tagDetails.get().getRawname();
+					}
+				}
+			}
 		
+			
+			gradeItems.add(new GradeItemsData(gradeItem.getId(), gradeItem.getCourseid(), gradeItem.getItemname(),gradeItem.getItemtype(),
+					gradeItem.getItemmodule(),
+					gradeItem.getIteminstance(),
+					tagId,
+					tagName,
+					tagRawName));
+		
+			}
+				
 		return gradeItems;
 	}
 	

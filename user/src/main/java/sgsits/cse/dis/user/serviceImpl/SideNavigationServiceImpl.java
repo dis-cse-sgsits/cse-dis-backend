@@ -25,9 +25,9 @@ public class SideNavigationServiceImpl implements SideNavigationService {
 		Optional<User> userData = userRepository.findByUsername(username);
 		Optional<StaffBasicProfile> profileDet = staffBasicProfileRepository.findByUserId(userData.get().getId());
 		
-		if (!userData.isEmpty()) {
+		if (userData.isPresent()) {
 			SideNavigationData data;
-			if (!profileDet.isEmpty()) {
+			if (profileDet.isPresent()) {
 				
 				data = new SideNavigationData(username, userData.get().getLastLogin(), profileDet.get().getName(), profileDet.get().getCurrentDesignation());
 			}
