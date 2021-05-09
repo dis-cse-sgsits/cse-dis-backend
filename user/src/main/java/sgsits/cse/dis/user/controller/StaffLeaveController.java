@@ -31,6 +31,7 @@ import sgsits.cse.dis.user.message.response.StaffLeaveAccountResponse;
 import sgsits.cse.dis.user.message.response.StaffLeaveResponse;
 import sgsits.cse.dis.user.model.StaffLeave;
 import sgsits.cse.dis.user.model.StaffLeaveTypes;
+import sgsits.cse.dis.user.repo.StaffBasicProfileRepository;
 import sgsits.cse.dis.user.serviceImpl.StaffLeaveServiceImpl;
 
 @CrossOrigin(origins = "*")
@@ -151,28 +152,28 @@ public class StaffLeaveController {
                 staffLeaveServiceImpl.getMyLeaveAccount(jwtResolver.getUserNameFromJwtToken(token)), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/play")
-    public double updateStatus() {
+    // @Autowired
+    // private StaffBasicProfileRepository staffRepository;
+    
+    // @GetMapping(path = "/play")
+    // public String updateStatus() {
 
-        // StaffLeaveSettings top =
-        // staffLeaveSettingsRepository.findTopByOrderByIdDesc();
-        // return staffLeaveServiceImpl.getAllLeavesByName();
-        // String token=request.getHeader("Authorization");
-        // return jwtResolver.getUserTypeFromJwtToken(token);
-        // return
-        // staffLeaveLeftRepository.findByUserIdAndYear(jwtResolver.getIdFromJwtToken(token),
-        // 2020);
-        // return staffLeaveRepository.findByAppliedBy("uthakar");
-        // return s.findLeaveTypeByLeaveName("cl");
-        // staffLeaveServiceImpl.addToTable("el",
-        // "a3cf94e4-20b1-11ea-bbd9-acd1b8c931f7");
-        try {
-            return staffLeaveServiceImpl.getDays("2021-04-05","2021-04-05",false,"Second Half", "Second Half");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
+    //     // StaffLeaveSettings top =
+    //     // staffLeaveSettingsRepository.findTopByOrderByIdDesc();
+    //     // return staffLeaveServiceImpl.getAllLeavesByName();
+    //     // String token=request.getHeader("Authorization");
+    //     // return jwtResolver.getUserTypeFromJwtToken(token);
+    //     // return
+    //     // staffLeaveLeftRepository.findByUserIdAndYear(jwtResolver.getIdFromJwtToken(token),
+    //     // 2020);
+    //     // return staffLeaveRepository.findByAppliedBy("uthakar");
+    //     // return s.findLeaveTypeByLeaveName("cl");
+    //     // staffLeaveServiceImpl.addToTable("el",
+    //     // "a3cf94e4-20b1-11ea-bbd9-acd1b8c931f7");
+    //     if(staffRepository.findNameByUsername("abc")==null)
+    //         return "null2";
+    //     return staffRepository.findNameByUsername("uthakar") + staffRepository.findNameByUsername("abc");
+    // }
 }
 
 // @ApiOperation(value = "get staff leave settings", response =

@@ -214,8 +214,11 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     public List<StaffLeave> getLeavesByStatus(String status) {
         List<StaffLeave> leaves = staffLeaveRepository.findByStatusIgnoreCase(status);
         for (StaffLeave l : leaves) {
-            String name = staffRepository.findNameByUsername(l.getAppliedBy());
-            l.setAppliedBy(name);
+            if(staffRepository.findNameByUsername(l.getAppliedBy())!=null)
+            {
+                String name = staffRepository.findNameByUsername(l.getAppliedBy());
+                l.setAppliedBy(name);
+            }
         }
         return leaves;
     }
@@ -354,8 +357,11 @@ public class StaffLeaveServiceImpl implements StaffLeaveService, Serializable {
     public List<StaffLeave> getAllLeaves() {
         List<StaffLeave> leaves = staffLeaveRepository.findAll();
         for (StaffLeave l : leaves) {
-            String name = staffRepository.findNameByUsername(l.getAppliedBy());
-            l.setAppliedBy(name);
+            if(staffRepository.findNameByUsername(l.getAppliedBy())!=null)
+            {
+                String name = staffRepository.findNameByUsername(l.getAppliedBy());
+                l.setAppliedBy(name);
+            }
         }
         return leaves;
     }
