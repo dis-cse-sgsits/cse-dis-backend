@@ -10,7 +10,7 @@ import sgsits.cse.dis.academics.model.SemTimeTableSettings;
  * @author Arjit Mishra.
  * @version 1.0.
  * @since 25-FEB-2020.
- * @throws ConflictException.
+ * @throws ConflictException
  */
 public interface TimeTableSettingServices {
 	void saveSemTimeTableSettings(SemTimeTableSettings semTimeTableSettings,String modifiedBy) throws ConflictException;

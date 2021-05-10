@@ -8,6 +8,7 @@ import sgsits.cse.dis.user.model.StaffBasicProfile;
 
 import java.util.List;
 
+
 @Mapper(componentModel = "spring")
 public interface StaffServiceMapper {
 

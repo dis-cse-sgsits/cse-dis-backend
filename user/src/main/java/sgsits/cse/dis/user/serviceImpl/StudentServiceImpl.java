@@ -1,8 +1,12 @@
 package sgsits.cse.dis.user.serviceImpl;
 
 import org.mapstruct.factory.Mappers;
+<<<<<<< HEAD
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+=======
+import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> origin/release
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,16 +14,26 @@ import sgsits.cse.dis.user.components.StudentProfileRepo;
 import sgsits.cse.dis.user.dtos.*;
 import sgsits.cse.dis.user.exception.InternalServerError;
 import sgsits.cse.dis.user.mappers.StudentServiceMapper;
+<<<<<<< HEAD
 import sgsits.cse.dis.user.message.response.ResponseMessage;
 import sgsits.cse.dis.user.model.EnrollmentTemplate;
 import sgsits.cse.dis.user.model.StudentProfile;
 import sgsits.cse.dis.user.repo.EnrollmentTemplateRepository;
+=======
+import sgsits.cse.dis.user.model.StudentProfile;
+import sgsits.cse.dis.user.repo.StudentRepository;
+>>>>>>> origin/release
 import sgsits.cse.dis.user.service.StudentService;
 import sgsits.cse.dis.user.utility.ExcelHelper;
 import sgsits.cse.dis.user.utility.UploadUtil;
 
+<<<<<<< HEAD
 import java.io.FileNotFoundException;
 import java.io.IOException;
+=======
+import java.util.ArrayList;
+import java.util.Calendar;
+>>>>>>> origin/release
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +44,9 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentProfileRepo studentProfileRepo;
     private final EnrollmentTemplateRepository enrollmentTemplateRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     private final StudentServiceMapper studentServiceMapper =
             Mappers.getMapper(StudentServiceMapper.class);
@@ -98,6 +115,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+<<<<<<< HEAD
     public ResponseEntity<ResponseMessage> uploadEnrollmentTemplate( EnrollmentTemplate schemeFileForm, MultipartFile file ) {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -136,6 +154,68 @@ public class StudentServiceImpl implements StudentService {
         else{
             throw new RuntimeException("File not found with file name " + fileName);
         }
+=======
+    public List<StudentProfile> fetchMEStudentsByYear(int year) {
+        List<StudentProfile> meStudents = studentRepository.findByCourseId("C2");
+        System.out.println(meStudents);
+        List<StudentProfile> output = new ArrayList<StudentProfile>();
+        Calendar c = Calendar.getInstance();
+        int currentYear = c.get(Calendar.YEAR);
+        int currentMonth = c.get(Calendar.MONTH);
+        System.out.println("Year: "+year);
+        System.out.println("Current Year: "+currentYear);
+        System.out.println("Current Month: "+currentMonth);
+        if(year==1)
+        {
+            System.out.println("Inside year I");
+            for(StudentProfile record : meStudents)
+            {
+                int admissionYear = record.getAdmissionYear();
+                System.out.println("Admission year: "+admissionYear);
+                if(currentYear-admissionYear==0)
+                {
+                    record.setCategory("I");
+                    output.add(record);
+                }
+                else
+                if(currentYear-admissionYear==1)
+                {
+                    if(currentMonth<=4)
+                    {
+                        record.setCategory("I");
+                        output.add(record);
+                    }
+
+                }
+            }
+        }
+        else if(year==2)
+        {
+            for(StudentProfile record : meStudents)
+            {
+                int admissionYear = record.getAdmissionYear();
+                System.out.println("Admission year: "+admissionYear);
+                if(currentYear-admissionYear==1)
+                {
+                    if(currentMonth>4)
+                    {
+                        record.setCategory("II");
+                        output.add(record);
+                    }
+                }
+                else
+                if(currentYear-admissionYear==2)
+                {
+                    if(currentMonth<=4)
+                    {
+                        record.setCategory("II");
+                        output.add(record);
+                    }
+                }
+            }
+        }
+        return output;
+>>>>>>> origin/release
     }
 
 }

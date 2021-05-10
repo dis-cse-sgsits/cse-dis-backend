@@ -36,4 +36,9 @@ public interface StudentService {
     EnrollmentTemplate getFile( String fileName );
 
     ResponseEntity<ResponseMessage> deleteTemplate( String fileName );
+
+    List<StudentProfile> fetchMEStudentsByYear(int year);
+
+
+
 }
