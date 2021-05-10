@@ -24,4 +24,7 @@ public interface StudentService {
 
     List<UgProjectDetailDto> geUgProjectDetails(final String userId);
 
+    List<StudentProfile> fetchMEStudentsByYear(int year);
+
+
 }

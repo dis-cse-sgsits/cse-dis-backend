@@ -13,5 +13,33 @@ public class RestAPI {
 	public static final String ADD_SEMESTER_TIME_TABLE = "/addSemTimeTable";
 	public static final String GET_SUBJECT_CODES_BY_FACULTY_ID_AND_SESSION = "/getSubjectCodesByFacultyIdAndSession/{facultyId}/{session}";
 	public static final String GET_TIMETABLE_BY_FACULTY_ID_SESSION_AND_SUBJECT_CODE = "/getTimeTableByFacultyIdSessionAndSubjectCode/{facultyId}/{session}/{subjectCode}";
-
+	public static final String ADD_EXPERT = "/addExpert";
+	public static final String ADD_EXPERT_LECTURE = "/addExpertLecture";
+	public static final String GET_EXPERT_LECTURES_BY_STATUS = "/getExpertLecturesByStatus/{status}";
+	public static final String VIEW_EXPERT_LECTURE_DETAILS = "/viewExpertLectureDetails/{expertLectureId}";
+	public static final String GET_EXPERT_NAMES_AND_DESIGNATIONS = "/getExpertNamesAndDesignations";
+	public static final String EDIT_EXPERT = "/editExpert";
+	public static final String FIND_EXPERT = "/findExpert";
+	public static final String SEARCH_EXPERT_LECTURES = "/searchExpertLectures";
+	public static final String UPDATE_EXPERT_LECTURE_STATUS = "/updateExpertLectureStatus/{expertLectureId}";
+    public static final String FETCH_ME_STUDENTS_WITHOUT_SCHOLARSHIP = "/fetchMEStudentsWithoutScholarship/{year}";
+	public static final String APPROVE_STUDENTS_FOR_SCHOLARSHIP = "/approveScholarship";
+	public static final String FETCH_ME_STUDENTS_WITH_SCHOLARSHIP = "/fetchMEStudentsWithScholarship/{year}";
+	public static final String CANCEL_SCHOLARSHIP = "/cancelScholarship";
+    public static final String DELETE_EXPERT = "/deleteExpert/{expertId}";
+    public static final String ADD_INDUSTRY_VISIT = "/addIndustryVisit";
+    public static final String GET_INDUSTRY_VISITS = "/getIndustryVisits/{status}";
+    public static final String VIEW_INDUSTRY_VISIT_DETAILS = "/viewIndustryVisitDetails/{industryVisitId}";
+	public static final String SEARCH_INDUSTRY_VISITS = "/searchIndustryVisits";
+	public static final String UPDATE_INDUSTRY_VISIT_STATUS = "/updateIndustryVisitStatus/{industryVisitId}";
+	public static final String EDIT_INDUSTRY_VISIT = "/editIndustryVisit/{industryVisitId}";
+	public static final String DELETE_INDUSTRY_VISIT = "/deleteIndustryVisit/{industryVisitId}";
+    public static final String EDIT_EXPERT_LECTURE = "/editExpertLecture/{expertLectureId}";
+	public static final String DELETE_EXPERT_LECTURE = "/deleteExpertLecture/{expertLectureId}";
+    public static final String SEARCH_STUDENTS_WITHOUT_SCHOLARSHIP = "/searchStudentsWithoutScholarship";
+	public static final String SEARCH_STUDENTS_WITH_SCHOLARSHIP = "/searchStudentsWithScholarship";
+	public static final String UPDATE_PAYMENT_STATUS_AND_REMARKS = "/updatePaymentStatusAndRemarks/{expertLectureId}";
+	public static final String UPDATE_REMARKS = "/updateRemarks/{industryVisitId}";
+    public static final String UPLOAD_IMAGES = "/uploadImages/{id}";
+	public static final String IMAGES = "/images";
 }
