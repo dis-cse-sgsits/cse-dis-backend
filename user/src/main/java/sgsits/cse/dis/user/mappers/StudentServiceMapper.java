@@ -10,6 +10,7 @@ public interface StudentServiceMapper {
     StudentBasicProfileDto convertStudentBasicProfileModelIntoDto(
             final StudentProfile studentProfile);
 
-    StudentProfile convertStudentBasicProfileDtoIntoModel(final StudentBasicProfileDto studentBasicProfileDto);
+    StudentProfile convertStudentBasicProfileDtoIntoModel(
+            final StudentBasicProfileDto studentBasicProfileDto);
 }
 

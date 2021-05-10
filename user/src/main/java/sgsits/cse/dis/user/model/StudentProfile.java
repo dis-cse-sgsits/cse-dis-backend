@@ -1,7 +1,12 @@
 package sgsits.cse.dis.user.model;
 
 import java.sql.Date;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -41,12 +46,6 @@ public class StudentProfile {
 	@Column(name = "admission_year")
 	private int admissionYear;
 
-	@Column(name = "scheme_year")
-	private int schemeYear;
-
-	@Column(name = "scheme_semester")
-	private int schemeSemester;
-
 	@Column(name = "course_id")
 	private String courseId;
 
@@ -85,9 +84,6 @@ public class StudentProfile {
 
 	@Column(name = "blood_group")
 	private String bloodGroup;
-
-	@Column(name = "name")
-	private String name;
 
 	public Long getId() {
 		return id;
@@ -264,33 +260,4 @@ public class StudentProfile {
 	public void setBloodGroup(String bloodGroup) {
 		this.bloodGroup = bloodGroup;
 	}
-
-	public int getSchemeYear() {
-		return schemeYear;
-	}
-
-	public void setSchemeYear( int schemeYear ) {
-		this.schemeYear = schemeYear;
-	}
-
-	public int getSchemeSemester() {
-		return schemeSemester;
-	}
-
-	public void setSchemeSemester( int schemeSemester ) {
-		this.schemeSemester = schemeSemester;
-	}
-
-	@PreUpdate
-	@PostUpdate
-	@PostRemove
-	@PreRemove
-	@PrePersist
-	@PostPersist
-	public void logUserUpdate() {
-		System.out.println("Post update");
-	}
-
-
-
 }
