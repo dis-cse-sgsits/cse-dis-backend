@@ -14,7 +14,7 @@ public interface UserClient {
 	public String getUserId(@RequestParam("username") String username);
 	
 
-	@GetMapping(value = "/userFeignClientController/exist sByUsername/{username}")
+	@GetMapping(value = "/userFeignClientController/existsByUsername/{username}")
 	public boolean existsByUsername(@PathVariable String username);
 
 }

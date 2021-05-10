@@ -4,70 +4,23 @@ import java.util.Date;
 
 public class StaffBasicProfileDto {
 
-
-    private String createdBy;
-    private String createdDate;
     private String id;
     private String userId;
-
     private String employeeId;
     private String name;
     private String nameAcronym;
     private String currentDesignation;
-    private String classs;
-    private String type;
     private String email;
     private Date dob;
-    private String panNumber;
-    private String aadharNumber;
     private String bloodGroup;
     private String gender;
     private String motherName;
     private String fatherName;
     private long mobileNo;
     private Long alternateMobileNo;
-    private Date joiningDate;
     private String areaOfSpecialization;
-
-    public String getClasss() {
-        return classs;
-    }
-
-    public void setClasss(String classs) {
-        this.classs = classs;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getPanNumber() {
-        return panNumber;
-    }
-
-    public void setPanNumber(String panNumber) {
-        this.panNumber = panNumber;
-    }
-
-    public String getAadharNumber() {
-        return aadharNumber;
-    }
-
-    public void setAadharNumber(String aadharNumber) {
-        this.aadharNumber = aadharNumber;
-    }
-
-    public Date getJoiningDate() {
-        return joiningDate;
-    }
-
-    public void setJoiningDate(Date joiningDate) {
-        this.joiningDate = joiningDate;
-    }
+    private String permanentAddress;
+    private String presentAddress;
 
     public String getId() {
         return id;
@@ -189,21 +142,19 @@ public class StaffBasicProfileDto {
         this.areaOfSpecialization = areaOfSpecialization;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
+    public String getPermanentAddress() {
+        return permanentAddress;
     }
 
-    public void setCreatedBy(final String createdBy) {
-        this.createdBy = createdBy;
+    public void setPermanentAddress(final String permanentAddress) {
+        this.permanentAddress = permanentAddress;
     }
 
-    public String getCreatedDate() {
-        return createdDate;
+    public String getPresentAddress() {
+        return presentAddress;
     }
 
-    public void setCreatedDate(final String createdDate) {
-        this.createdDate = createdDate;
+    public void setPresentAddress(final String presentAddress) {
+        this.presentAddress = presentAddress;
     }
-
-
 }

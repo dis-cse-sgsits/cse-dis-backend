@@ -3,7 +3,6 @@ package sgsits.cse.dis.user.serviceImpl;
 import org.mapstruct.factory.Mappers;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import sgsits.cse.dis.user.dtos.FacultyDataDto;
 import sgsits.cse.dis.user.dtos.StaffBasicProfileDto;
 import sgsits.cse.dis.user.exception.ConflictException;
@@ -11,12 +10,9 @@ import sgsits.cse.dis.user.exception.InternalServerError;
 import sgsits.cse.dis.user.mappers.StaffServiceMapper;
 import sgsits.cse.dis.user.message.request.AddNewUser;
 import sgsits.cse.dis.user.model.StaffBasicProfile;
-import sgsits.cse.dis.user.model.StudentProfile;
 import sgsits.cse.dis.user.repo.StaffBasicProfileRepository;
 import sgsits.cse.dis.user.service.StaffService;
-import sgsits.cse.dis.user.utility.ExcelHelper;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -70,19 +66,10 @@ public class StaffServiceImpl implements StaffService {
             ConflictException, DataIntegrityViolationException {
 
         try {
-            StaffBasicProfile test = staffBasicProfileRepository.save(
-                    new StaffBasicProfile(
-                            addedBy,
-                            simpleDateFormat.format(new Date()),
-                            addNewUser.getEmployeeId(),
-                            addNewUser.getName(),
-                            addNewUser.getCurrentDesignation(),
-                            addNewUser.getClasss(),
-                            addNewUser.getType(),
-                            addNewUser.getEmail(),
-                            addNewUser.getDob(),
-                            addNewUser.getMobileNo(),
-                            addNewUser.getJoiningDate()));
+            StaffBasicProfile test = staffBasicProfileRepository.save(new StaffBasicProfile(addedBy, simpleDateFormat.format(new Date()), addNewUser.getEmployeeId(),
+                    addNewUser.getName(), addNewUser.getCurrentDesignation(), addNewUser.getClasss(),
+                    addNewUser.getType(), addNewUser.getEmail(), addNewUser.getDob(), addNewUser.getMobileNo(),
+                    addNewUser.getJoiningDate()));
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Employee already Exists.");
         }
@@ -127,8 +114,6 @@ public class StaffServiceImpl implements StaffService {
 		return "userId is null";
 	}
 
-
-
     @Override
     public StaffBasicProfileDto getStaffBasicProfile(String userId) throws InternalServerError {
 
@@ -145,36 +130,15 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public void addOrUpdateStaffBasicProfile(final StaffBasicProfileDto staffBasicProfileDto)
+    public void addOrUpdateStaffBasicProfile(final StaffBasicProfileDto StaffBasicProfileDto)
             throws InternalServerError {
 
         try {
-            StaffBasicProfile staffBasicProfile = staffServiceMapper.convertStaffBasicProfileDtoIntoStaffBasicProfile(staffBasicProfileDto);
-
-            // Added created by manually because mapper is unable to set
-            staffBasicProfile.setCreatedBy(staffBasicProfileDto.getCreatedBy());
-            staffBasicProfile.setCreatedDate(staffBasicProfileDto.getCreatedDate());
-
-            if(staffBasicProfileRepository.existsByEmployeeId(staffBasicProfile.getEmployeeId())){
-                StaffBasicProfile staff = staffBasicProfileRepository.findByEmployeeId(staffBasicProfile.getEmployeeId()).get();
-                staffBasicProfile.setId(staff.getId());
-            }
-            staffBasicProfileRepository.save(staffBasicProfile);
+            staffBasicProfileRepository.save(staffServiceMapper
+                    .convertStaffBasicProfileDtoIntoStaffBasicProfile(StaffBasicProfileDto));
         } catch (Exception e) {
-            System.out.println(e);
             throw new InternalServerError("Cannot update staff basic profile");
         }
 
-    }
-
-
-
-    public void saveExcelData(MultipartFile file, String addedBy, int sheetNo) {
-        try {
-            List<StaffBasicProfile> staff = ExcelHelper.excelToStaff(file.getInputStream(), addedBy, sheetNo);
-            staffBasicProfileRepository.saveAll(staff);
-        } catch (IOException e) {
-            throw new RuntimeException("fail to store excel data: " + e.getMessage());
-        }
     }
 }

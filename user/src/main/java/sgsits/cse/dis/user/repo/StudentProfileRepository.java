@@ -22,6 +22,4 @@ public interface StudentProfileRepository extends JpaRepository<StudentProfile, 
 	
 	@Query(value = "SELECT * FROM user.student_profile WHERE user.student_profile.course_id = ?1 AND user.student_profile.admission_year = ?2 AND user.student_profile.user_id IS NOT NULL", nativeQuery = true)
 	List<StudentProfile> findByCourseIdAndAdmissionYearNotNull(String courseId, int admissionYear);
-
-    boolean existsByEnrollmentId(String enrollmentId);
 }
