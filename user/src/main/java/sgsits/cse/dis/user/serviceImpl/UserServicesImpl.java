@@ -129,6 +129,17 @@ public class UserServicesImpl implements UserServices{
 		return null;
 	}
 
+	public String getByUserName(String userid) {
+		Optional<User> dbUser = userRepository.findById(userid);
+		if (dbUser.isPresent()) {
+			User user = dbUser.get();
+			return user.getUsername();
+		} 
+		return null;
+	}
 
+	
+
+     
 }
 

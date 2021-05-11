@@ -3,7 +3,7 @@ spring:
     # url: jdbc:mysql://localhost:3306/user
     url: jdbc:mysql://18.219.152.230/user
     username: root
-    password: sonal
+    password: 
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     generate-ddl: true
@@ -47,6 +47,9 @@ dis:
         file-size-threshold: 2000KB
         max-file-size: 15MB
         max-request-size: 25MB
+<<<<<<< HEAD
+=======
 
 SchedulingJob:
   enrollment-update-delay: PT5S
+>>>>>>> release-v2

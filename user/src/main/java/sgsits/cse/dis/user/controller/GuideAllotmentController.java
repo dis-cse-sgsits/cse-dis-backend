@@ -24,6 +24,7 @@ import sgsits.cse.dis.user.jwt.JwtResolver;
 import sgsits.cse.dis.user.message.request.CreateBatch;
 import sgsits.cse.dis.user.message.response.BatchData;
 import sgsits.cse.dis.user.message.response.ResponseMessage;
+import sgsits.cse.dis.user.model.StaffBasicProfile;
 import sgsits.cse.dis.user.model.StudentProfile;
 import sgsits.cse.dis.user.service.GuideAllotmentService;
 
@@ -71,5 +72,11 @@ public class GuideAllotmentController {
 	@GetMapping(value = RestAPI.GET_GUIDES_BATCH, produces = "application/json")
 	public ResponseEntity<List<BatchData>> getGuidesBatch(@PathVariable("guideId") String guideId,@PathVariable("ugOrPg") String ugOrPg) {
 		return new ResponseEntity<List<BatchData>>(guideServiceImpl.getGuidesBatch(guideId, ugOrPg),HttpStatus.OK);
+	}	
+	
+	@ApiOperation(value = "Get All Guides", response = StaffBasicProfile.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = RestAPI.GET_ALL_GUIDES, produces = "application/json")
+	public ResponseEntity<List<StaffBasicProfile>> getAllGuides() {
+		return new ResponseEntity<List<StaffBasicProfile>>(guideServiceImpl.getAllGuides(),HttpStatus.OK);
 	}	
 }

@@ -28,6 +28,10 @@ public class RestAPI {
 	public static final String GET_REMAINING_STUDENTS = "/getRemainingStudents/{session}/{ugOrPg}";
 	public static final String GET_STUDENTS_BATCH = "/getStudentsBatch/{studentId}/{ugOrPg}";
 	public static final String GET_GUIDES_BATCH = "/getGuidesBatch/{guideId}/{ugOrPg}";
+	public static final String GET_ALL_GUIDES = "/getAllGuides";
+	
+	//Side Navigation
+	public static final String GET_SIDE_NAVIGATION_DETAILS = "/getSideNavigationDetails";
 
 	//Leave
 	public static final String APPLY_LEAVE = "/applyForLeave";
@@ -52,5 +56,4 @@ public class RestAPI {
 	public static final String GET_ALL_PANEL_OF_THEORY = "/getPanelOfTheory";
 	public static final String DELETE_PANEL_OF_THEORY = "/deletePanelOfTheory/{subjectCode}/{year}";
 	public static final String UPDATE_PANEL_OF_THEORY = "/updatePanelOfTheory";
-	
 }
