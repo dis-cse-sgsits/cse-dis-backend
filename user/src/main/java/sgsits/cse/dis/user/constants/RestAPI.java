@@ -32,4 +32,28 @@ public class RestAPI {
 	
 	//Side Navigation
 	public static final String GET_SIDE_NAVIGATION_DETAILS = "/getSideNavigationDetails";
+
+	//Leave
+	public static final String APPLY_LEAVE = "/applyForLeave";
+	public static final String GET_LEAVE_BY_STATUS="/getLeaves/{status}";
+	public static final String GET_LEAVES_LEFT_BY_NAME="/getLeavesLeft"; //Pass parameter name
+	public static final String GET_ALL_LEAVES_FOR_FACULTY="/getAllLeaves"; 
+	public static final String GET_LEAVE_BY_ID="/getLeaveById"; //Pass parameter id
+	public static final String UPDATE_STATUS_BY_LEAVE_ID="/updateStatus";
+	public static final String REJOIN_AFTER_LEAVE="/rejoin";
+	public static final String CREDIT_LEAVE = "/creditLeave";
+	public static final String CANCEL_LEAVE = "/cancelLeave";
+	public static final String UPDATE_LEAVE = "/updateLeave";
+	public static final String GET_MY_LEAVES =  "/getMyLeaves/{username}";
+	public static final String GET_MY_LEAVE_ACCOUNT =  "/getMyLeaveAccount";
+
+	//Leave Settings
+	public static final String CREATE_NEW_LEAVE = "/createLeave";
+	public static final String GET_LEAVE_TYPES = "/getAllLeaveTypes";
+
+	//Panel Of Theory
+	public static final String CREATE_PANEL_OF_THEORY = "/createPanelOfTheory";
+	public static final String GET_ALL_PANEL_OF_THEORY = "/getPanelOfTheory";
+	public static final String DELETE_PANEL_OF_THEORY = "/deletePanelOfTheory/{subjectCode}/{year}";
+	public static final String UPDATE_PANEL_OF_THEORY = "/updatePanelOfTheory";
 }
