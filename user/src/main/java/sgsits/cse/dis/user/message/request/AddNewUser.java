@@ -16,7 +16,7 @@ public class AddNewUser {
 	private String currentDesignation;
 	private String classs;
 	private String type;
-	private String joiningDate;
+	private Date joiningDate;
 	private String email;
 	private Date dob;
 	private Long mobileNo;
@@ -52,10 +52,10 @@ public class AddNewUser {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getJoiningDate() {
+	public Date getJoiningDate() {
 		return joiningDate;
 	}
-	public void setJoiningDate(String joiningDate) {
+	public void setJoiningDate(Date joiningDate) {
 		this.joiningDate = joiningDate;
 	}
 	public String getEmail() {

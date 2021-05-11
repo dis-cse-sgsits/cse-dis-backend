@@ -31,7 +31,8 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return the optional
      */
     Optional<User> findByUsername(final String username);
-
+    
+    Optional<User> findByCreatedBy(final String userid);
     /**
      * Exists by username boolean.
      *

@@ -42,4 +42,6 @@ public class RestAPI {
 	public static final String UPDATE_REMARKS = "/updateRemarks/{industryVisitId}";
     public static final String UPLOAD_IMAGES = "/uploadImages/{id}";
 	public static final String IMAGES = "/images";
+	public static final String UPLOAD = "/upload";
+	public static final String DOWNLOAD = "/download";
 }

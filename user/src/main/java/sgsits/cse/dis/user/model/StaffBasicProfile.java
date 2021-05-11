@@ -2,12 +2,7 @@ package sgsits.cse.dis.user.model;
 
 import java.sql.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -25,10 +20,12 @@ public class StaffBasicProfile {
     @Column(name = "id", nullable = false, unique = true)
     private String id;
 
-	@Column(name = "created_by")
+	@Column(name = "created_by", nullable = false)
 	private String createdBy;
 
-	@Column(name = "created_date")
+
+
+	@Column(name = "created_date", nullable = false)
 	private String createdDate;
 
 	@Column(name = "modified_by")
@@ -89,7 +86,7 @@ public class StaffBasicProfile {
 	private Long alternateMobileNo;
 	
 	@Column(name = "joining_date")
-	private String joiningDate;
+	private Date joiningDate;
 	
 	@Column(name = "area_of_specialization")
 	private String areaOfSpecialization;
@@ -102,8 +99,9 @@ public class StaffBasicProfile {
 
 
 
-	public StaffBasicProfile(String createdBy, String createdDate, String employeeId, String name, String currentDesignation, String classs,
-							 String type, String email, Date dob, Long mobileNo, String joiningDate) {
+	public StaffBasicProfile(String createdBy, String createdDate, String employeeId,
+							 String name, String currentDesignation, String classs,
+							 String type, String email, Date dob, Long mobileNo, Date joiningDate) {
 		super();
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
@@ -295,11 +293,11 @@ public class StaffBasicProfile {
 		this.alternateMobileNo = alternateMobileNo;
 	}
 
-	public String getJoiningDate() {
+	public Date getJoiningDate() {
 		return joiningDate;
 	}
 
-	public void setJoiningDate(String joiningDate) {
+	public void setJoiningDate(Date joiningDate) {
 		this.joiningDate = joiningDate;
 	}
 
@@ -309,6 +307,46 @@ public class StaffBasicProfile {
 
 	public void setAreaOfSpecialization(String areaOfSpecialization) {
 		this.areaOfSpecialization = areaOfSpecialization;
+	}
+
+	@Override
+	public String toString() {
+		return "StaffBasicProfile{" +
+				"id='" + id + '\'' +
+				", createdBy='" + createdBy + '\'' +
+				", createdDate='" + createdDate + '\'' +
+				", modifiedBy='" + modifiedBy + '\'' +
+				", modifiedDate='" + modifiedDate + '\'' +
+				", userId='" + userId + '\'' +
+				", employeeId='" + employeeId + '\'' +
+				", name='" + name + '\'' +
+				", nameAcronym='" + nameAcronym + '\'' +
+				", currentDesignation='" + currentDesignation + '\'' +
+				", classs='" + classs + '\'' +
+				", type='" + type + '\'' +
+				", email='" + email + '\'' +
+				", dob=" + dob +
+				", panNumber='" + panNumber + '\'' +
+				", aadharNumber='" + aadharNumber + '\'' +
+				", bloodGroup='" + bloodGroup + '\'' +
+				", gender='" + gender + '\'' +
+				", motherName='" + motherName + '\'' +
+				", fatherName='" + fatherName + '\'' +
+				", mobileNo=" + mobileNo +
+				", alternateMobileNo=" + alternateMobileNo +
+				", joiningDate='" + joiningDate + '\'' +
+				", areaOfSpecialization='" + areaOfSpecialization + '\'' +
+				'}';
+	}
+
+	@PreUpdate
+	public void logUserUpdateAttempt() {
+		System.out.println("Pre Update");
+	}
+
+	@PostUpdate
+	public void logUserUpdate() {
+		System.out.println("Post update");
 	}
 	
 }

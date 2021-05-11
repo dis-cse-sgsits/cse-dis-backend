@@ -25,7 +25,7 @@ public interface StaffBasicProfileRepository extends JpaRepository<StaffBasicPro
 	Optional<StaffBasicProfile> findByMobileNo(Long mobileNo);
 	StaffBasicProfile findNameByUserId(String userId);
 	List<StaffBasicProfile> findByNameContainingIgnoreCase(String name);
-	
+	Optional<StaffBasicProfile> findByName(String name);
 	@Query(value = "UPDATE staff_basic_profile SET user_id =?1 WHERE email = ?2", nativeQuery = true)
 	@Modifying
 	void updateUserIdByEmailId(String userId, String email);
@@ -33,9 +33,19 @@ public interface StaffBasicProfileRepository extends JpaRepository<StaffBasicPro
 	@Query(value = "SELECT staff_basic_profile.name  FROM staff_basic_profile, user where staff_basic_profile.user_id=user.id and user.username=?1", nativeQuery = true)
 	String findNameByUsername(String username);
 
+	@Query(value = "SELECT staff_basic_profile.name  FROM staff_basic_profile", nativeQuery = true)
+	List<String> findNames();
+
 	@Query(value = "SELECT user.username, staff_basic_profile.name  FROM staff_basic_profile, user where staff_basic_profile.user_id=user.id", nativeQuery = true)
 	List<Object[]> findAllUserIdAndUsername();
 
 	@Query(value = "SELECT user.username, staff_basic_profile.email  FROM staff_basic_profile, user where staff_basic_profile.user_id=user.id", nativeQuery = true)
 	List<Object[]> findAllUserIdAndEmails();
+
+	boolean existsByEmail(String email);
+
+	boolean existsByEmployeeId(String email);
+
+
+
 }
