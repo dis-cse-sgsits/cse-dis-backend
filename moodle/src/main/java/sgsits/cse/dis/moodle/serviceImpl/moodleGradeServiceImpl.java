@@ -185,7 +185,7 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 																currUser.getLastname(),
 																courseDetails.get(0).getShortname(),
 																courseDetails.get(0).getFullname(),
-																gradeItem.getItemname(),
+																(gradeItem.getItemname() == null) ? "course total" : gradeItem.getItemname(),
 																finalGrade,
 																totalGrade,
 																percentage,
