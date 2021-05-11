@@ -113,7 +113,7 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 			}
 		
 			
-			gradeItems.add(new GradeItemsData(gradeItem.getId(), gradeItem.getCourseid(), gradeItem.getItemname(),gradeItem.getItemtype(),
+			gradeItems.add(new GradeItemsData(gradeItem.getId(), gradeItem.getCourseid(), (gradeItem.getItemname() == null) ? "course total" : gradeItem.getItemname(),gradeItem.getItemtype(),
 					gradeItem.getItemmodule(),
 					gradeItem.getIteminstance(),
 					tagId,
