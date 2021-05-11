@@ -301,7 +301,7 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 			throw new  NotFoundException("Invalid User Type");
 		for(CoursesOfStudentData course : courseList)
 		{
-			Optional<MoodleGradeItems> item = moodleGradeItemsRepo.findByCourseidAndItemname(course.getCourseId(), "course total");
+			Optional<MoodleGradeItems> item = moodleGradeItemsRepo.findByCourseidAndItemname(course.getCourseId(), null);
 			if(!item.isPresent())
 				ans.add(new StudentOverviewReport(course.getCourseName(), 0.0, course.getCourseId(),0.0));
 			else
