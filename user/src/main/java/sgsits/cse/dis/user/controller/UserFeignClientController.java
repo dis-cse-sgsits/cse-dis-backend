@@ -1,10 +1,13 @@
 package sgsits.cse.dis.user.controller;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +27,10 @@ import sgsits.cse.dis.user.dtos.FacultyDataDto;
 import sgsits.cse.dis.user.message.request.SignUpForm;
 import sgsits.cse.dis.user.message.response.ActiveStaffListResponse;
 import sgsits.cse.dis.user.message.response.FacultyData;
+import sgsits.cse.dis.user.model.StudentProfile;
 import sgsits.cse.dis.user.repo.StaffBasicProfileRepository;
 import sgsits.cse.dis.user.service.StaffService;
+import sgsits.cse.dis.user.service.StudentService;
 import sgsits.cse.dis.user.service.UserServices;
 
 @Api(value = "User Feign Client Controller")
@@ -38,6 +43,9 @@ public class UserFeignClientController {
     private final StaffService staffService;
 
     private final StaffBasicProfileRepository staffBasicProfileRepository;
+
+    @Autowired
+    private StudentService studentService;
 
     public UserFeignClientController(final UserServices userServicesImpl, final StaffService staffService,
             final StaffBasicProfileRepository staffBasicProfileRepository) {
@@ -128,6 +136,12 @@ public class UserFeignClientController {
 
         staffBasicProfileRepository.updateUserIdByEmailId(userId, email);
         return new ResponseEntity<>(userId + " assigned to user with email " + email, HttpStatus.OK);
+    }
+
+//    @ApiOperation(value = "Fetch ME students by year", response = StudentProfile.class, httpMethod = "GET", produces = "application/json")
+    @GetMapping(value = "/fetchMEStudentsByYear/{year}")
+    public List<StudentProfile> fetchMEStudentsByYear(@PathVariable("year") int year) {
+        return new ArrayList<StudentProfile>(studentService.fetchMEStudentsByYear(year));
     }
 
 }
