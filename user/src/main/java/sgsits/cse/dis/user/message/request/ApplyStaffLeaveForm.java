@@ -1,40 +1,26 @@
-package sgsits.cse.dis.user.model;
+package sgsits.cse.dis.user.message.request;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
 
-
-@Entity
-public class StaffLeave {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false,unique = true)
-    private Long leaveId;
-
-    private String createdDate;
-    
-    private String modifiedBy;
-    
-    private String modifiedDate;
-    
-    @Column(nullable = false)
-    private String appliedBy;
+public class ApplyStaffLeaveForm {
     
     private String details;
-    
-    @Column(nullable = false)
+     
+    @NotBlank(message = "From date cannot be blank")
     private String fromDate;
-    
-    @Column(nullable = false)
-    private String toDate;
 
-    private String fromDuration;
+    @NotBlank(message = "To date cannot be blank")
+    private String toDate;
     
+    private Long leaveId;
+    
+    private String fromDuration;
+
     private String toDuration;
+
+    private boolean considerHolidays;
+
+    private double noOfDays;
     
     private String remarks;
     
@@ -44,49 +30,13 @@ public class StaffLeave {
     
     private String typeOfLeave;
 
+    private String appliedBy;
+
     private String userId;
-
-    private boolean considerHolidays;
-
-    private double noOfDays;
 
     private String prefix;
 
     private String suffix;
-    
-    public StaffLeave(){}
-
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(String createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getModifiedBy() {
-        return modifiedBy;
-    }
-
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
-    public String getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(String modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
-    public String getAppliedBy() {
-        return appliedBy;
-    }
-
-    public void setAppliedBy(String appliedBy) {
-        this.appliedBy = appliedBy;
-    }
 
     public String getDetails() {
         return details;
@@ -102,6 +52,14 @@ public class StaffLeave {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getStauts() {
+        return status;
+    }
+
+    public void setStauts(String stauts) {
+        this.status = stauts;
     }
 
     public String getSubject() {
@@ -120,20 +78,20 @@ public class StaffLeave {
         this.typeOfLeave = typeOfLeave;
     }
 
-    public Long getLeaveId() {
-        return leaveId;
+    public String getAppliedBy() {
+        return appliedBy;
     }
 
-    public void setLeaveId(Long leaveId) {
-        this.leaveId = leaveId;
+    public void setAppliedBy(String appliedBy) {
+        this.appliedBy = appliedBy;
     }
 
-    public String getStatus() {
-        return status;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getFromDate() {
@@ -150,14 +108,6 @@ public class StaffLeave {
 
     public void setToDate(String toDate) {
         this.toDate = toDate;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public double getNoOfDays() {
@@ -192,6 +142,14 @@ public class StaffLeave {
         this.considerHolidays = considerHolidays;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getPrefix() {
         return prefix;
     }
@@ -206,5 +164,13 @@ public class StaffLeave {
 
     public void setSuffix(String suffix) {
         this.suffix = suffix;
+    }
+
+    public Long getLeaveId() {
+        return leaveId;
+    }
+
+    public void setLeaveId(Long leaveId) {
+        this.leaveId = leaveId;
     }
 }
