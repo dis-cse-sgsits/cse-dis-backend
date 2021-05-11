@@ -1,6 +1,7 @@
 package sgsits.cse.dis.user.repo;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface StudentRepository extends JpaRepository<StudentProfile, Long>{
 	boolean existsByEnrollmentIdAndMobileNoAndDob(String username, long l, Date dob);
 	Optional<StudentProfile> findByEnrollmentIdAndMobileNoAndDob(String username, long mobileNo, Date dob);
 	Optional<StudentProfile> findByMobileNo(long mobileNo);
+	List<StudentProfile> findByCourseId(String course);
 }

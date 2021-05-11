@@ -30,6 +30,7 @@ public interface StudentService {
 
     List<UgProjectDetailDto> geUgProjectDetails(final String userId);
 
+    List<StudentProfile> fetchMEStudentsByYear(int year);
 
     ResponseEntity<ResponseMessage> uploadEnrollmentTemplate( EnrollmentTemplate schemeFileForm, MultipartFile file );
 
