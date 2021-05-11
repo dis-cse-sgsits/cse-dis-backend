@@ -67,7 +67,7 @@ public class moodleQuizServiceImpl implements moodleQuizService, Serializable {
 			List<MoodleQuizAttempts> studDetailsOfQuiz = moodleQuizAttemptsRepo.findAllByQuizAndUseridOrderByAttemptDesc(quiz.getId(), userId);
 			
 			if (!studDetailsOfQuiz.isEmpty()) {
-				String dateOfCreation = getDateFromUnixDate(quiz.getTimecreated());
+				String dateOfCreation = getDateFromUnixDate(quiz.getTimemodified());
 				
 				allQuizzes.add(new QuizData(courseId,
 						course.get(0).getShortname(),
