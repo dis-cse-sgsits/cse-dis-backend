@@ -46,12 +46,19 @@ public class UserFeignClientController {
         this.staffService = staffService;
         this.staffBasicProfileRepository = staffBasicProfileRepository;
     }
+    
+    @ApiOperation(value = "get Username for given ID", response = String.class, httpMethod = "GET", produces = "application/json")
+    @RequestMapping(value = "/getByUserName/{userid}", method = RequestMethod.GET)
+    public String getByUserName(@PathVariable("userid") String userid) {
+        return userServicesImpl.getByUserName(userid);
+    }
 
     @ApiOperation(value = "get ID for given username", response = String.class, httpMethod = "GET", produces = "application/json")
     @RequestMapping(value = "/getUserId", method = RequestMethod.GET)
     public String getUserId(@RequestParam("username") String username) {
         return userServicesImpl.getUserId(username);
     }
+   
 
     @ApiOperation(value = "Verify username", response = boolean.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(value = "/existsByUsername/{username}")
