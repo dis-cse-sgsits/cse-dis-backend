@@ -1,21 +1,28 @@
 package sgsits.cse.dis.user.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Table;
 
 @Entity
 @IdClass(StaffLifelongLeaveId.class)
+@Table(name = "staff_lifelong_leave")
 public class StaffLifelongLeave {
     
     @Id
+    @Column(name = "user_id")
     private String userId;
 
     @Id
+    @Column(name = "leave_name")
     private String leaveName;
 
+    @Column(name = "leaves_applied")
     private double leavesApplied;
 
+    @Column(name = "leaves_left")
     private double leavesLeft;
 
     public String getUserId() {

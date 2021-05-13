@@ -50,7 +50,7 @@ public class MEScholarshipController {
             return new ResponseEntity<ResponseMessage>(new ResponseMessage("Sorry, you are not allowed to use this service."), HttpStatus.BAD_REQUEST);
     }
 
-    @ApiOperation(value = "Fetch all ME students without scholarship", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "Fetch all ME students with scholarship", response = MEScholarshipStudents.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(path = RestAPI.FETCH_ME_STUDENTS_WITH_SCHOLARSHIP, produces = "application/json")
     public ResponseEntity<?> fetchMEStudentsWithScholarship(HttpServletRequest request, @PathVariable("year") int year)
     {

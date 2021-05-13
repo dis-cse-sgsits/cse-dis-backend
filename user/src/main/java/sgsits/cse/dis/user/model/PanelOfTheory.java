@@ -3,26 +3,34 @@ package sgsits.cse.dis.user.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "panel_of_theory")
 @IdClass(PanelOfTheoryId.class)
 public class PanelOfTheory {
     
     @Id
+    @Column(name = "subject_code")
     private String subjectCode;
 
     @Id
+    @Column(name = "year")
     private String year;
 
     @ElementCollection
+    @Column(name = "faculties")
     private List<String> faculties=new ArrayList<String>();
 
+    @Column(name = "course")
     private String course;
 
+    @Column(name = "subject_name")
     private String subjectName;
 
     public String getSubjectCode() {

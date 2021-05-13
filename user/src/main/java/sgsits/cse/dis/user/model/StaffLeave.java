@@ -5,53 +5,70 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "staff_leave")
 public class StaffLeave {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false,unique = true, name = "leave_id")
     private Long leaveId;
 
+    @Column(name = "created_date")
     private String createdDate;
     
+    @Column(name = "modified_by")
     private String modifiedBy;
     
+    @Column(name = "modified_date")
     private String modifiedDate;
     
-    @Column(nullable = false)
+    @Column(nullable = false, name="applied_by")
     private String appliedBy;
     
+    @Column(name = "details")
     private String details;
     
-    @Column(nullable = false)
+    @Column(nullable = false, name="from_date")
     private String fromDate;
     
-    @Column(nullable = false)
+    @Column(nullable = false, name="to_date")
     private String toDate;
 
+    @Column(name = "from_duration")
     private String fromDuration;
     
+    @Column(name = "to_duration")
     private String toDuration;
     
+    @Column(name = "remarks")
     private String remarks;
     
+    @Column(name = "status")
     private String status;
     
+    @Column(name = "subject")
     private String subject;
     
+    @Column(name = "type_of_leave")
     private String typeOfLeave;
 
+    @Column(name = "user_id")
     private String userId;
 
+    @Column(name = "consider_holidays")
     private boolean considerHolidays;
 
+    @Column(name = "no_of_days")
     private double noOfDays;
 
+    @Column(name = "prefix")
     private String prefix;
 
+    @Column(name = "suffix")
     private String suffix;
     
     public StaffLeave(){}

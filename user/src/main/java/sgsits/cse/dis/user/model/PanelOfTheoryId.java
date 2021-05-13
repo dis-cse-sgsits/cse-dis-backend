@@ -2,10 +2,14 @@ package sgsits.cse.dis.user.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+
 public class PanelOfTheoryId implements Serializable {
     
+    @Column(name = "subject_code")
     private String subjectCode;
 
+    @Column(name = "year")
     private String year;
 
     public String getSubjectCode() {

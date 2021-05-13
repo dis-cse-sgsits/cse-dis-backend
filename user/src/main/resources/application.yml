@@ -1,9 +1,9 @@
 spring:
   datasource:
-    # url: jdbc:mysql://localhost:3306/user
-    url: jdbc:mysql://18.219.152.230/user
+    url: jdbc:mysql://localhost:3306/user
+    #url: jdbc:mysql://18.219.152.230/user
     username: root
-    password: root
+    password: Braves@123
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     generate-ddl: true
@@ -27,8 +27,8 @@ eureka:
   client:
     service-url:
       default-zone: http://localhost:8761/eureka
-    register-with-eureka: false
-    fetch-registry: false
+    register-with-eureka: true
+    fetch-registry: true
 
 dis:
   app:
@@ -47,9 +47,5 @@ dis:
         file-size-threshold: 2000KB
         max-file-size: 15MB
         max-request-size: 25MB
-<<<<<<< HEAD
-=======
-
 SchedulingJob:
   enrollment-update-delay: PT5S
->>>>>>> release-v2

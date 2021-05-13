@@ -3,22 +3,29 @@ package sgsits.cse.dis.user.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "staff_leave_types")
 public class StaffLeaveTypes {
     
     @Id
+    @Column(name = "leave_name")
     private String leaveName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "leave_type")
     private String leaveType;
 
+    @Column(name = "from_date")
     private String fromDate;
     
+    @Column(name = "to_date")
     private String toDate;
     
+    @Column(name = "no_of_leaves")
     private int noOfLeaves;
 
+    @Column(name = "description")
     private String description;
 
     public String getLeaveName() {
