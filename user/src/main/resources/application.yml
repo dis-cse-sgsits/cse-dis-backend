@@ -3,9 +3,10 @@ spring:
     url: jdbc:mysql://localhost:3306/user
     #url: jdbc:mysql://18.219.152.230/user
     username: root
-    password: Braves@123
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
     generate-ddl: true
     show-sql: true
     properties:
