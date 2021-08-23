@@ -16,7 +16,7 @@ public class MoodleAttendanceTeacher {
 	@Column(name="id",nullable = false, unique = true)
 	private Long id;	
 	@Column(name="subjectid",nullable = false)
-	private Long subjectid;
+	private String subjectid;
 	@Column(name="takenby",nullable = false)
 	private Long takenby;
 	@Column(name="date_attendance",nullable=false)
@@ -31,7 +31,7 @@ public class MoodleAttendanceTeacher {
 	public MoodleAttendanceTeacher() {
 		super();
 	}
-	public MoodleAttendanceTeacher(Long subjectid, Long takenby, String date_attendance, Long slot) {
+	public MoodleAttendanceTeacher(String subjectid, Long takenby, String date_attendance, Long slot) {
 		super();
 		this.subjectid = subjectid;
 		this.takenby = takenby;
@@ -44,10 +44,10 @@ public class MoodleAttendanceTeacher {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getSubjectid() {
+	public String getSubjectid() {
 		return subjectid;
 	}
-	public void setSubjectid(Long subjectid) {
+	public void setSubjectid(String subjectid) {
 		this.subjectid = subjectid;
 	}
 	public Long getTakenby() {

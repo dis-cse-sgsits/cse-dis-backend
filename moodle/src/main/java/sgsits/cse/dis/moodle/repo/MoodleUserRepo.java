@@ -17,6 +17,8 @@ public interface MoodleUserRepo extends JpaRepository<MoodleUser, Long> {
 	@Query(value="select id from mdl_user where username=?1",nativeQuery=true)
 	public Long findById(String username);
 	
+	MoodleUser findByFirstname(String firstname);
+	
 
 	public MoodleUser findAllById(Long Id);
 

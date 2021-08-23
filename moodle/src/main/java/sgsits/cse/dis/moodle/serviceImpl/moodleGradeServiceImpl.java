@@ -2,7 +2,7 @@ package sgsits.cse.dis.moodle.serviceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -94,11 +94,12 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		Long courseIdL = Long.parseLong(courseId);
 		gradeItemsDetailed = moodleGradeItemsRepo.findByCourseid(courseIdL);
 		for (MoodleGradeItems gradeItem : gradeItemsDetailed) {
-			List<MoodleGradeGrades> gradeGradesDetails = moodleGradeGradesRepo.findByItemid(gradeItem.getId());
+			//List<MoodleGradeGrades> gradeGradesDetails = moodleGradeGradesRepo.findByItemid(gradeItem.getId());
 			
 			Long tagId = 0L;
 			String tagName = null;
 			String tagRawName = null;
+			
 			Optional<MoodleCourseModules> courseModules = moodleCourseModulesRepo.findAllByInstanceAndCourse(gradeItem.getIteminstance(), courseIdL);
 			if (courseModules.isPresent()) {
 				Optional<MoodleTagInstance> tagInstance = moodleTagInstanceRepo.findAllByItemid(courseModules.get().getId());
@@ -111,7 +112,7 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 					}
 				}
 			}
-		
+			
 			
 			gradeItems.add(new GradeItemsData(gradeItem.getId(), gradeItem.getCourseid(), (gradeItem.getItemname() == null) ? "course total" : gradeItem.getItemname(),gradeItem.getItemtype(),
 					gradeItem.getItemmodule(),
@@ -125,8 +126,9 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		return gradeItems;
 	}
 	
+
 	@Override
-	public List<List<GraderReportData>> getGraderReport(Long courseIdL, Long itemIdL, String userType) throws NotFoundException {
+	public List<List<GraderReportData>> getGraderReport(Long courseIdL, Long itemIdL, String userType) throws NotFoundException,NullPointerException {
 		
 		List<List<GraderReportData>> graderReport = new ArrayList<List<GraderReportData>>();
 
@@ -147,12 +149,14 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		
 		for (MoodleGradeItems gradeItem : gradeItemsDetailed) {
 			List<MoodleGradeGrades> gradeGradesDetails = moodleGradeGradesRepo.findByItemid(gradeItem.getId());
+			try {
 			
 			Long tagId = 0L;
 			String tagName = null;
 			String tagRawName = null;
 			Optional<MoodleCourseModules> courseModules = moodleCourseModulesRepo.findAllByInstanceAndCourse(gradeItem.getIteminstance(), courseIdL);
 			if (courseModules.isPresent()) {
+			//  if(gradeItem.getItemmodule().equalsIgnoreCase("assign") || gradeItem.getItemmodule().equalsIgnoreCase("quiz")) {
 				Optional<MoodleTagInstance> tagInstance = moodleTagInstanceRepo.findAllByItemid(courseModules.get().getId());
 				if (tagInstance.isPresent()) {
 					Optional<MoodleTag> tagDetails = moodleTagRepo.findAllById(tagInstance.get().getTagid());
@@ -183,12 +187,12 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 				graderReport.get(i).add(new GraderReportData(currUser.getId(),
 																currUser.getFirstname(),
 																currUser.getLastname(),
-																courseDetails.get(0).getShortname(),
+																courseDetails.get(0).getIdnumber(),
 																courseDetails.get(0).getFullname(),
 																(gradeItem.getItemname() == null) ? "course total" : gradeItem.getItemname(),
-																finalGrade,
+																(gradeGradesDetails.get(i).getFinalgrade() == null) ? 0 : finalGrade,
 																totalGrade,
-																percentage,
+																(percentage==null)?0:percentage,
 																gradeItem.getItemtype(),
 																gradeItem.getItemmodule(),
 																gradeItem.getIteminstance(),
@@ -198,11 +202,15 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		    }
 			
 			
-		}
+			}
+	//	}
 		
+		catch(NullPointerException e) {
+			throw new NullPointerException("nothing to display");
+		}
+		}
 		return graderReport;
 	}
-	
 	@Override
 	public List<List<GraderReportData>> getUserReport(Long courseIdL, Long userIdL, String userType) throws NotFoundException {
 		List<List<GraderReportData>> userReport = new ArrayList<List<GraderReportData>>();
@@ -244,7 +252,7 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 			{
 				Optional<MoodleCourse> course = moodleCourseRepo.findById(en.get().getCourseid());
 				if(course.isPresent())
-					courses.add(new Course(course.get().getId(),course.get().getFullname(),course.get().getShortname()));
+					courses.add(new Course(course.get().getId(),course.get().getFullname(),course.get().getIdnumber()));
 			}
 		}
 		return courses;
@@ -335,6 +343,14 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 		if(user.isEmpty())
 			throw new NotFoundException("username does not exist");
 		return user.get(0).getId();
+	}
+	
+	@Override
+	public String getStudentsFirstName(String firstname) throws NotFoundException {
+		MoodleUser user = moodleUserRepo.findByFirstname(firstname);
+		if(user.getFirstname()==null)
+			throw new NotFoundException("username does not exist");
+		return user.getFirstname() + user.getLastname();
 	}
 
 	@Override

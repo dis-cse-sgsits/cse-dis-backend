@@ -70,12 +70,22 @@ public class moodleQuizServiceImpl implements moodleQuizService, Serializable {
 				String dateOfCreation = getDateFromUnixDate(quiz.getTimemodified());
 				
 				allQuizzes.add(new QuizData(courseId,
-						course.get(0).getShortname(),
+						course.get(0).getIdnumber(),
 						course.get(0).getFullname(),
 						quiz.getId(),
 						quiz.getName(),
-						dateOfCreation,
+						"attempted",
 						studDetailsOfQuiz.get(0).getSumgrades(),
+						quiz.getSumgrades()));
+			}else {
+				String dateOfCreation = getDateFromUnixDate(quiz.getTimemodified());
+				allQuizzes.add(new QuizData(courseId,
+						course.get(0).getIdnumber(),
+						course.get(0).getFullname(),
+						quiz.getId(),
+						quiz.getName(),
+						"Not Attempted",
+						0D,
 						quiz.getSumgrades()));
 			}
 		}

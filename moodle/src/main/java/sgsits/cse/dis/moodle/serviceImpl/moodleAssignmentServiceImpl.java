@@ -110,7 +110,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 		for (MoodleEnrollement enroll : enrollList) {
 			List<MoodleCourse> course = moodleCourseRepo.findAllById(enroll.getCourseid());
 			
-			allCoursesOfStudent.add(new CoursesOfStudentData(userId, course.get(0).getShortname(), course.get(0).getFullname(),course.get(0).getId()));
+			allCoursesOfStudent.add(new CoursesOfStudentData(userId, course.get(0).getIdnumber(), course.get(0).getFullname(),course.get(0).getId()));
 		}
 		
 		return allCoursesOfStudent;
@@ -165,10 +165,10 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 
 			
 			Boolean submitted = (assignSubmission.get(0).getStatus().equals("new")) ? false : true;
-			String dateOfSubmission = (submitted == false) ? null : getDateFromUnixDate(assignSubmission.get(0).getTimemodified());
+			String dateOfSubmission = (submitted == false) ? "Not submitted" : getDateFromUnixDate(assignSubmission.get(0).getTimemodified());
 			
 			studentSubjectReport.add(new StudentSubjectReportData(courseId,
-																	courseDetails.get(0).getShortname(),
+																	courseDetails.get(0).getIdnumber(),
 																	courseDetails.get(0).getFullname(),
 																	teacher.get(0).getId(),
 																	teacher.get(0).getFirstname(),
@@ -178,7 +178,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 																	submitted,
 																	dateOfCreation,
 																	dateOfSubmission,
-																	gradeObtained,
+																	(gradeObtained ==null || gradeObtained == -1D)?0D:gradeObtained,
 																	assignment.getGrade(),
 																	grader.getId(),
 																	grader.getFirstname(),
@@ -212,7 +212,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 			if(curr.isPresent())
 			{
 				Optional<MoodleRole> role = getRoleOfUser(curr.get().getId(), courseId);
-				if(role.get().getShortname().equals("editingteacher"))
+				if(role.get().getShortname().equals("editingteacher")||role.get().getShortname().equals("teacher")||role.get().getShortname().equals("coursecreator"))
 					studs.add(new Students(curr.get().getId(), curr.get().getUsername(), curr.get().getFirstname(), curr.get().getLastname()));				
 			}
 		}
@@ -250,7 +250,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 		List<CoursesOfStudentData> coursesOfStudent = getAllCoursesOfStudent(userId,userType);
 		
 		for (CoursesOfStudentData courseElement : coursesOfStudent) {
-			MoodleCourse course = moodleCourseRepo.findAllByShortname(courseElement.getCourseCode());
+			MoodleCourse course = moodleCourseRepo.findByIdnumber(courseElement.getCourseCode());
 			tempPendingAssigns = getStudentSubjectReport(userId, course.getId(), userType);
 			
 			for (StudentSubjectReportData tempElement : tempPendingAssigns) {
@@ -359,9 +359,9 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 				if(!grade.isPresent())
 				{
 					toAdd = new TeacherReportData(
-							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),null,null,
+							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),null,0D,
 							getDateFromUnixDate(sub.getTimecreated()),
-							(sub.getStatus().equals("new")?null:getDateFromUnixDate(sub.getTimemodified())),
+							(sub.getStatus().equals("new")?"Not Submitted":"submitted but not graded"),
 							assn.getDueDate(),(sub.getStatus().equals("new")?false:true), tagId, tagName, tagRawName);
 				}
 				else
@@ -370,8 +370,8 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 					String graderName = grader.getFirstname() + " " + grader.getLastname();
 					toAdd = new TeacherReportData(
 							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),
-							graderName,grade.get().getGrade(),getDateFromUnixDate(sub.getTimecreated()),
-							(sub.getStatus().equals("new")?null:getDateFromUnixDate(sub.getTimemodified())),
+							graderName,(grade.get().getGrade()==null || grade.get().getGrade()==-1D)?0D:grade.get().getGrade(),getDateFromUnixDate(sub.getTimecreated()),
+							(sub.getStatus().equals("new")?"Not submitted":"submitted"),
 							assn.getDueDate(),(sub.getStatus().equals("new")?false:true), tagId, tagName, tagRawName);
 				}
 				currans.add(toAdd);

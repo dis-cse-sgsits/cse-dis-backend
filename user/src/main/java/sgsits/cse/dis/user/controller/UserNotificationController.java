@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * The type User notification controller.
  */
+@CrossOrigin(origins = "*")
 @Api(value = "User Notification Controller")
 @RestController
 @Controller

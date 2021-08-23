@@ -33,4 +33,5 @@ public interface moodleGradeService {
 	Long getStudentsUserId(String username) throws NotFoundException;
 
 	List<TagData> getAllTagsOfCourse(Long courseId, Long userId, String userType) throws NotFoundException;
+	String getStudentsFirstName(String firstname) throws NotFoundException;
 }

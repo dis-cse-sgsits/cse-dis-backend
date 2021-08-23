@@ -1,6 +1,6 @@
 package sgsits.cse.dis.moodle.response;
 
-public class TotalStudentAttendanceData {
+public class MoodleCourseCategoriesResponse {
 	private Long id;
 	private String username;
 	private String firstname;
@@ -9,11 +9,9 @@ public class TotalStudentAttendanceData {
 	private Long attendance;
 	private Long slot;
 	private Double percentage;
-	private String coursecode;
-	private Long courseid;
-	
-	public TotalStudentAttendanceData(Long id, String username, String firstname, String lastname, String coursename,
-			Long attendance, Long slot, Double percentage, String coursecode, Long courseid) {
+	public MoodleCourseCategoriesResponse(Long id, String username, String firstname, String lastname,
+			String coursename, Long attendance, Long slot, Double percentage, String coursecode,
+			Double percentagedifference, Double percentageassigned) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -24,13 +22,24 @@ public class TotalStudentAttendanceData {
 		this.slot = slot;
 		this.percentage = percentage;
 		this.coursecode = coursecode;
-		this.courseid = courseid;
+		this.percentagedifference = percentagedifference;
+		this.percentageassigned = percentageassigned;
 	}
-	public Long getCourseid() {
-		return courseid;
+	private String coursecode;
+	private Double percentagedifference;
+	public Double getPercentagedifference() {
+		return percentagedifference;
 	}
-	public void setCourseid(Long courseid) {
-		this.courseid = courseid;
+	public void setPercentagedifference(Double percentagedifference) {
+		this.percentagedifference = percentagedifference;
+	}
+	private Double percentageassigned;
+	
+	public Double getPercentageassigned() {
+		return percentageassigned;
+	}
+	public void setPercentageassigned(Double percentageassigned) {
+		this.percentageassigned = percentageassigned;
 	}
 	public String getCoursecode() {
 		return coursecode;
@@ -86,23 +95,10 @@ public class TotalStudentAttendanceData {
 	public void setPercentage(Double percentage) {
 		this.percentage = percentage;
 	}
+	public MoodleCourseCategoriesResponse() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	
-	public TotalStudentAttendanceData(Long id, String username, String firstname, String lastname, String coursename,
-			Long attendance, Long slot, Double percentage,String coursecode) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.coursename = coursename;
-		this.attendance = attendance;
-		this.slot = slot;
-		this.percentage = percentage;
-		this.coursecode=coursecode;
-		
-	}
-	public TotalStudentAttendanceData() {
-		super();
-	}
 	
 }

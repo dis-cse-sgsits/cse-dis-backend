@@ -10,4 +10,5 @@ import sgsits.cse.dis.moodle.model.MoodleCourseModules;
 @Repository
 public interface MoodleCourseModulesRepo extends JpaRepository<MoodleCourseModules, Long> {
 	Optional<MoodleCourseModules> findAllByInstanceAndCourse(Long instanceId, Long courseId);
+	
 }

@@ -17,7 +17,7 @@ public class MoodleAttendanceTeacherBulk {
 	@Column(name="id",nullable = false, unique = true)
 	private Long id;	
 	@Column(name="subjectid",nullable = false)
-	private Long subjectid;
+	private String subjectid;
 	@Column(name="teacherid",nullable = false)
 	private Long teacherid;
 	@Column(name="date_attendance",nullable=false)
@@ -31,7 +31,7 @@ public class MoodleAttendanceTeacherBulk {
 	public MoodleAttendanceTeacherBulk() {
 		super();
 	}
-	public MoodleAttendanceTeacherBulk(Long subjectid, Long teacherid, String date_attendance, Long slot,
+	public MoodleAttendanceTeacherBulk(String subjectid, Long teacherid, String date_attendance, Long slot,
 			String uploadtime) {
 		super();
 		this.subjectid = subjectid;
@@ -46,10 +46,10 @@ public class MoodleAttendanceTeacherBulk {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getSubjectid() {
+	public String getSubjectid() {
 		return subjectid;
 	}
-	public void setSubjectid(Long subjectid) {
+	public void setSubjectid(String subjectid) {
 		this.subjectid = subjectid;
 	}
 	public Long getTeacherid() {

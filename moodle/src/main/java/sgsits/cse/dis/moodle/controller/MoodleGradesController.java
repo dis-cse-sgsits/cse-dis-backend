@@ -42,6 +42,12 @@ public class MoodleGradesController {
 		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
 		return new ResponseEntity<Long>(moodleGradeServiceImpl.getStudentsUserId(username),HttpStatus.OK);
 	}
+	@ApiOperation(value = "Get Student's user id", response = Long.class, httpMethod = "GET", produces = "application/json")
+	@GetMapping(value = GradesURLConstants.GET_STUDENTS_FIRST_NAME, produces = "application/json")
+	public ResponseEntity<String> getStudentsFirstName(@PathVariable("firstname") String firstname, HttpServletRequest request) throws NotFoundException {
+		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
+		return new ResponseEntity<String>(moodleGradeServiceImpl.getStudentsFirstName(firstname),HttpStatus.OK);
+	}
 	
 	// This API return's the moodle's database userid of a DIS userid. This is a general purpose API not related to only grades.
 	@ApiOperation(value = "Get Moodle's user id", response = Long.class, httpMethod = "GET", produces = "application/json")
