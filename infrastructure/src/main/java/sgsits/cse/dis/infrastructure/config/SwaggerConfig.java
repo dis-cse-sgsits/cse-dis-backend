@@ -31,7 +31,7 @@ public class SwaggerConfig {
                 "A service of Departmetal Information System ",              
                 "1.0",   
                 "Terms of Services Url",  
-                new Contact("Divyani Garg", "url", "divyanigarg09@gmail.com"),  
+                "Divyani Garg",
                 "License Information",  
                 "License URL"
 
