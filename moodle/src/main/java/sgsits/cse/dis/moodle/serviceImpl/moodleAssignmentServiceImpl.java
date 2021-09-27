@@ -20,6 +20,8 @@ import sgsits.cse.dis.moodle.model.MoodleContext;
 import sgsits.cse.dis.moodle.model.MoodleCourse;
 import sgsits.cse.dis.moodle.model.MoodleCourseModules;
 import sgsits.cse.dis.moodle.model.MoodleEnrollement;
+import sgsits.cse.dis.moodle.model.MoodleGradeGrades;
+import sgsits.cse.dis.moodle.model.MoodleGradeItems;
 import sgsits.cse.dis.moodle.model.MoodleRole;
 import sgsits.cse.dis.moodle.model.MoodleRoleAssignments;
 import sgsits.cse.dis.moodle.model.MoodleTag;
@@ -33,6 +35,8 @@ import sgsits.cse.dis.moodle.repo.MoodleContextRepo;
 import sgsits.cse.dis.moodle.repo.MoodleCourseModulesRepo;
 import sgsits.cse.dis.moodle.repo.MoodleCourseRepo;
 import sgsits.cse.dis.moodle.repo.MoodleEnrollmentRepo;
+import sgsits.cse.dis.moodle.repo.MoodleGradeGradesRepo;
+import sgsits.cse.dis.moodle.repo.MoodleGradeItemsRepo;
 import sgsits.cse.dis.moodle.repo.MoodleRoleAssignmentsRepo;
 import sgsits.cse.dis.moodle.repo.MoodleRoleRepo;
 import sgsits.cse.dis.moodle.repo.MoodleTagInstanceRepo;
@@ -55,6 +59,10 @@ import sgsits.cse.dis.moodle.service.moodleGradeService;
 public class moodleAssignmentServiceImpl implements moodleAssignmentService, Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	@Autowired
+	private MoodleGradeGradesRepo moodleGradeGradesRepo;
+	@Autowired
+	private MoodleGradeItemsRepo moodleGradeItemsRepo;
 	@Autowired
 	private MoodleUserEnrollmentRepo moodleUserEnrollmentRepo;
 	@Autowired
@@ -150,6 +158,11 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 			
 			MoodleUser grader = new MoodleUser();
 			Double gradeObtained = 0D;
+			Optional<MoodleGradeItems> gradeItemsDetailed  ;
+			 Optional<MoodleGradeGrades> gradeGradesDetails ;
+			 gradeItemsDetailed  = moodleGradeItemsRepo.findByCourseidAndIteminstance(assignment.getCourse(), assignment.getId());
+			 gradeGradesDetails = moodleGradeGradesRepo.findByItemidAndUserid(gradeItemsDetailed.get().getId(),userId);
+			
 			
 			if (!assignGrades.isEmpty()) {
 				grader = moodleUserRepo.findAllById(assignGrades.get(0).getGrader());
@@ -178,7 +191,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 																	submitted,
 																	dateOfCreation,
 																	dateOfSubmission,
-																	(gradeObtained ==null || gradeObtained == -1D)?0D:gradeObtained,
+																	(gradeObtained ==null || gradeObtained == -1D)?0D:(gradeGradesDetails.get().getFinalgrade()==null)?gradeObtained:gradeGradesDetails.get().getFinalgrade(),
 																	assignment.getGrade(),
 																	grader.getId(),
 																	grader.getFirstname(),
@@ -329,12 +342,16 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 		for(Students stud : studIds)
 		{
 			List<TeacherReportData> currans = new ArrayList<TeacherReportData>();
+			
+			
 			for(Assignment assn : assns)
 			{
 				MoodleAssignSubmission sub = moodleAssignSubmissionRepo.findByUseridAndAssignmentOrderByAttemptnumberDesc(
 						stud.getId(), assn.getAssignId()).get().get(0);
 
-
+				Optional<MoodleGradeItems> gradeItemsDetailed  = moodleGradeItemsRepo.findByCourseidAndIteminstance(assn.getCourseId(), assn.getAssignId());
+				 Optional<MoodleGradeGrades> gradeGradesDetails = moodleGradeGradesRepo.findByItemidAndUserid(gradeItemsDetailed.get().getId(),sub.getUserid());
+					
 				Optional<MoodleAssignGrades> grade = moodleAssignGradesRepo.findByUseridAndAssignmentAndAttemptnumber(
 						sub.getUserid(),sub.getAssignment(),sub.getAttemptnumber());
 				
@@ -356,13 +373,16 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 				
 				
 				TeacherReportData toAdd;
-				if(!grade.isPresent())
-				{
+				if(!grade.isPresent()) {
+				 
+						
 					toAdd = new TeacherReportData(
-							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),null,0D,
+							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),null,(gradeGradesDetails.get().getFinalgrade()==null)?0D:gradeGradesDetails.get().getFinalgrade(),
 							getDateFromUnixDate(sub.getTimecreated()),
-							(sub.getStatus().equals("new")?"Not Submitted":"submitted but not graded"),
+							(sub.getStatus().equals("new")?"Not Submitted":(gradeGradesDetails.get().getFinalgrade()!=null)?"submitted and graded":"submitted but not graded"),
 							assn.getDueDate(),(sub.getStatus().equals("new")?false:true), tagId, tagName, tagRawName);
+					
+				
 				}
 				else
 				{
@@ -370,7 +390,7 @@ public class moodleAssignmentServiceImpl implements moodleAssignmentService, Ser
 					String graderName = grader.getFirstname() + " " + grader.getLastname();
 					toAdd = new TeacherReportData(
 							stud.getFirstname()+" "+stud.getLastname(),courseName,assn.getAssignName(),
-							graderName,(grade.get().getGrade()==null || grade.get().getGrade()==-1D)?0D:grade.get().getGrade(),getDateFromUnixDate(sub.getTimecreated()),
+							graderName,(grade.get().getGrade()==null || grade.get().getGrade()==-1D)?(gradeGradesDetails.get().getFinalgrade()==null)?0D:gradeGradesDetails.get().getFinalgrade():grade.get().getGrade(),getDateFromUnixDate(sub.getTimecreated()),
 							(sub.getStatus().equals("new")?"Not submitted":"submitted"),
 							assn.getDueDate(),(sub.getStatus().equals("new")?false:true), tagId, tagName, tagRawName);
 				}

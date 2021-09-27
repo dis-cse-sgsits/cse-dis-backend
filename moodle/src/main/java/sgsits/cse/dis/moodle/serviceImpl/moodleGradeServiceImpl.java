@@ -2,6 +2,7 @@ package sgsits.cse.dis.moodle.serviceImpl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ import sgsits.cse.dis.moodle.response.Course;
 import sgsits.cse.dis.moodle.response.CoursesOfStudentData;
 import sgsits.cse.dis.moodle.response.Students;
 import sgsits.cse.dis.moodle.response.TagData;
+import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
 import sgsits.cse.dis.moodle.service.moodleAssignmentService;
 import sgsits.cse.dis.moodle.service.moodleGradeService;
 
@@ -174,16 +176,22 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 					graderReport.add(new ArrayList<GraderReportData>());
 				}
 			}
-			
+			  Collections.sort(gradeGradesDetails, new Comparator<MoodleGradeGrades>(){
+				  public int compare(MoodleGradeGrades o1,MoodleGradeGrades o2) {			
+					return o1.getUserid().compareTo(o2.getUserid());	 
+						 }
+				  
+			  });
 			for (int i=0; i<gradeGradesDetails.size(); i++) {
 				MoodleUser currUser = moodleUserRepo.findAllById(gradeGradesDetails.get(i).getUserid());
-				
+			
 				Double finalGrade = gradeGradesDetails.get(i).getFinalgrade();
 				Double totalGrade = gradeGradesDetails.get(i).getRawgrademax();
 				Double percentage = null;
 				if (finalGrade != null) {
 					percentage = (finalGrade/totalGrade) * 100;
 				}
+				
 				graderReport.get(i).add(new GraderReportData(currUser.getId(),
 																currUser.getFirstname(),
 																currUser.getLastname(),
@@ -231,6 +239,7 @@ public class moodleGradeServiceImpl implements moodleGradeService, Serializable 
 				}
 			}
 		}
+		
 		return userReport;
 	}
 

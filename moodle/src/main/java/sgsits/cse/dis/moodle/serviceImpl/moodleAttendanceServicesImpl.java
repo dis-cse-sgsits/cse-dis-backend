@@ -12,7 +12,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.swing.text.MaskFormatter;
@@ -33,6 +35,7 @@ import sgsits.cse.dis.moodle.response.GraderReportData;
 import sgsits.cse.dis.moodle.response.MoodleCourseCategoriesResponse;
 import sgsits.cse.dis.moodle.response.MoodleTeacherAttendanceData;
 import sgsits.cse.dis.moodle.response.StudentAttendanceData;
+import sgsits.cse.dis.moodle.response.StudentOverallAttendanceData;
 import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
 import sgsits.cse.dis.moodle.service.moodleAttendanceService;
 import sgsits.cse.dis.moodle.feignClient.UserClient;
@@ -857,15 +860,15 @@ public List<MoodleCourse>  getCourseCategoryNameList(Long categoryId){
 
 
 
-public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercentageList(Long categoryId,Long courseid,String userId,Double percentage,String usertype) throws NotFoundException{
+public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercentageList(Long categoryId,String userId,Double percentage,String usertype) throws NotFoundException{
 	String username;
 	 if( usertype.equals("head") && userId != null) {
 		 username= userClient.getByUserName(userId);
 	 }
+	Long courseid=0L;
     List<List<MoodleCourseCategoriesResponse>> userAttendanceReport = new ArrayList<List<MoodleCourseCategoriesResponse>>();
 	 Double count=0D;
 	 List<MoodleCourseCategoriesResponse> totalStudentAttendanceData =new ArrayList<MoodleCourseCategoriesResponse>();
-	
 	 List<MoodleCourseCategoriesResponse> totalStudentAttendanceData1 =new ArrayList<MoodleCourseCategoriesResponse>();
 	 
 		 List<MoodleCourse> list1=getCourseCategoryNameList(categoryId);
@@ -898,7 +901,7 @@ public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercen
 			 sat1.setPercentageassigned(0D);
 			 sat1.setPercentagedifference(tad.getPercentage());
 			 totalStudentAttendanceData.add(sat1);
-		 		 }else if(courseid==0D && percentage !=0D){	 			
+		 		 }else if(courseid==0D && percentage!=0D){	 			
 		 				if(percentage>tad.getPercentage()) {
 		 				 sat1.setAttendance(tad.getAttendance());
 		 				 sat1.setCoursecode(tad.getCoursecode());
@@ -913,7 +916,7 @@ public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercen
 		 				 sat1.setPercentageassigned(percentage);
 		 				 sat1.setPercentagedifference(Math.round(count*100.0)/100.0);	
 		 				 totalStudentAttendanceData.add(sat1);
-		 				}else {
+		 				}else if(courseid==0L && percentage>0D){
 		 					sat1.setAttendance(tad.getAttendance());
 			 				 sat1.setCoursecode(tad.getCoursecode());
 			 				 sat1.setCoursename(tad.getCoursename());
@@ -928,60 +931,61 @@ public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercen
 			 				 sat1.setPercentagedifference(Math.round(count*100.0)/100.0);
 			 				 totalStudentAttendanceData.add(sat1);
 		 				}
-		 			 
-					 
-				 }else if(courseid !=0D && percentage==0D) {
-					 
-					 if( courseid==tad.getCourseid()) {
-					 sat1.setAttendance(tad.getAttendance());
-					 sat1.setCoursecode(tad.getCoursecode());
-					 sat1.setCoursename(tad.getCoursename());
-					 sat1.setFirstname(tad.getFirstname());
-					 sat1.setUsername(tad.getUsername());
-					 sat1.setLastname(tad.getLastname());
-					 sat1.setId(tad.getId());
-					 sat1.setPercentage(tad.getPercentage());
-					 sat1.setSlot(tad.getSlot());
-					 sat1.setPercentageassigned(0D);
-					 sat1.setPercentagedifference(tad.getPercentage());
-					 totalStudentAttendanceData.add(sat1);
-				 }
+		 				
 					 
 				 }
-		 		 else {
-		 			 
-		 				if(percentage>tad.getPercentage() && courseid==tad.getCourseid()) {
-		 				 sat1.setAttendance(tad.getAttendance());
-		 				 sat1.setCoursecode(tad.getCoursecode());
-		 				 sat1.setCoursename(tad.getCoursename());
-		 				 sat1.setFirstname(tad.getFirstname());
-		 				 sat1.setUsername(tad.getUsername());
-		 				 sat1.setLastname(tad.getLastname());
-		 				 sat1.setId(tad.getId());
-		 				 sat1.setPercentage(tad.getPercentage());
-		 				 sat1.setSlot(tad.getSlot());
-		 				 count=tad.getPercentage()-percentage;
-		 				 sat1.setPercentageassigned(percentage);
-		 				 sat1.setPercentagedifference(Math.round(count*100.0)/100.0);
-		 				totalStudentAttendanceData.add(sat1);
-		 				}else {
-		 					if( courseid==tad.getCourseid()) {
-		 					sat1.setAttendance(tad.getAttendance());
-			 				 sat1.setCoursecode(tad.getCoursecode());
-			 				 sat1.setCoursename(tad.getCoursename());
-			 				 sat1.setFirstname(tad.getFirstname());
-			 				 sat1.setUsername(tad.getUsername());
-			 				 sat1.setLastname(tad.getLastname());
-			 				 sat1.setId(tad.getId());
-			 				 sat1.setPercentage(tad.getPercentage());
-			 				 sat1.setSlot(tad.getSlot());
-			 				 count=tad.getPercentage()-percentage;
-			 				 sat1.setPercentageassigned(percentage);
-			 				 sat1.setPercentagedifference(Math.round(count*100.0)/100.0);
-			 				totalStudentAttendanceData.add(sat1);
-		 				}
-		 			 }
-		 			 }
+//		 		 else if(courseid !=0D && percentage==0D) {
+//					 
+//					 if( courseid==tad.getCourseid()) {
+//					 sat1.setAttendance(tad.getAttendance());
+//					 sat1.setCoursecode(tad.getCoursecode());
+//					 sat1.setCoursename(tad.getCoursename());
+//					 sat1.setFirstname(tad.getFirstname());
+//					 sat1.setUsername(tad.getUsername());
+//					 sat1.setLastname(tad.getLastname());
+//					 sat1.setId(tad.getId());
+//					 sat1.setPercentage(tad.getPercentage());
+//					 sat1.setSlot(tad.getSlot());
+//					 sat1.setPercentageassigned(0D);
+//					 sat1.setPercentagedifference(tad.getPercentage());
+//					 totalStudentAttendanceData.add(sat1);
+//				 }
+//					 
+//				 }
+//		 		 else {
+//		 			 
+//		 				if(percentage>tad.getPercentage() && courseid==tad.getCourseid()) {
+//		 				 sat1.setAttendance(tad.getAttendance());
+//		 				 sat1.setCoursecode(tad.getCoursecode());
+//		 				 sat1.setCoursename(tad.getCoursename());
+//		 				 sat1.setFirstname(tad.getFirstname());
+//		 				 sat1.setUsername(tad.getUsername());
+//		 				 sat1.setLastname(tad.getLastname());
+//		 				 sat1.setId(tad.getId());
+//		 				 sat1.setPercentage(tad.getPercentage());
+//		 				 sat1.setSlot(tad.getSlot());
+//		 				 count=tad.getPercentage()-percentage;
+//		 				 sat1.setPercentageassigned(percentage);
+//		 				 sat1.setPercentagedifference(Math.round(count*100.0)/100.0);
+//		 				totalStudentAttendanceData.add(sat1);
+//		 				}else {
+//		 					if( courseid==tad.getCourseid()) {
+//		 					sat1.setAttendance(tad.getAttendance());
+//			 				 sat1.setCoursecode(tad.getCoursecode());
+//			 				 sat1.setCoursename(tad.getCoursename());
+//			 				 sat1.setFirstname(tad.getFirstname());
+//			 				 sat1.setUsername(tad.getUsername());
+//			 				 sat1.setLastname(tad.getLastname());
+//			 				 sat1.setId(tad.getId());
+//			 				 sat1.setPercentage(tad.getPercentage());
+//			 				 sat1.setSlot(tad.getSlot());
+//			 				 count=tad.getPercentage()-percentage;
+//			 				 sat1.setPercentageassigned(percentage);
+//			 				 sat1.setPercentagedifference(Math.round(count*100.0)/100.0);
+//			 				totalStudentAttendanceData.add(sat1);
+//		 				}
+//		 			 }
+//	 			 }
 		     
 		 Collections.sort(totalStudentAttendanceData, new Comparator<MoodleCourseCategoriesResponse>(){
 			  public int compare(MoodleCourseCategoriesResponse o1,MoodleCourseCategoriesResponse o2) {
@@ -998,21 +1002,90 @@ public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercen
 		 
 		 }
 		 
-		 
-	//	 userAttendanceReport.get(j).add(new MoodleCourseCategoriesResponse(totalStudentAttendanceData1.get(j).getId(),totalStudentAttendanceData1.get(j).getUsername(),totalStudentAttendanceData1.get(j).getFirstname(),totalStudentAttendanceData1.get(j).getLastname(),totalStudentAttendanceData1.get(j).getCoursename(),totalStudentAttendanceData1.get(j).getAttendance(),totalStudentAttendanceData1.get(j).getSlot(),totalStudentAttendanceData1.get(j).getPercentage(),totalStudentAttendanceData1.get(j).getCoursecode(),totalStudentAttendanceData1.get(j).getPercentagedifference(),totalStudentAttendanceData1.get(j).getPercentageassigned()));
 		
-		 for(int j=0;j<totalStudentAttendanceData.size();j++) {	
-			MoodleUser currUser = MoodleUserRepo.findAllById(totalStudentAttendanceData.get(j).getId());
-		 totalStudentAttendanceData1=totalStudentAttendanceData.stream().filter(tad ->tad.getId().equals(currUser.getId())).collect(Collectors.toList());
+		 for(MoodleCourseCategoriesResponse mat: totalStudentAttendanceData) {	
+			MoodleUser currUser = MoodleUserRepo.findAllById(mat.getId());
+		 totalStudentAttendanceData1=totalStudentAttendanceData.stream().distinct().filter(tad ->tad.getId().equals(currUser.getId())).collect(Collectors.toList());
 		 if(!userAttendanceReport.contains(totalStudentAttendanceData1)) {
 		 userAttendanceReport.add(totalStudentAttendanceData1);
-		 }
+		 }		
+					
 		}
-		
-		
 		 
 	return userAttendanceReport ;
 }
+
+
+public List<List<StudentOverallAttendanceData>> getOverallStudentAttendancePercentageAndCount(Long categoryid,String userId,Double percentage,String usertype) throws NotFoundException{
+	List<List<StudentOverallAttendanceData>> overallAttendance =new ArrayList<List<StudentOverallAttendanceData>>(); 
+	String username;
+	 if( usertype.equals("head") && userId != null) {
+		 username= userClient.getByUserName(userId);
+	 }
+	List<List<MoodleCourseCategoriesResponse>> overallReport=getLessStudentAttendancePercentageList(categoryid, userId, percentage, usertype);	
+		Double percentageDifference=0D;
+		List<StudentOverallAttendanceData> sat1=new ArrayList<StudentOverallAttendanceData>();
+		List<StudentOverallAttendanceData> sat2=new ArrayList<StudentOverallAttendanceData>();
+		List<MoodleCourseCategoriesResponse> mat1= new ArrayList<MoodleCourseCategoriesResponse>();
+ for(int i=0;i<overallReport.size();i++) {
+	
+	StudentOverallAttendanceData sat =new  StudentOverallAttendanceData();
+	Long totalAttendance=0L;
+	Long totalSlot=0L;
+	Double overallPercentage=0D;
+	Long count=0L;
+	MoodleUser mu =MoodleUserRepo.findAllById((overallReport.get(i).get(0).getId()));
+	List<MoodleCourseCategoriesResponse> mcr = new ArrayList<MoodleCourseCategoriesResponse>();
+	for(int j=0;j<overallReport.get(i).size();j++) {	
+			if(percentage>overallReport.get(i).get(j).getPercentage()) {
+				count++;
+			}	
+			if(overallReport.get(i).get(0).getId()==mu.getId()) {
+				totalAttendance+=overallReport.get(i).get(j).getAttendance();
+				totalSlot+=overallReport.get(i).get(j).getSlot();
+				
+			}
+			for(List<MoodleCourseCategoriesResponse> mcr1:overallReport) {
+				
+				mcr.add(new MoodleCourseCategoriesResponse(mcr1.get(j).getId(),mcr1.get(j).getUsername(),mcr1.get(j).getFirstname(),mcr1.get(j).getLastname(),mcr1.get(j).getCoursename(),mcr1.get(j).getAttendance(),mcr1.get(j).getSlot(),mcr1.get(j).getPercentage(),mcr1.get(j).getCoursecode(),mcr1.get(j).getPercentagedifference(),mcr1.get(j).getPercentageassigned()));
+			
+			
+		} 	
+			mat1=mcr.stream().distinct().filter(tad ->tad.getId().equals(mu.getId())).collect(Collectors.toList());			
+	}
+	
+	
+   
+	sat.setMoodleCategoriesResponse(mat1);
+	sat.setCount(count);
+	sat.setUsername(mu.getUsername());
+	sat.setUserid(overallReport.get(i).get(0).getId());
+	sat.setFirstname(mu.getFirstname());
+	sat.setLastname(mu.getLastname());
+	try {
+		  overallPercentage=(((double)totalAttendance/(double)totalSlot))*100;
+		  double roundedDouble = Math.round(overallPercentage * 100.0) / 100.0;
+			  sat.setOverallpercentage(roundedDouble);
+		}
+		catch(ArithmeticException e) {
+		  System.out.println("Value return to be null" );
+		}
+	percentageDifference=overallPercentage-percentage;
+	sat.setTotalAttendance(totalAttendance);
+	sat.setTotalSlot(totalSlot);
+	sat.setOverallPercentageDifference(Math.round(percentageDifference*100.0)/100.0);
+	sat1.add(sat);
+ }
+ for(StudentOverallAttendanceData mat: sat1) {	
+		MoodleUser currUser = MoodleUserRepo.findAllById(mat.getUserid());
+	 sat2=sat1.stream().distinct().filter(tad ->tad.getUserid().equals(currUser.getId())).collect(Collectors.toList());
+	 if(!overallAttendance.contains(sat2)) {
+		 overallAttendance.add(sat2);
+	 }		
+ }   
+	return overallAttendance;
+}
+
 }
 
 

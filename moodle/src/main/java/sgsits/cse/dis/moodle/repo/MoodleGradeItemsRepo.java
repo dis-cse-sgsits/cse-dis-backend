@@ -16,4 +16,5 @@ public interface MoodleGradeItemsRepo extends JpaRepository<MoodleGradeItems, Lo
 	
 	List<MoodleGradeItems> findByIdAndCourseid(Long Id, Long courseId);
 	Optional<MoodleGradeItems> findByCourseidAndItemname(Long courseId,String name);
+	Optional<MoodleGradeItems>  findByCourseidAndIteminstance(Long courseid,Long iteminstance);
 }

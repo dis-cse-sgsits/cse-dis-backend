@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javassist.NotFoundException;
 import sgsits.cse.dis.moodle.response.StudentAttendanceData;
+import sgsits.cse.dis.moodle.response.StudentOverallAttendanceData;
 import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
 import sgsits.cse.dis.moodle.model.MoodleAttendanceTeacherBulk;
 import sgsits.cse.dis.moodle.model.MoodleCourse;
@@ -25,5 +26,6 @@ public interface moodleAttendanceService {
 	public List<MoodleTeacherAttendanceData> CalculateTeacherBulkAttendance(String coursecode,String username);
 	public List<MoodleCourseCategories>   getCourseCategoryList();
 	public List<MoodleCourse>  getCourseCategoryNameList(Long categoryId);
-	public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercentageList(Long categoryId,Long courseid,String userId,Double percentage,String usertype) throws NotFoundException;
+	public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercentageList(Long categoryId,String userId,Double percentage,String usertype) throws NotFoundException;
+	public List<List<StudentOverallAttendanceData>> getOverallStudentAttendancePercentageAndCount(Long categoryid,String userId,Double percentage,String usertype) throws NotFoundException;
 }

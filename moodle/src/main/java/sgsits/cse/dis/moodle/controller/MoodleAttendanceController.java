@@ -26,6 +26,7 @@ import sgsits.cse.dis.moodle.response.Course;
 import sgsits.cse.dis.moodle.response.MoodleCourseCategoriesResponse;
 import sgsits.cse.dis.moodle.response.MoodleTeacherAttendanceData;
 import sgsits.cse.dis.moodle.response.StudentAttendanceData;
+import sgsits.cse.dis.moodle.response.StudentOverallAttendanceData;
 import sgsits.cse.dis.moodle.response.TotalStudentAttendanceData;
 import sgsits.cse.dis.moodle.serviceImpl.moodleAttendanceServicesImpl;
 import  sgsits.cse.dis.moodle.jwt.JwtResolver;
@@ -41,13 +42,21 @@ public class MoodleAttendanceController {
 	public  moodleAttendanceServicesImpl moodleAttendanceServicesImpl;
 	
 	@ApiOperation(value = "Get Student Attendance Detail List", httpMethod = "GET", produces = "application/json")
+	@GetMapping(path=AttendanceURLConstants.GET_OVERALL_ATTENDANCE_REPORT,produces="application/json")
+	public List<List<StudentOverallAttendanceData>> getOverallStudentAttendancePercentageAndCount(@PathVariable("categoryid")Long categoryId,@PathVariable("percentage")Double percentage,HttpServletRequest request) throws NotFoundException{
+		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
+		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
+		return moodleAttendanceServicesImpl.getOverallStudentAttendancePercentageAndCount(categoryId,userid,percentage,userType);
+	}
+	
+	@ApiOperation(value = "Get Student Attendance Detail List", httpMethod = "GET", produces = "application/json")
 	@GetMapping(path=AttendanceURLConstants.GET_ALL_TABLEID,produces="application/json")
 	public Long  getTableid(@PathVariable("username") String username,@PathVariable("coursecode") String coursecode){
 		return moodleAttendanceServicesImpl.getTableid(username,coursecode);
 	}
 	@ApiOperation(value = "Get Student Attendance Detail List", httpMethod = "GET", produces = "application/json")
 	@GetMapping(path=AttendanceURLConstants.GET_TOTAL_BULK_SLOT,produces="application/json")
-	public List<MoodleTeacherAttendanceData> CalculateTeacherBulkAttendance(@PathVariable("username") String coursecode,@PathVariable("coursecode") String username){
+	public List<MoodleTeacherAttendanceData> CalculateTeacherBulkAttendance(@PathVariable("username") String username,@PathVariable("coursecode") String coursecode){
 		return moodleAttendanceServicesImpl.CalculateTeacherBulkAttendance(username,coursecode);
 	}
 	@ApiOperation(value = "Get Course Category List", httpMethod = "GET", produces = "application/json")
@@ -62,10 +71,10 @@ public class MoodleAttendanceController {
 	}
 	@ApiOperation(value = "Get Less Percentage Student Attendance List", httpMethod = "GET", produces = "application/json")
 	@GetMapping(path=AttendanceURLConstants.GET_STUDENT_LESS_PERCENTAGE_LIST,produces="application/json")
-	public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercentageList(@PathVariable("categoryid")Long categoryId,@PathVariable("courseid")Long courseid,@PathVariable("percentage")Double percentage,HttpServletRequest request) throws NotFoundException{
+	public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercentageList(@PathVariable("categoryid")Long categoryId,@PathVariable("percentage")Double percentage,HttpServletRequest request) throws NotFoundException{
 		String userid=jwtResolver.getIdFromJwtToken(request.getHeader("Authorization"));
 		String userType = jwtResolver.getUserTypeFromJwtToken(request.getHeader("Authorization"));
-		return moodleAttendanceServicesImpl.getLessStudentAttendancePercentageList(categoryId,courseid,userid,percentage,userType);
+		return moodleAttendanceServicesImpl.getLessStudentAttendancePercentageList(categoryId,userid,percentage,userType);
 	}
 
 	@ApiOperation(value = "Get User Enrolled Course Code", response = Course.class, httpMethod = "GET", produces = "application/json")

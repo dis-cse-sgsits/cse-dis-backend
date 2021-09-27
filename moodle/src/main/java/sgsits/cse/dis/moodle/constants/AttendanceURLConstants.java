@@ -9,5 +9,6 @@ public class AttendanceURLConstants {
     public static final String GET_TOTAL_BULK_SLOT="/getBulkSlot/{username}/{coursecode}";
     public static final String GET_COURSE_CATEGORY_LIST="/getCourseCategoryList/";
     public static final String GET_CATEGORY_COURSE_NAME_LIST="/getCategoryCourseNameList/{categoryId}";
-    public static final String GET_STUDENT_LESS_PERCENTAGE_LIST="/getStudentAttendancePercentageList/{categoryid}/{courseid}/{percentage}";
+    public static final String GET_STUDENT_LESS_PERCENTAGE_LIST="/getStudentAttendancePercentageList/{categoryid}/{percentage}";
+    public static final String GET_OVERALL_ATTENDANCE_REPORT="/getOverallStudentAttendancePercentageAndCount/{categoryid}/{percentage}";
 }
