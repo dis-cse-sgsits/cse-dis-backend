@@ -263,44 +263,15 @@ public class moodleAttendanceServicesImpl implements moodleAttendanceService, Se
 		MoodleUser mu1=MoodleUserRepo.findAllByUsername(username);
 		for(MoodleUser mu: moodleUser) {
 		MoodleCourse mc= MoodleCourseRepo.findByIdnumber(Coursename);
-			 // List<MoodleAttendanceStudent> moodleAttendanceStudent=MoodleAttendanceStudentRepo.findAllByStudentid(mu.getId());
-			  //for(MoodleAttendanceStudent mas:moodleAttendanceStudent) {
-			 //if(mu.getId()==mas.getStudentid()) {
-//		 List<MoodleAttendanceTeacherBulk> moodleAttendanceTeacherBulk=MoodleAttendanceTeacherBulkRepo.findAllByTeacherid(mu1.getId());
-//		  	
-//					
-//		 tableid=MoodleAttendanceTeacherRepo.getById(mu1.getId(),mc.getIdnumber());
-//		   tableid1=MoodleAttendanceTeacherBulkRepo.getById(mu1.getId(),mc.getIdnumber());
-//		List<MoodleAttendanceTeacherBulk> mtb=MoodleAttendanceTeacherBulkRepo.findBySubjectid(Coursename);
-//		 for(MoodleAttendanceTeacherBulk mtb1 :mtb) {
-//			 tableid1=MoodleAttendanceTeacherBulkRepo.getBySubject(mtb1.getSubjectid());
-//		 }
-//		  tableid=MoodleAttendanceTeacherRepo.getById(mu1.getId(),mc.getIdnumber());
+			
 		  tableid1=MoodleAttendanceTeacherBulkRepo.getBySubject(mc.getIdnumber());
 		  count1=MoodleAttendanceStudentBulkRepo.findTotalAttendance(mu.getId(),tableid1);						        
 	       slot1=MoodleAttendanceTeacherBulkRepo.getTotalBulkSlot(Coursename);
-//				 tableid1=MoodleAttendanceStudentBulkRepo.getByStudentid(mu.getId());
-//				 subjectid1=MoodleAttendanceTeacherBulkRepo.getBySubjectid();	
-//				slot1=MoodleAttendanceTeacherBulkRepo.getAllSubjectWiseSlot(subjectid1,tableid1);	 
-//				tableid=MoodleAttendanceStudentRepo.getByStudentid(mu.getId());
-//				 subjectid=MoodleAttendanceTeacherRepo.getBySubjectid();			
-//				 slot=MoodleAttendanceTeacherRepo.getAllSubjectWiseSlot(subjectid,tableid);
-//				  tableid1=MoodleAttendanceStudentBulkRepo.getByStudentid(mu.getId());
-//				 subjectid1=MoodleAttendanceTeacherBulkRepo.getBySubjectid();	
-//				  slot1=MoodleAttendanceTeacherBulkRepo.getAllSubjectWiseSlot(subjectid1,tableid1);
-//				 
-//				 tableid=MoodleAttendanceStudentRepo.getByStudentid(mu.getId());
-//				 subjectid=MoodleAttendanceTeacherRepo.getBySubjectid();			
-//				 slot=MoodleAttendanceTeacherRepo.getAllSubjectWiseSlot(subjectid,tableid);
-			     //attendance=MoodleAttendanceTeacherRepo.getBySubject(subjectid.get(2));
 				 for(String s:subjectid)
 					 if(!subjectid.contains(s)) {
 						 subjectid.add(s);
 					 }
-			// }	  
-			  //}
-			 
-			// tableid=MoodleAttendanceTeacherBulkRepo.getAllSubjectWiseSlot();
+			
 		}
 		return slot1;
 	}
@@ -590,7 +561,7 @@ public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String cour
 		String username;
 		 if(userType.equals("faculty") || userType.equals("head") && userid != null) {
 			 username= userClient.getByUserName(userid);
-		List<MoodleUser> moodleUser = MoodleUserRepo.findAll();
+		
 		MoodleCourse mc = MoodleCourseRepo.findByIdnumber(coursecode);
 		Long count=0L;
 		Long count1=0L;
@@ -600,25 +571,39 @@ public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String cour
 		Long totalslot;
 		Double percentage;
 		List<TotalStudentAttendanceData> totalStudentAttendanceData =new ArrayList<>();
+	     MoodleEnrollement me=MoodleEnrollmentRepo.findByCourseidAndEnrol(mc.getId(),"manual");
+	     List<MoodleUserEnrollment> mue =MoodleUserEnrollmentRepo.findByEnrolid(me.getId());
+	     for(MoodleUserEnrollment moodleUserEnrol:mue) {
+	    	 List<MoodleUser> moodleUser = MoodleUserRepo.getAllById(moodleUserEnrol.getUserid());
+	     
+		
 		  for(MoodleUser mu: moodleUser) {
 			  TotalStudentAttendanceData sat =new TotalStudentAttendanceData();
 			  TotalStudentAttendanceData sat1 =new TotalStudentAttendanceData();
 			  List<MoodleAttendanceStudent> moodleAttendanceStudent=MoodleAttendanceStudentRepo.findAllByStudentid(mu.getId());
 			  List<MoodleAttendanceStudentBulk> moodleAttendanceStudentBulk=MoodleAttendanceStudentBulkRepo.findAllByStudentid(mu.getId());
+			  sat.setId(mu.getId());
+			   sat.setUsername(mu.getUsername());
+			   sat.setFirstname(mu.getFirstname());
+			   sat.setLastname(mu.getLastname());	
 			  for(MoodleAttendanceStudent mas:moodleAttendanceStudent) {
-			  if(mu.getId()==mas.getStudentid()) {
-				  sat.setId(mu.getId());
-				   sat.setUsername(mu.getUsername());
-				   sat.setFirstname(mu.getFirstname());
-				   sat.setLastname(mu.getLastname());	
+			//  if(mu.getId()==mas.getStudentid()) {
+				  
 				   MoodleUser mu1=MoodleUserRepo.findAllByUsername(username);
 				   
 				   List<Long> tableid=MoodleAttendanceTeacherRepo.getBySubject(coursecode);
 				   List<MoodleAttendanceTeacher> mt=MoodleAttendanceTeacherRepo.findBySubjectid(coursecode);
+				   if(mt.isEmpty()){
+						  sat.setAttendance(count);
+						   sat.setCoursename(mc.getFullname());	 
+						   sat.setCoursecode(coursecode);
+						   sat.setCourseid(mc.getId());
+						   sat.setSlot(slot);
+					  }else {
 				   for(MoodleAttendanceTeacher mat:mt) {
 					   List<MoodleAttendanceTeacher> moodleAttendanceTeacher=MoodleAttendanceTeacherRepo.findAllByTakenby(mat.getTakenby());
-						 
-						   if(mc.getIdnumber().equalsIgnoreCase(mat.getSubjectid()) && mat.getId() ==mas.getTableid())
+						
+						 if(mc.getIdnumber().equalsIgnoreCase(mat.getSubjectid()) && mat.getId() ==mas.getTableid())
 						   {  		        
 							   count=MoodleAttendanceStudentRepo.findTotalAttendance(mu.getId(),tableid);
 						       slot=MoodleAttendanceTeacherRepo.getTotalSlot(mc.getIdnumber());					      
@@ -629,13 +614,14 @@ public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String cour
 							   sat.setSlot(slot);
 						   
 					   }
-				   }
-			  }
+						 
+				 }
+			 } 
 				  
 			  }
 			  
 			  for(MoodleAttendanceStudentBulk masb:moodleAttendanceStudentBulk) {
-				 if(mu.getId()==masb.getStudentid()) {
+				// if(mu.getId()==masb.getStudentid()) {
 					  sat1.setId(mu.getId());
 					   sat1.setUsername(mu.getUsername());
 					   sat1.setFirstname(mu.getFirstname());
@@ -643,6 +629,13 @@ public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String cour
 					   MoodleUser mu1=MoodleUserRepo.findAllByUsername(username);
 					   List<MoodleAttendanceTeacherBulk> mtb=MoodleAttendanceTeacherBulkRepo.findBySubjectid(coursecode);
 					   List<Long> tableid1=MoodleAttendanceTeacherBulkRepo.getBySubject(coursecode);
+					   if(mtb.isEmpty()) {
+						   sat1.setAttendance(count1);
+						   sat1.setCoursename(mc.getFullname());
+						   sat1.setSlot(slot1);
+						   sat1.setCoursecode(coursecode);
+						   sat1.setCourseid(mc.getId());   
+					   }else {
 					   for(MoodleAttendanceTeacherBulk matb:mtb) {
 						   List<MoodleAttendanceTeacherBulk> moodleAttendanceTeacherBulk=MoodleAttendanceTeacherBulkRepo.findAllByTeacherid(matb.getTeacherid());
 							     
@@ -655,7 +648,7 @@ public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String cour
 								   sat1.setCoursecode(coursecode);
 								   sat1.setCourseid(mc.getId());
 							   }
-						   
+							   
 					   
 				 }
 				  }
@@ -746,7 +739,8 @@ public List<TotalStudentAttendanceData> getAllStudentTotalAttendance(String cour
 				  });
 			 }
 				 
-	}		
+	}	
+	     }
 		return totalStudentAttendanceData;
 		 }
 		 else {
@@ -852,8 +846,15 @@ public List<MoodleCourseCategories>  getCourseCategoryList(){
 public List<MoodleCourse>  getCourseCategoryNameList(Long categoryId){
 	List<MoodleCourseCategoriesResponse> sat= new ArrayList<MoodleCourseCategoriesResponse>();	
 	MoodleCourseCategoriesResponse sat1= new MoodleCourseCategoriesResponse();
-	List<MoodleCourse> list = new ArrayList<>();
-		  MoodleCourseRepo.findAllByCategory(categoryId).forEach(list::add);			
+	List<MoodleCourse> list = new ArrayList<MoodleCourse>();
+		  MoodleCourseRepo.findAllByCategory(categoryId).forEach(list::add);	
+		  Collections.sort(list, new Comparator<MoodleCourse>(){
+			  public int compare(MoodleCourse o1,MoodleCourse o2) {
+				int c;
+				c=o1.getIdnumber().compareTo(o2.getIdnumber());	 	
+				return c;
+		 }
+		 });
 	return list;
 	
 }
@@ -888,6 +889,7 @@ public List<List<MoodleCourseCategoriesResponse>> getLessStudentAttendancePercen
 		 });
 		 for(TotalStudentAttendanceData tad:sat) {
 			 MoodleCourseCategoriesResponse sat1 =new MoodleCourseCategoriesResponse();
+			 
 		 if(courseid==0L && percentage==0D) {		 
 			 sat1.setAttendance(tad.getAttendance());
 			 sat1.setCoursecode(tad.getCoursecode());
@@ -1055,17 +1057,19 @@ public List<List<StudentOverallAttendanceData>> getOverallStudentAttendancePerce
 	}
 	
 	
-   
+   java.util.Optional<MoodleCourseCategories> moodleCourseCategory= MoodleCourseCategoriesRepo.findById(categoryid);
 	sat.setMoodleCategoriesResponse(mat1);
 	sat.setCount(count);
 	sat.setUsername(mu.getUsername());
 	sat.setUserid(overallReport.get(i).get(0).getId());
 	sat.setFirstname(mu.getFirstname());
 	sat.setLastname(mu.getLastname());
+	sat.setCategoryName(moodleCourseCategory.get().getName());
+	sat.setCategoryid(categoryid);
 	try {
 		  overallPercentage=(((double)totalAttendance/(double)totalSlot))*100;
 		  double roundedDouble = Math.round(overallPercentage * 100.0) / 100.0;
-			  sat.setOverallpercentage(roundedDouble);
+			  sat.setOverallpercent(roundedDouble);
 		}
 		catch(ArithmeticException e) {
 		  System.out.println("Value return to be null" );

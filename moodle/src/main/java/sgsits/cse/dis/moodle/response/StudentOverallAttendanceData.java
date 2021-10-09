@@ -9,26 +9,50 @@ public class StudentOverallAttendanceData {
    private String firstname;
    private String lastname;
    private Long count;
-   private Double overallpercentage;
+   private Double overallpercent;
    private Long  totalAttendance;
    private Long  totalSlot;
    private Double  overallPercentageDifference;
+   private String CategoryName;
+   private Long categoryid;
+
 public StudentOverallAttendanceData(Long userid, String username, String firstname, String lastname, Long count,
-		Double overallpercentage, Long totalAttendance, Long totalSlot, Double overallPercentageDifference) {
+		Double overallpercentage, Long totalAttendance, Long totalSlot, Double overallPercentageDifference,String CategoryName,Long categoryid) {
 	super();
 	this.userid = userid;
 	this.username = username;
 	this.firstname = firstname;
 	this.lastname = lastname;
 	this.count = count;
-	this.overallpercentage = overallpercentage;
+	this.overallpercent = overallpercentage;
 	this.totalAttendance = totalAttendance;
 	this.totalSlot = totalSlot;
 	this.overallPercentageDifference = overallPercentageDifference;
+	this.CategoryName=CategoryName;
+	this.categoryid=categoryid;
 }
+
+
+public Long getCategoryid() {
+	return categoryid;
+}
+
+
+public void setCategoryid(Long categoryid) {
+	this.categoryid = categoryid;
+}
+
 
 public List<MoodleCourseCategoriesResponse> getMoodleCategoriesResponse() {
 	return moodleCategoriesResponse;
+}
+
+public String getCategoryName() {
+	return CategoryName;
+}
+
+public void setCategoryName(String categoryName) {
+	CategoryName = categoryName;
 }
 
 public void setMoodleCategoriesResponse(List<MoodleCourseCategoriesResponse> moodleCategoriesResponse) {
@@ -65,7 +89,7 @@ public StudentOverallAttendanceData(Long userid, String username, String firstna
 	this.firstname = firstname;
 	this.lastname = lastname;
 	this.count = count;
-	this.overallpercentage = overallpercentage;
+	this.overallpercent = overallpercentage;
 }
 public Long getUserid() {
 	return userid;
@@ -97,11 +121,11 @@ public Long getCount() {
 public void setCount(Long count) {
 	this.count = count;
 }
-public Double getOverallpercentage() {
-	return overallpercentage;
+public Double getOverallpercent() {
+	return overallpercent;
 }
-public void setOverallpercentage(Double overallpercentage) {
-	this.overallpercentage = overallpercentage;
+public void setOverallpercent(Double overallpercentage) {
+	this.overallpercent = overallpercentage;
 }
    
 }

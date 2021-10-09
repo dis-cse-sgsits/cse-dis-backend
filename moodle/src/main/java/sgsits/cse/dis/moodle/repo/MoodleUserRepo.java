@@ -18,8 +18,8 @@ public interface MoodleUserRepo extends JpaRepository<MoodleUser, Long> {
 	public Long findById(String username);
 	
 	MoodleUser findByFirstname(String firstname);
-	
-
+	@Query(value="select * from mdl_user where id=?1",nativeQuery=true)
+    public List<MoodleUser> getAllById(Long id);
 	public MoodleUser findAllById(Long Id);
 
 	Optional<MoodleUser> findById(Long id);

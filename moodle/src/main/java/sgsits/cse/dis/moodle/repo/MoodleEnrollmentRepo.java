@@ -14,6 +14,6 @@ public interface  MoodleEnrollmentRepo  extends JpaRepository<MoodleEnrollement,
 	public Optional<MoodleEnrollement> findById(Long id);
 	public List<MoodleEnrollement> findByid(Long id);
 	List<MoodleEnrollement> findByCourseid(Long courseid);
-	
+	public MoodleEnrollement findByCourseidAndEnrol(Long courseid,String enrol);
     public List<MoodleEnrollement> findAllById(Long id);
 }
