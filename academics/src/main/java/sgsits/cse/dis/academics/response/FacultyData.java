@@ -3,7 +3,7 @@ package sgsits.cse.dis.academics.response;
 /**
  * <h1>FacultyData</h1>class.
  * This class is pojo form for return java object as a response to request over network.
- * @author Devyani garg
+ * @author Sachin Motwani
  * @since 8-DEC-2018
  */
 public class FacultyData {

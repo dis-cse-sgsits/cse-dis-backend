@@ -380,4 +380,9 @@ public class GuideAllotmentServiceImpl implements GuideAllotmentService {
 		}
 		return new BatchData(studRepo.findByUserIdIn(ids),currGuide.orElse(null),currCoGuide.orElse(null),guide.getSession(),"PG",guide.getBatchId());				
 	}
+
+	@Override
+	public List<StaffBasicProfile> getAllGuides() {
+		return staffRepo.findByClasssOrClasssOrderByCurrentDesignation("I","II");
+	}
 }

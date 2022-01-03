@@ -13,7 +13,7 @@ import sgsits.cse.dis.academics.request.FacultyTimeTableForm;
  * @author Arjit Mishra.
  * @version 1.0.
  * @since 3-MAR-2020.
- * @throws ConflictException.
+ * @throws ConflictException
  */
 
 

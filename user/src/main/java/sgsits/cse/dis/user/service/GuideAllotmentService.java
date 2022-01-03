@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import sgsits.cse.dis.user.exception.ConflictException;
 import sgsits.cse.dis.user.message.request.CreateBatch;
 import sgsits.cse.dis.user.message.response.BatchData;
+import sgsits.cse.dis.user.model.StaffBasicProfile;
 import sgsits.cse.dis.user.model.StudentProfile;
 
 public interface GuideAllotmentService {
@@ -17,4 +18,5 @@ public interface GuideAllotmentService {
 	List<StudentProfile> getRemainingStudents(String session,String ugOrPg);
 	BatchData getStudentsBatch(String studentId,String ugOrPg);
 	List<BatchData> getGuidesBatch(String guideId,String ugOrPg);
+	List<StaffBasicProfile> getAllGuides();
 }

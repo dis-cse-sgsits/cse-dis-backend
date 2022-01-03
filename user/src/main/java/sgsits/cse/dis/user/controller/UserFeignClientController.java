@@ -1,10 +1,13 @@
 package sgsits.cse.dis.user.controller;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +27,10 @@ import sgsits.cse.dis.user.dtos.FacultyDataDto;
 import sgsits.cse.dis.user.message.request.SignUpForm;
 import sgsits.cse.dis.user.message.response.ActiveStaffListResponse;
 import sgsits.cse.dis.user.message.response.FacultyData;
+import sgsits.cse.dis.user.model.StudentProfile;
 import sgsits.cse.dis.user.repo.StaffBasicProfileRepository;
 import sgsits.cse.dis.user.service.StaffService;
+import sgsits.cse.dis.user.service.StudentService;
 import sgsits.cse.dis.user.service.UserServices;
 
 @Api(value = "User Feign Client Controller")
@@ -39,6 +44,9 @@ public class UserFeignClientController {
 
     private final StaffBasicProfileRepository staffBasicProfileRepository;
 
+    @Autowired
+    private StudentService studentService;
+
     public UserFeignClientController(final UserServices userServicesImpl, final StaffService staffService,
             final StaffBasicProfileRepository staffBasicProfileRepository) {
 
@@ -46,12 +54,19 @@ public class UserFeignClientController {
         this.staffService = staffService;
         this.staffBasicProfileRepository = staffBasicProfileRepository;
     }
+    
+    @ApiOperation(value = "get Username for given ID", response = String.class, httpMethod = "GET", produces = "application/json")
+    @RequestMapping(value = "/getByUserName/{userid}", method = RequestMethod.GET)
+    public String getByUserName(@PathVariable("userid") String userid) {
+        return userServicesImpl.getByUserName(userid);
+    }
 
     @ApiOperation(value = "get ID for given username", response = String.class, httpMethod = "GET", produces = "application/json")
     @RequestMapping(value = "/getUserId", method = RequestMethod.GET)
     public String getUserId(@RequestParam("username") String username) {
         return userServicesImpl.getUserId(username);
     }
+   
 
     @ApiOperation(value = "Verify username", response = boolean.class, httpMethod = "GET", produces = "application/json")
     @GetMapping(value = "/existsByUsername/{username}")
@@ -121,6 +136,12 @@ public class UserFeignClientController {
 
         staffBasicProfileRepository.updateUserIdByEmailId(userId, email);
         return new ResponseEntity<>(userId + " assigned to user with email " + email, HttpStatus.OK);
+    }
+
+//    @ApiOperation(value = "Fetch ME students by year", response = StudentProfile.class, httpMethod = "GET", produces = "application/json")
+    @GetMapping(value = "/fetchMEStudentsByYear/{year}")
+    public List<StudentProfile> fetchMEStudentsByYear(@PathVariable("year") int year) {
+        return new ArrayList<StudentProfile>(studentService.fetchMEStudentsByYear(year));
     }
 
 }
